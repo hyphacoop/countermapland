@@ -1,4 +1,4 @@
-# countermapland
+# Countermap
 
 ## Code of Conduct
 
