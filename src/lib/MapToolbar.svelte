@@ -1,8 +1,5 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
 	import { toggleMarkerVisibility } from '$lib/stores';
-
-	const dispatch = createEventDispatcher();
 
 	let eye = true;
 	function clickEye() {

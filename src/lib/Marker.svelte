@@ -40,7 +40,6 @@
 		}
 	});
 
-	$: console.log('map', mapInstance);
 </script>
 
 

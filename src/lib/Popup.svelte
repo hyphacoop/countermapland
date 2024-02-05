@@ -9,11 +9,11 @@
 
   const layerContext = getContext("layer");
   const layer = layerContext.getLayer();
-  
+
   onMount(() => {
     popup = L.popup().setContent(popupElement);
-	console.log('layer', layer);
-    if (layer) {
+
+	if (layer) {
       layer.bindPopup(popup);
       layer.on("popupopen", () => (open = true));
       layer.on("popupclose", () => (open = false));

@@ -6,17 +6,13 @@
 
 	import { markersStore, initialViewStore } from '$lib/stores';
 
-	console.log('hello')
-
-
 </script>
 
 <div class="w-full h-screen">
     <Leaflet view={$initialViewStore} zoom={12}>
-        {#each $markersStore as { latLng, visible, popupContent } (latLng.join(','))}
-		{console.log(latLng)}
+        {#each $markersStore as { latLng, visible, popupContent }, index (latLng.join(',') + '-' + index)}
             {#if visible}
-                <Marker {latLng} width={40} height={40}>
+                <Marker {latLng} width={20} height={20}>
                     <Popup>{popupContent}</Popup>
                 </Marker>
             {/if}
