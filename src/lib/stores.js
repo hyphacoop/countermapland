@@ -54,7 +54,7 @@ export const currentMapStyleId = derived(
   );
 
 // Initial view coordinates
-const initialView = [43.6483296,-79.3932053]; // Toronto for now
+const initialView = [52.1163849,-95.2992053]; // Center of North America
 
 export const initialViewStore = readable(initialView);
 
