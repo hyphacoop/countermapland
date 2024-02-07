@@ -17,7 +17,8 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
         # Extract latitude, longitude, and popup content from the correct columns
         lat = row['latitude']  
         lng = row['longitude']  
-        popup_content = row['name_e']
+        name = row['name_e']
+        description = row['background_e'] 
         photos = []
 
         # Check for each photo and its corresponding alt text
@@ -32,15 +33,18 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
                 })
 
         # Check if lat and lng are not empty
-        if lat and lng and popup_content:
+        if lat and lng and name:
             # Append a new marker object to the list
             marker = {
                 'latLng': [float(lat), float(lng)],
                 'visible': True,  # Assuming you want all markers to be initially visible
-                'popupContent': popup_content
+                'name': name
             }
             if photos:
                 marker['photos'] = photos
+
+            if description:
+                marker['description'] = description
             
             markers.append(marker)
 
