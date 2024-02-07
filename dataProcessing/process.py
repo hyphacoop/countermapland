@@ -18,7 +18,18 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
         lat = row['latitude']  
         lng = row['longitude']  
         popup_content = row['name_e']
-        photos = [row[field] for field in ['photo1', 'photo2', 'photo3'] if row.get(field)]
+        photos = []
+
+        # Check for each photo and its corresponding alt text
+        for i in range(1, 4):  # up to 3 photos
+            photo_key = f'photo{i}'
+            alt_text_key = f'alttext{i}_e'
+            if row.get(photo_key) and row.get(alt_text_key):
+                # Append photo and alt text as a dict 
+                photos.append({
+                    'url': row[photo_key],
+                    'alt': row[alt_text_key]
+                })
 
         # Check if lat and lng are not empty
         if lat and lng and popup_content:
