@@ -37,3 +37,17 @@
     <slot />
   {/if}
 </div>
+
+
+<style>
+
+:global(.leaflet-popup-content-wrapper) {
+  border-radius: 2px;
+}
+
+:global(a.leaflet-popup-close-button) {
+  right: 5px !important;
+  font: 30px 'BC Sans' !important;
+  color: #000 !important;
+}
+</style>
