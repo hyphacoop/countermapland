@@ -18,15 +18,20 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
         lat = row['latitude']  
         lng = row['longitude']  
         popup_content = row['name_e']
+        photos = [row[field] for field in ['photo1', 'photo2', 'photo3'] if row.get(field)]
 
         # Check if lat and lng are not empty
         if lat and lng and popup_content:
             # Append a new marker object to the list
-            markers.append({
+            marker = {
                 'latLng': [float(lat), float(lng)],
                 'visible': True,  # Assuming you want all markers to be initially visible
                 'popupContent': popup_content
-            })
+            }
+            if photos:
+                marker['photos'] = photos
+            
+            markers.append(marker)
 
 # Write the list of marker objects to a JSON file
 with open(json_file_path, mode='w', encoding='utf-8') as jsonfile:
