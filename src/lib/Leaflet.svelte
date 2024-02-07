@@ -9,9 +9,10 @@
   import L from "leaflet";
   import "leaflet/dist/leaflet.css";
 
-  import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
+  import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
-  import MapToolbar from "./MapToolbar.svelte";
+  import Toolbar from "./Toolbar.svelte";
+  import { currentMapStyleId } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -21,12 +22,13 @@
 
   let map;
   let mapElement;
+  let mtLayer;
 
     // Define the custom control for the toolbar before using it
 	const ToolbarControl = L.Control.extend({
     onAdd: function(map) {
       const container = L.DomUtil.create("div", "map-toolbar-container");
-      new MapToolbar({
+      new Toolbar({
         target: container,
         props: {
           // Pass props here if needed, for example:
@@ -51,8 +53,9 @@
       });
 
     // Add MapTiler layer
-    new MaptilerLayer({
-      style: "ea23fd9e-d558-4144-8524-437d953095b1", // Your style ID
+    mtLayer = new MaptilerLayer({
+      Language: "fr",
+      style: L.MaptilerStyle.SATELITTE, // Your style ID
       apiKey: "mPMxMiVPDDH0atXxMfF6", // Your actual MapTiler API key
     }).addTo(map);
 
@@ -60,7 +63,7 @@
     // Add the custom control to the map in the desired position
     new ToolbarControl({ position: "topright" }).addTo(map);
 
-    markerLayerGroup = L.layerGroup().addTo(map);
+
   });
 
   onDestroy(() => {
@@ -80,6 +83,27 @@
       map.setView(view, zoom);
     }
   }
+// Function to update the map style
+function updateMapStyle(newStyleId) {
+  if (map && mtLayer) {
+    // Remove the existing MapTiler layer
+    map.removeLayer(mtLayer);
+
+    // Create a new MapTiler layer with the new style
+    mtLayer = new MaptilerLayer({
+      style: newStyleId, // The new style ID
+      apiKey: "mPMxMiVPDDH0atXxMfF6", // Your MapTiler API key
+    }).addTo(map);
+  }
+}
+
+$: if ($currentMapStyleId) {
+  console.log('UUUUUpdating map style to', $currentMapStyleId);
+  if (map && mtLayer) {
+    updateMapStyle($currentMapStyleId);
+  }
+};
+  $: console.log('LEAFLET Current Map Style Index:', $currentMapStyleId);
 </script>
 
 <div class="w-full h-full" bind:this={mapElement}>
