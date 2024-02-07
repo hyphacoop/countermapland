@@ -68,7 +68,16 @@
     font-style: normal;
 }
 
+/* Itim-Regular */
+@font-face {
+    font-family: 'Itim';
+    src: url('/fonts/Itim-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
-body {
+body, * {
     font-family: 'BCSans', sans-serif;
 }
+
+h3 { font-size: 1.5rem; }
