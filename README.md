@@ -8,7 +8,6 @@ In order to try and remove obstacles to participation, we have adopted an explic
 
 
 ## License
-Restructuring Futures Public Notebook content is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License, the text of which is included in the repository here.
 
 All code at github.com/hyphacoop/countermapland/ is licensed under a GNU General Public License v3.0.
 
