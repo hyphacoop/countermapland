@@ -1,19 +1,32 @@
 <script>
+    import { derived } from 'svelte/store';
+    import { onMount } from 'svelte';
+    import L from 'leaflet';
+
 	import '../../app.css';
-	import Leaflet from '$lib/Leaflet.svelte';
-	import Marker from '$lib/Marker.svelte';
-	import Popup from '$lib/Popup.svelte';
+	import Leaflet from '$lib/Map/Leaflet.svelte';
+	import Marker from '$lib/Map/Marker.svelte';
+	import Popup from '$lib/Map/Popup.svelte';
 
-	import { markersStore, initialViewStore } from '$lib/stores';
-
-</script>
+	import { markersStore, initialViewStore,mapBoundsStore } from '$lib/stores';
+    const visibleMarkers = derived([markersStore, mapBoundsStore], ([$markersStore, $mapBoundsStore]) => {
+    if (!$mapBoundsStore || typeof $mapBoundsStore.contains !== 'function') {
+        return []; // Return an empty array if bounds are undefined or invalid
+    }
+    return $markersStore.filter(marker => {
+        // Convert the array to a LatLng object
+        const [lat, lng] = marker.latLng;
+        return $mapBoundsStore.contains(L.latLng(lat, lng));
+    });
+});
+    </script>
 <h1>
     counter*map
 </h1>
 <div class="w-full h-screen">
 
     <Leaflet view={$initialViewStore} zoom={4}>
-        {#each $markersStore as { latLng, visible, name, description, photos }, index (latLng.join(',') + '-' + index)}
+        {#each $visibleMarkers as { latLng, visible, name, description, photos }, index (latLng.join(',') + '-' + index)}
             {#if visible}
                 <Marker {latLng} width={20} height={20}>
                     <Popup>
