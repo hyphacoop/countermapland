@@ -1,8 +1,18 @@
 import { writable, readable, derived } from 'svelte/store';
 import initialMarkers from '$lib/assets/markers.json';
+import L from 'leaflet';
+import { MaptilerStyle } from '@maptiler/leaflet-maptilersdk';
 
 // A writable store to manage markers and their visibility
 export const markersStore = writable(initialMarkers);
+
+const initialBounds = L.latLngBounds(
+  L.latLng(-90, -180), // SouthWest
+  L.latLng(90, 180)    // NorthEast
+);
+
+// Store to keep track of current map bounds
+export const mapBoundsStore = writable(initialBounds);
 
 const mapStyles = [
     { id: L.MaptilerStyle.DATAVIZ, name: 'Data Visualization' },
@@ -20,8 +30,7 @@ const mapStyles = [
     { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
   ];
   
-export default mapStyles;
-  
+export default mapStyles; 
 
 // Initial map styles array
 const mapStylesasMapLayers = [
@@ -31,8 +40,9 @@ const mapStylesasMapLayers = [
 
 // Store to manage the current style index
 export const currentMapStyleIndex = writable(0);
-// Store to manage the current language
-export const currentLanguage = writable('FRENCH');
+
+// Setting 'light' as the default mode
+export const darkMode = writable('light');
 
 // Function to cycle through the map styles
 export function cycleMapStyle() {
@@ -41,10 +51,8 @@ export function cycleMapStyle() {
 }
 
 // Function to cycle through the languages
-export function switchLanguage() {
-  currentLanguage.update(language => {
-    return language === 'FRENCH' ? 'ENGLISH' : 'FRENCH';
-  });
+export function toggleDarkMode() {
+  darkMode.update(mode => mode === 'dark' ? 'light' : 'dark');
 }
 
 // Helper function to get the current map style ID
