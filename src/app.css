@@ -80,4 +80,17 @@ body, * {
     font-family: 'BCSans', sans-serif;
 }
 
+h1 {
+    font-family: 'Itim', sans-serif;
+    font-size: 3rem;
+    position: fixed;
+    top: 1%;
+    left: 50%; 
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 9998;
+    pointer-events: none; 
+}
+
+
 h3 { font-size: 1.5rem; }
