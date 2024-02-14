@@ -12,7 +12,7 @@
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId } from '$lib/stores';
+  import { currentMapStyleId, mapBoundsStore } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -41,30 +41,52 @@
 
   onMount(() => {
     if (!bounds && (!view || !zoom)) {
-      throw new Error("Must set either bounds, or view and zoom.");
+        throw new Error("Must set either bounds, or view and zoom.");
     }
 
-    map = L.map(mapElement)
-      // Expose map events to parent components, e.g to deal with sidebar or other UI components
-      .on("zoom", (e) => dispatch("zoom", e))
-      .on("popupopen", async (e) => {
-        await tick();
-        e.popup.update();
-      });
+    // Initialize the map
+    map = L.map(mapElement);
 
-    // Add MapTiler layer
-    mtLayer = new MaptilerLayer({
-      Language: "fr",
-      style: L.MaptilerStyle.SATELITTE, // Your style ID
-      apiKey: "mPMxMiVPDDH0atXxMfF6", // Your actual MapTiler API key
-    }).addTo(map);
+    // Set initial view or bounds and initialize mapBoundsStore
+    if (bounds) {
+        map.fitBounds(bounds);
+        // Directly set bounds since fitBounds does not guarantee immediate effect
+        mapBoundsStore.set(bounds);
+    } else if (view && zoom) {
+        map.setView(view, zoom);
+    }
 
+    // Wait until the map is fully loaded to set initial bounds if needed and add layers
+    map.whenReady(() => {
+        if (!bounds) { // Only if bounds were not initially set
+            const initialBounds = map.getBounds();
+            console.log("Initial bounds set:", initialBounds);
+            mapBoundsStore.set(initialBounds);
+        }
 
-    // Add the custom control to the map in the desired position
-    new ToolbarControl({ position: "topright" }).addTo(map);
+        // Add MapTiler layer
+        mtLayer = new MaptilerLayer({
+            Language: "fr",
+            style: L.MaptilerStyle.SATELLITE, // Ensure correct spelling of "SATELLITE"
+            apiKey: "mPMxMiVPDDH0atXxMfF6", // Your actual MapTiler API key
+        }).addTo(map);
 
+        // Add the custom control to the map in the desired position
+        new ToolbarControl({ position: "topright" }).addTo(map);
+    });
 
-  });
+    // Attach event listeners
+    map.on("zoom", (e) => dispatch("zoom", e))
+       .on('moveend', () => {
+            const bounds = map.getBounds();
+            mapBoundsStore.set(bounds);
+       })
+       .on("popupopen", async (e) => {
+            await tick();
+            e.popup.update();
+       });
+});
+
 
   onDestroy(() => {
     map?.remove();
