@@ -8,11 +8,11 @@
   } from "svelte";
   import L from "leaflet";
   import "leaflet/dist/leaflet.css";
-
+  import { addTerritoriesLayer, addTerritoriesLabels } from "./utilities";
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId, mapBoundsStore } from '$lib/stores';
+  import { currentMapStyleId, mapBoundsStore, territoriesVisible } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -23,6 +23,23 @@
   let map;
   let mapElement;
   let mtLayer;
+  let territoriesLayer = null;
+  let labelsLayer = null;
+
+  let territoriesData = null;
+
+ // Initialize and store layers without adding them to the map
+function initializeTerritories(map) {
+    if (!territoriesData) {
+        fetch('https://native-land.ca/wp-json/nativeland/v1/api/index.php?maps=territories')
+            .then(response => response.json())
+            .then(data => {
+                territoriesData = data;
+                territoriesLayer = addTerritoriesLayer(map, data); // Assume this now returns a layer
+                labelsLayer = addTerritoriesLabels(map, data); // Assume this now returns a layer
+            });
+    }
+}
 
     // Define the custom control for the toolbar before using it
 	const ToolbarControl = L.Control.extend({
@@ -85,8 +102,22 @@
             await tick();
             e.popup.update();
        });
-});
+      });
 
+// React to changes in the territoriesVisible store
+territoriesVisible.subscribe(visible => {
+    if (visible) {
+        if (!territoriesLayer || !labelsLayer) {
+            initializeTerritories(map);
+        } else {
+            map.addLayer(territoriesLayer);
+            map.addLayer(labelsLayer);
+        }
+    } else {
+        if (territoriesLayer) map.removeLayer(territoriesLayer);
+        if (labelsLayer) map.removeLayer(labelsLayer);
+    }
+});
 
   onDestroy(() => {
     map?.remove();

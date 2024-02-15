@@ -3,8 +3,9 @@ import initialMarkers from '$lib/assets/markers.json';
 import L from 'leaflet';
 import { MaptilerStyle } from '@maptiler/leaflet-maptilersdk';
 
-// A writable store to manage markers and their visibility
+// Writable stores to manage different element's visibility
 export const markersStore = writable(initialMarkers);
+export const territoriesVisible = writable(false);
 
 const initialBounds = L.latLngBounds(
   L.latLng(-90, -180), // SouthWest
@@ -14,22 +15,11 @@ const initialBounds = L.latLngBounds(
 // Store to keep track of current map bounds
 export const mapBoundsStore = writable(initialBounds);
 
-const mapStyles = [
-      { id: L.MaptilerStyle.DATAVIZ.DEFAULT, name: 'Data Visualization' },
-    { id: L.MaptilerStyle.BASIC.DARK, name: 'Basic', variant: 'dark' },
-    { id: L.MaptilerStyle.DATAVIZ, name: 'Data Visualization' },
-    { id: L.MaptilerStyle.SATELLITE, name: 'Satellite' },
-    { id: L.MaptilerStyle.STREETS, name: 'Streets' },
-    { id: L.MaptilerStyle.STREETS.DARK, name: 'Streets Dark' },
-    { id: L.MaptilerStyle.HYBRID, name: 'Hybrid' },
-    { id: L.MaptilerStyle.OUTDOOR, name: 'Outdoor' },
+const mapStyles = [    
+  { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
+  { id: L.MaptilerStyle.HYBRID, name: 'Hybrid' },
     { id: L.MaptilerStyle.BASIC, name: 'Basic' },
-    { id: L.MaptilerStyle.BRIGHT, name: 'Bright' },
-    { id: L.MaptilerStyle.TOPO, name: 'Topographic' },
-    { id: L.MaptilerStyle.VOYAGER, name: 'Voyager' },
-    { id: L.MaptilerStyle.TONER, name: 'Toner' },
-    { id: L.MaptilerStyle.OPENSTREETMAP, name: 'OpenStreetMap' },
-    { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
+ 
   ];
   
 export default mapStyles; 
