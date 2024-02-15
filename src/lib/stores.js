@@ -15,6 +15,8 @@ const initialBounds = L.latLngBounds(
 export const mapBoundsStore = writable(initialBounds);
 
 const mapStyles = [
+      { id: L.MaptilerStyle.DATAVIZ.DEFAULT, name: 'Data Visualization' },
+    { id: L.MaptilerStyle.BASIC.DARK, name: 'Basic', variant: 'dark' },
     { id: L.MaptilerStyle.DATAVIZ, name: 'Data Visualization' },
     { id: L.MaptilerStyle.SATELLITE, name: 'Satellite' },
     { id: L.MaptilerStyle.STREETS, name: 'Streets' },
