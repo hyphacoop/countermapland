@@ -12,7 +12,7 @@
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId, mapBoundsStore } from '$lib/stores';
+  import { currentMapStyleId, mapBoundsStore, territoriesVisible } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -23,6 +23,32 @@
   let map;
   let mapElement;
   let mtLayer;
+  let territoriesLayer = null;
+
+  // Function to fetch and create the territories layer
+	async function fetchAndCreateTerritoriesLayer() {
+		const url = 'https://native-land.ca/wp-json/nativeland/v1/api/index.php?maps=territories&names';
+		try {
+			const response = await fetch(url);
+			const data = await response.json();
+			territoriesLayer = L.geoJSON(data, {
+				style: feature => ({
+					color: feature.properties.color, // Customize this as needed
+					weight: 2,
+					opacity: 1,
+					fillOpacity: 0.5
+				}),
+				onEachFeature: (feature, layer) => {
+					if (feature.properties && feature.properties.Name) {
+						layer.bindPopup(feature.properties.Name);
+					}
+				}
+			});
+			// Optionally, you can immediately add the layer to the map here, or control it via the store subscription
+		} catch (error) {
+			console.error('Error fetching territories data:', error);
+		}
+	}
 
     // Define the custom control for the toolbar before using it
 	const ToolbarControl = L.Control.extend({
@@ -85,6 +111,21 @@
             await tick();
             e.popup.update();
        });
+// Fetch and prepare the territories layer (but don't add it to the map yet)
+fetchAndCreateTerritoriesLayer();
+
+// React to changes in the territoriesVisible store
+  territoriesVisible.subscribe(visible => {
+    if (visible) {
+      if (territoriesLayer && !map.hasLayer(territoriesLayer)) {
+        territoriesLayer.addTo(map);
+      }
+    } else {
+      if (territoriesLayer && map.hasLayer(territoriesLayer)) {
+        map.removeLayer(territoriesLayer);
+      }
+    }
+  });
 });
 
 
