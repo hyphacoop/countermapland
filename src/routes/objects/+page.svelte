@@ -2,10 +2,13 @@
     import '../../app.css';
     import { derived } from 'svelte/store';
     import { markersStore, mapBoundsStore } from '$lib/stores'; 
+    import Sidebar from '$lib/UI/Sidebar.svelte';
+
+    let selectedObject = []; 
 
     const transformPatterns = [
-        (photoIndex, index) => `translate(${(index * 100) + (photoIndex * 50)}px, ${(photoIndex * 50)}px)`, // Right-Down, double the index translation
-        (photoIndex, index) => `translate(${-(index * 100) + (photoIndex * 50)}px, ${(photoIndex * 50)}px)`, // Left-Down
+        (photoIndex, index) => `translate(${(index * 100) + (photoIndex * 50)}px, ${(photoIndex * 70)}px)`, // Right-Down, double the index translation
+        (photoIndex, index) => `translate(${-(index * 100) + (photoIndex * 50)}px, ${(photoIndex * 80)}px)`, // Left-Down
         (photoIndex, index) => `translate(${(index * 100) + (photoIndex * 50)}px, ${-(photoIndex * 50)}px)`, // Right-Up
         (photoIndex, index) => `translate(${-(index * 100) + (photoIndex * 50)}px, ${-(photoIndex * 50)}px)`, // Left-Up
     ];
@@ -37,25 +40,38 @@
 
         return visibleMarkers.slice(0, 4);
     });
+
+    function handleImageClick(marker) {
+        selectedObject = [marker];
+        console.log('selectedObject', selectedObject); 
+    }
+    function handleMainClick(event) {
+        if (event.target === event.currentTarget) {
+            selectedObject = []; // Clear selectedObject to hide the Sidebar
+        }
+    }
 </script>
 
-<main>
+<main on:click={handleMainClick}>
     <h1>
         counter*map
     </h1>
     <div class="image-grid">
-        {#each $visibleRandomMarkers as {photos}, index}
-            {#if photos && photos.length}
+        {#each $visibleRandomMarkers as marker, index}
+            {#if marker.photos && marker.photos.length}
                 <div class="image-container" key={index}>
-                    {#each photos as {url, alt}, photoIndex}
+                    {#each marker.photos as {url, alt}, photoIndex}
                         <div class="photo-wrapper" style="transform: {getTransformation(photoIndex, index)};">
-                            <img src={`https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${url}`} alt={alt} key={photoIndex}>
+                            <img src={`https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${url}`} alt={alt} key={photoIndex}  on:click={() => handleImageClick(marker)}>
                         </div>
                     {/each}
                 </div>
             {/if}
         {/each}
     </div>
+    {#if selectedObject.length > 0}
+        <Sidebar {selectedObject}/> 
+    {/if}
 </main>
 
 <style>
@@ -70,6 +86,7 @@
         justify-content: center;
         align-items: center;
         width:auto;
+        overflow: hidden;
     }
     h1 {
         color: white;
