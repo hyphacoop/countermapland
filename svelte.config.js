@@ -16,7 +16,7 @@ const config = {
 			strict: true
 		}),
         paths: {
-            base: '/countermapland',
+            base: process.env.NODE_ENV === 'staging' ? '/countermapland' : '',
         }
 	}
 };
