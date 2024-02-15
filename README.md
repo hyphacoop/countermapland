@@ -8,7 +8,6 @@ In order to try and remove obstacles to participation, we have adopted an explic
 
 
 ## License
-
 All code at github.com/hyphacoop/countermapland/ is licensed under a GNU General Public License v3.0.
 
 
