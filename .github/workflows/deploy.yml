@@ -3,17 +3,16 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
       - staging
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
 
@@ -21,13 +20,16 @@ jobs:
         run: echo "NODE_ENV=$NODE_ENV"
         env:
           NODE_ENV: ${{ github.ref == 'refs/heads/staging' && 'staging' || 'production' }}
-      
+    
       - name: Install and Build
         run: |
           npm install
           npm run build
         env:
           NODE_ENV: ${{ github.ref == 'refs/heads/staging' && 'staging' || 'production' }}
+
+      - name: List build directory
+        run: ls -lR build    
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
