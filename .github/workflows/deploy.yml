@@ -17,6 +17,11 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Log NODE_ENV value
+        run: echo "NODE_ENV=$NODE_ENV"
+        env:
+          NODE_ENV: ${{ github.ref == 'refs/heads/staging' && 'staging' || 'production' }}
+      
       - name: Install and Build
         run: |
           npm install
