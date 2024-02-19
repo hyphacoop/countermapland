@@ -1,5 +1,5 @@
 <script>
-	import { toggleMarkerVisibility, cycleMapStyle, toggleDarkMode } from '$lib/stores';
+	import { toggleMarkerVisibility, cycleMapStyle, toggleDarkMode, territoriesVisible  } from '$lib/stores';
 
 
 	let eye = true;
@@ -16,9 +16,12 @@
 	function toggleMarkerColor() {
 		toggleDarkMode();
 	}
+	function toggleTerritoriesLayer() {
+		territoriesVisible.update(n => !n);
+	}
 </script>
 <div class='flex flex-col'>
-
+	<button on:click={toggleTerritoriesLayer}>🗺️</button>
 	<button type="button" on:click={clickEye} class:selected={eye} title="Show Markers">
 		<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="{eye ? 2 : 1}" viewBox="0 0 24 24" stroke="currentColor">
 		{#if eye}
