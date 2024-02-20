@@ -8,7 +8,7 @@
 	import Marker from '$lib/Map/Marker.svelte';
 	import Popup from '$lib/Map/Popup.svelte';
 
-	import { markersStore, initialViewStore,mapBoundsStore } from '$lib/stores';
+	import { markersStore, initialViewStore, mapBoundsStore, darkMode  } from '$lib/stores';
     const visibleMarkers = derived([markersStore, mapBoundsStore], ([$markersStore, $mapBoundsStore]) => {
     if (!$mapBoundsStore || typeof $mapBoundsStore.contains !== 'function') {
         return []; // Return an empty array if bounds are undefined or invalid
@@ -19,8 +19,8 @@
         return $mapBoundsStore.contains(L.latLng(lat, lng));
     });
 });
-    </script>
-<h1>
+</script>
+<h1 class={$darkMode === 'dark' ? 'darkmode' : ''}>
     counter*map
 </h1>
 <div class="w-full h-screen">
@@ -66,6 +66,10 @@
         text-align: center;
         z-index: 9998;
         pointer-events: none; 
+    }
+
+    .darkmode {
+        color: white;
     }
 
     img {
