@@ -5,7 +5,7 @@ import { MaptilerStyle } from '@maptiler/leaflet-maptilersdk';
 
 // Writable stores to manage different element's visibility
 export const markersStore = writable(initialMarkers);
-export const territoriesVisible = writable(false);
+export const territoriesVisible = writable(true);
 
 const initialBounds = L.latLngBounds(
   L.latLng(-90, -180), // SouthWest
@@ -16,8 +16,8 @@ const initialBounds = L.latLngBounds(
 export const mapBoundsStore = writable(initialBounds);
 
 const mapStyles = [    
+  { id: L.MaptilerStyle.SATELITTE, name: 'Satelitte' },
   { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
-  { id: L.MaptilerStyle.HYBRID, name: 'Hybrid' },
     { id: L.MaptilerStyle.BASIC, name: 'Basic' },
  
   ];
@@ -38,13 +38,18 @@ export const darkMode = writable('light');
 
 // Function to cycle through the map styles
 export function cycleMapStyle() {
-    console.log('Cycling map style');
   currentMapStyleIndex.update(index => (index + 1) % mapStyles.length);
 }
 
-// Function to cycle through the languages
+// Function to toggle dark mode
 export function toggleDarkMode() {
   darkMode.update(mode => mode === 'dark' ? 'light' : 'dark');
+}
+
+// Function to toggle territories visibility
+export function toggleTerritoriesVisibility() {
+  // Update the territoriesVisible store with the opposite value
+  territoriesVisible.update(n => !n);
 }
 
 // Helper function to get the current map style ID
@@ -54,7 +59,7 @@ export const currentMapStyleId = derived(
   );
 
 // Initial view coordinates
-const initialView = [52.1163849,-95.2992053]; // Center of North America
+const initialView = [49.06193, -81.02026]; // Center of North America
 
 export const initialViewStore = readable(initialView);
 

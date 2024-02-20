@@ -1,5 +1,5 @@
 <script>
-	import { toggleMarkerVisibility, cycleMapStyle, toggleDarkMode, territoriesVisible  } from '$lib/stores';
+	import { toggleMarkerVisibility, cycleMapStyle, toggleDarkMode, toggleTerritoriesVisibility  } from '$lib/stores';
 
 
 	let eye = true;
@@ -10,18 +10,17 @@
 
 	function triggerCycleMapStyle() {
 		cycleMapStyle();
-		console.log('triggerCycleMapStyle');
 	}
 
 	function toggleMarkerColor() {
 		toggleDarkMode();
 	}
 	function toggleTerritoriesLayer() {
-		territoriesVisible.update(n => !n);
+		toggleTerritoriesVisibility();
 	}
 </script>
 <div class='flex flex-col'>
-	<button on:click={toggleTerritoriesLayer}>🗺️</button>
+	<button class='selected' on:click={toggleTerritoriesLayer}>🗺️</button>
 	<button type="button" on:click={clickEye} class:selected={eye} title="Show Markers">
 		<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="{eye ? 2 : 1}" viewBox="0 0 24 24" stroke="currentColor">
 		{#if eye}
@@ -39,12 +38,12 @@
 	</button>
 
 	<button class='selected' on:click={toggleMarkerColor}>
-		<svg class='svgSize' width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<svg class='svgSize' width="54" height="24" viewBox="0 0 54 54" fill="#000" xmlns="http://www.w3.org/2000/svg">
 			<mask id="mask0_14_196" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="54" height="54">
 			<rect width="54" height="54" fill="#D9D9D9"/>
 			</mask>
 			<g mask="url(#mask0_14_196)">
-			<path d="M24.75 47.25V32.4L14.2875 42.9188L11.0813 39.7125L21.6 29.25H6.75V24.75H21.6L11.0813 14.2875L14.2875 11.0813L24.75 21.6V6.75H29.25V21.6L39.7125 11.0813L42.9188 14.2875L32.4 24.75H47.25V29.25H32.4L42.9188 39.7125L39.7125 42.9188L29.25 32.4V47.25H24.75Z" fill="white"/>
+			<path d="M24.75 47.25V32.4L14.2875 42.9188L11.0813 39.7125L21.6 29.25H6.75V24.75H21.6L11.0813 14.2875L14.2875 11.0813L24.75 21.6V6.75H29.25V21.6L39.7125 11.0813L42.9188 14.2875L32.4 24.75H47.25V29.25H32.4L42.9188 39.7125L39.7125 42.9188L29.25 32.4V47.25H24.75Z" fill="black"/>
 			</g>
 			</svg> 
 	</button>

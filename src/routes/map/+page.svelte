@@ -25,7 +25,7 @@
 </h1>
 <div class="w-full h-screen">
 
-    <Leaflet view={$initialViewStore} zoom={4}>
+    <Leaflet view={$initialViewStore} zoom={8}>
         {#each $visibleMarkers as { latLng, visible, name, description, photos }, index (latLng.join(',') + '-' + index)}
             {#if visible}
                 <Marker {latLng} width={20} height={20}>

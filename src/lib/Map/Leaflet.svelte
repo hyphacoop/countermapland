@@ -28,18 +28,21 @@
 
   let territoriesData = null;
 
- // Initialize and store layers without adding them to the map
-function initializeTerritories(map) {
+  async function initializeTerritories(map) {
     if (!territoriesData) {
-        fetch('https://native-land.ca/wp-json/nativeland/v1/api/index.php?maps=territories')
-            .then(response => response.json())
-            .then(data => {
-                territoriesData = data;
-                territoriesLayer = addTerritoriesLayer(map, data); // Assume this now returns a layer
-                labelsLayer = addTerritoriesLabels(map, data); // Assume this now returns a layer
-            });
+        try {
+            const response = await fetch('https://native-land.ca/wp-json/nativeland/v1/api/index.php?maps=territories');
+            territoriesData = await response.json();
+            
+            // Assuming addTerritoriesLayer and addTerritoriesLabels are now properly returning the layers
+            territoriesLayer = await addTerritoriesLayer(map, territoriesData);
+            labelsLayer = await addTerritoriesLabels(map, territoriesData);
+        } catch (error) {
+            console.error('Error fetching territories data:', error);
+        }
     }
 }
+
 
     // Define the custom control for the toolbar before using it
 	const ToolbarControl = L.Control.extend({
@@ -77,9 +80,10 @@ function initializeTerritories(map) {
     map.whenReady(() => {
         if (!bounds) { // Only if bounds were not initially set
             const initialBounds = map.getBounds();
-            console.log("Initial bounds set:", initialBounds);
             mapBoundsStore.set(initialBounds);
         }
+
+        initializeTerritories(map);
 
         // Add MapTiler layer
         mtLayer = new MaptilerLayer({
@@ -104,24 +108,31 @@ function initializeTerritories(map) {
        });
       });
 
-// React to changes in the territoriesVisible store
-territoriesVisible.subscribe(visible => {
-    if (visible) {
-        if (!territoriesLayer || !labelsLayer) {
-            initializeTerritories(map);
-        } else {
-            map.addLayer(territoriesLayer);
-            map.addLayer(labelsLayer);
-        }
+// Reactive statement to react to changes in territoriesVisible
+$: $territoriesVisible ? addTerritories() : removeTerritories();
+function addTerritories() {
+  if (map) {
+    if (!territoriesLayer || !labelsLayer) {
+      initializeTerritories(map); // This function should asynchronously set territoriesLayer and labelsLayer
     } else {
-        if (territoriesLayer) map.removeLayer(territoriesLayer);
-        if (labelsLayer) map.removeLayer(labelsLayer);
+      map.addLayer(territoriesLayer);
+      map.addLayer(labelsLayer);
     }
-});
+  }
+}
+
+function removeTerritories() {
+  if (map) {
+    if (territoriesLayer) map.removeLayer(territoriesLayer);
+    if (labelsLayer) map.removeLayer(labelsLayer);
+    console.log('Territories removed');
+  }
+}
 
   onDestroy(() => {
     map?.remove();
     map = undefined;
+    removeTerritories();
   });
 
   setContext('map', {
@@ -151,12 +162,11 @@ function updateMapStyle(newStyleId) {
 }
 
 $: if ($currentMapStyleId) {
-  console.log('UUUUUpdating map style to', $currentMapStyleId);
+  console.log('MAP TILE NAME', $currentMapStyleId.name);
   if (map && mtLayer) {
     updateMapStyle($currentMapStyleId);
   }
 };
-  $: console.log('LEAFLET Current Map Style Index:', $currentMapStyleId);
 </script>
 
 <div class="w-full h-full" bind:this={mapElement}>
