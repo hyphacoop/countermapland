@@ -36,6 +36,9 @@ export const currentMapStyleIndex = writable(0);
 // Setting 'light' as the default mode
 export const darkMode = writable('light');
 
+// Store to manage the cluster group
+export const clusterGroupStore = writable(null);
+
 // Function to cycle through the map styles
 export function cycleMapStyle() {
   currentMapStyleIndex.update(index => (index + 1) % mapStyles.length);

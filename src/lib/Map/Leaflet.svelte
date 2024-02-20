@@ -6,13 +6,17 @@
     createEventDispatcher,
     tick,
   } from "svelte";
+
   import L from "leaflet";
   import "leaflet/dist/leaflet.css";
+  import 'leaflet.markercluster/dist/leaflet.markercluster.js';
+	import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
   import { addTerritoriesLayer, addTerritoriesLabels } from "./utilities";
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId, mapBoundsStore, territoriesVisible } from '$lib/stores';
+  import { currentMapStyleId, mapBoundsStore, territoriesVisible, clusterGroupStore } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -65,7 +69,19 @@
     }
 
     // Initialize the map
-    map = L.map(mapElement);
+    map = L.map(mapElement,
+        {
+            maxZoom: 18,
+        }
+    );
+
+    // Initialize MarkerClusterGroup
+    const clusterGroup = L.markerClusterGroup({
+      disableClusteringAtZoom: 10,
+      spiderfyOnMaxZoom: false,
+    });
+    map.addLayer(clusterGroup);
+    clusterGroupStore.set(clusterGroup);
 
     // Set initial view or bounds and initialize mapBoundsStore
     if (bounds) {
@@ -138,7 +154,6 @@ function removeTerritories() {
   setContext('map', {
 		getMap: () => map
 	});
- 
 
   $: if (map) {
     if (bounds) {
