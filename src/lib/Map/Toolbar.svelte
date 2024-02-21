@@ -1,11 +1,12 @@
 <script>
-	import { toggleMarkerVisibility, cycleMapStyle, toggleDarkMode, toggleTerritoriesVisibility  } from '$lib/stores';
+	import { isMarkersVisible, cycleMapStyle, toggleDarkMode, toggleTerritoriesVisibility  } from '$lib/stores';
 
 
 	let eye = true;
+	let darkIcon = true;
 	function clickEye() {
 		eye = !eye;
-		toggleMarkerVisibility(eye);
+		isMarkersVisible.update(v => !v);
 	}
 
 	function triggerCycleMapStyle() {
@@ -14,6 +15,7 @@
 
 	function toggleMarkerColor() {
 		toggleDarkMode();
+		darkIcon = !darkIcon;
 	}
 	function toggleTerritoriesLayer() {
 		toggleTerritoriesVisibility();
@@ -37,13 +39,13 @@
 		  </svg>
 	</button>
 
-	<button class='selected' on:click={toggleMarkerColor}>
+	<button class='selected {darkIcon ? '' : 'blackbg'}' on:click={toggleMarkerColor}>
 		<svg class='svgSize' width="54" height="24" viewBox="0 0 54 54" fill="#000" xmlns="http://www.w3.org/2000/svg">
 			<mask id="mask0_14_196" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="54" height="54">
 			<rect width="54" height="54" fill="#D9D9D9"/>
 			</mask>
 			<g mask="url(#mask0_14_196)">
-			<path d="M24.75 47.25V32.4L14.2875 42.9188L11.0813 39.7125L21.6 29.25H6.75V24.75H21.6L11.0813 14.2875L14.2875 11.0813L24.75 21.6V6.75H29.25V21.6L39.7125 11.0813L42.9188 14.2875L32.4 24.75H47.25V29.25H32.4L42.9188 39.7125L39.7125 42.9188L29.25 32.4V47.25H24.75Z" fill="black"/>
+			<path d="M24.75 47.25V32.4L14.2875 42.9188L11.0813 39.7125L21.6 29.25H6.75V24.75H21.6L11.0813 14.2875L14.2875 11.0813L24.75 21.6V6.75H29.25V21.6L39.7125 11.0813L42.9188 14.2875L32.4 24.75H47.25V29.25H32.4L42.9188 39.7125L39.7125 42.9188L29.25 32.4V47.25H24.75Z" fill="{darkIcon ? 'black' : 'white'}"/>
 			</g>
 			</svg> 
 	</button>
@@ -82,5 +84,8 @@
 	button:hover {
 		opacity: 100%;
 		background-color: lightgray;
+	}
+	.blackbg {
+		background-color: black;
 	}
 </style>
