@@ -66,12 +66,5 @@ const initialView = [49.06193, -81.02026]; // Center of North America
 
 export const initialViewStore = readable(initialView);
 
-// Function to toggle marker visibility
-export function toggleMarkerVisibility(visible) {
-    markersStore.update(markers => {
-        // Toggle each marker object 'visible' property
-        // Updated logic here might depend on final data structure
-        markers.forEach(marker => marker.visible = visible);
-        return markers;
-    });
-}
+// Store to manage the visibility of the markers
+export const isMarkersVisible = writable(true);

@@ -1,11 +1,11 @@
 <script>
-	import { toggleMarkerVisibility, cycleMapStyle, toggleDarkMode, toggleTerritoriesVisibility  } from '$lib/stores';
+	import { isMarkersVisible, cycleMapStyle, toggleDarkMode, toggleTerritoriesVisibility  } from '$lib/stores';
 
 
 	let eye = true;
 	function clickEye() {
 		eye = !eye;
-		toggleMarkerVisibility(eye);
+		isMarkersVisible.update(v => !v);
 	}
 
 	function triggerCycleMapStyle() {
