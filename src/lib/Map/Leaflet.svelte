@@ -55,8 +55,7 @@
       new Toolbar({
         target: container,
         props: {
-          // Pass props here if needed, for example:
-          // mapInstance: map
+          mapInstance: map
         },
       });
       return container;
@@ -72,6 +71,7 @@
     map = L.map(mapElement,
         {
             maxZoom: 18,
+            zoomControl: false,
         }
     );
 
