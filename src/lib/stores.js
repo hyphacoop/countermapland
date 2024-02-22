@@ -18,13 +18,12 @@ export const mapBoundsStore = writable(initialBounds);
 const mapStyles = [    
   { id: L.MaptilerStyle.SATELITTE, name: 'Satelitte' },
   { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
-    { id: L.MaptilerStyle.BASIC, name: 'Basic' },
- 
-  ];
+  { id: L.MaptilerStyle.BASIC, name: 'Basic' },
+];
   
 export default mapStyles; 
 
-// Initial map styles array
+// Initial map styles array (used before mapStyles default settings; waiting to be removed)
 const mapStylesasMapLayers = [
     { id: 'ea23fd9e-d558-4144-8524-437d953095b1', name: 'Land (simple)' },
     { id: '1a4fbfcb-8545-4168-b618-2fcf10732f13', name: 'OpenMap Outline' },
@@ -39,9 +38,14 @@ export const darkMode = writable('light');
 // Store to manage the cluster group
 export const clusterGroupStore = writable(null);
 
-// Function to cycle through the map styles
-export function cycleMapStyle() {
-  currentMapStyleIndex.update(index => (index + 1) % mapStyles.length);
+// Function to select the map styles
+export function setMapStyleIndex(index) {
+  if (index >= 0 && index < mapStyles.length) {
+    currentMapStyleIndex.set(index);
+    console.log("Map style index set to:", index)
+  } else {
+    console.error("Invalid map style index:", index);
+  }
 }
 
 // Function to toggle dark mode
@@ -64,7 +68,10 @@ export const currentMapStyleId = derived(
 // Initial view coordinates
 const initialView = [49.06193, -81.02026]; // Center of North America
 
-export const initialViewStore = readable(initialView);
+export const initialViewStore = writable(initialView);
+
+// Current view store, starts as initial view
+export const currentViewStore = writable(initialView);
 
 // Store to manage the visibility of the markers
 export const isMarkersVisible = writable(true);
