@@ -16,26 +16,27 @@ export async function addTerritoriesLayer(map) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        L.geoJSON(data, {
+        const layer = L.geoJSON(data, {
             style: feature => ({
                 color: feature.properties.color,
                 weight: 2,
                 opacity: 0.25,
                 fillOpacity: 0.25
             })
-        }).addTo(map);
+        });
+        layer.addTo(map);
+        return layer;
     } catch (error) {
         console.error('Error fetching territories data:', error);
     }
 }
 
 export function addTerritoriesLabels(map, data) {
-    console.log('Adding territory labels');
+    let labelsLayer = L.layerGroup(); // Create a layer group for labels
     L.geoJSON(data, {
         onEachFeature: (feature, layer) => {
             if (feature.geometry.type === "Polygon") {
-                console.log('Adding label for', feature.properties.Name)
-                const centroid = getCentroid(feature.geometry.coordinates[0]);                 console.log('Centroid:', centroid)
+                const centroid = getCentroid(feature.geometry.coordinates[0]);
                 if (!isNaN(centroid[0]) && !isNaN(centroid[1])) {
                     L.marker([centroid[1], centroid[0]], {
                         icon: L.divIcon({
@@ -43,9 +44,11 @@ export function addTerritoriesLabels(map, data) {
                             html: feature.properties.Name,
                             iconSize: L.point(100, 40)
                         })
-                    }).addTo(map);
+                    }).addTo(labelsLayer); // Add to the layer group
                 }
             }
         }
     });
+    labelsLayer.addTo(map); // Add the entire group to the map
+    return labelsLayer;
 }
