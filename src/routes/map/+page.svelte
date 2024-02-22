@@ -8,24 +8,33 @@
 	import Marker from '$lib/Map/Marker.svelte';
 	import Popup from '$lib/Map/Popup.svelte';
 
-	import { markersStore, initialViewStore, mapBoundsStore, darkMode  } from '$lib/stores';
+    import Search from '$lib/UI/Search.svelte';
+
+	import { markersStore, initialViewStore, currentViewStore, mapBoundsStore, darkMode  } from '$lib/stores';
+
     const visibleMarkers = derived([markersStore, mapBoundsStore], ([$markersStore, $mapBoundsStore]) => {
-    if (!$mapBoundsStore || typeof $mapBoundsStore.contains !== 'function') {
-        return []; // Return an empty array if bounds are undefined or invalid
-    }
-    return $markersStore.filter(marker => {
-        // Convert the array to a LatLng object
-        const [lat, lng] = marker.latLng;
-        return $mapBoundsStore.contains(L.latLng(lat, lng));
+        if (!$mapBoundsStore || typeof $mapBoundsStore.contains !== 'function') {
+            return []; // Return an empty array if bounds are undefined or invalid
+        }
+        return $markersStore.filter(marker => {
+            // Convert the array to a LatLng object
+            const [lat, lng] = marker.latLng;
+            return $mapBoundsStore.contains(L.latLng(lat, lng));
+        });
     });
-});
+
+    function handleUpdateView(event) {
+        const { latLng } = event.detail;
+        currentViewStore.set({ lat: latLng[0], lng: latLng[1] });
+    }
+    
 </script>
 <h1 class={$darkMode === 'dark' ? 'darkmode' : ''}>
     counter*map
 </h1>
 <div class="w-full h-screen">
-
-    <Leaflet view={$initialViewStore} zoom={8}>
+    <Search on:updateView="{handleUpdateView}" />
+    <Leaflet view={$currentViewStore} zoom={8}>
         {#each $visibleMarkers as { latLng, visible, name, description, photos }, index (latLng.join(',') + '-' + index)}
             {#if visible}
                 <Marker {latLng} width={20} height={20}>

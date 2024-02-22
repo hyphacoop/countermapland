@@ -117,7 +117,7 @@
   }
   div.toolbar-container {
     position: fixed;
-    top: 4%;
+    top: 5%;
     z-index: 9999;
     right: 2%;
 	align-items: center;
