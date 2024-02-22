@@ -2,7 +2,7 @@
     import '../app.css';
     import { base } from '$app/paths';
 </script>
-<h1>counter*map</h1>
+<h1>*countermap</h1>
 <ul>
     <li>
         <a href='{base}/map'>
