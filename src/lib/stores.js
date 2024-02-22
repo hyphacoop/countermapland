@@ -68,7 +68,10 @@ export const currentMapStyleId = derived(
 // Initial view coordinates
 const initialView = [49.06193, -81.02026]; // Center of North America
 
-export const initialViewStore = readable(initialView);
+export const initialViewStore = writable(initialView);
+
+// Current view store, starts as initial view
+export const currentViewStore = writable(initialView);
 
 // Store to manage the visibility of the markers
 export const isMarkersVisible = writable(true);
