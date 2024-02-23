@@ -30,7 +30,7 @@
     
 </script>
 <h1 class={$darkMode === 'dark' ? 'darkmode' : ''}>
-    counter*map
+    *countermap
 </h1>
 <div class="w-full h-screen">
     <Search on:updateView="{handleUpdateView}" />

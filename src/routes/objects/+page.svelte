@@ -54,7 +54,7 @@
 
 <main on:click={handleMainClick}>
     <h1>
-        counter*map
+        *countermap
     </h1>
     <div class="image-grid">
         {#each $visibleRandomMarkers as marker, index}
