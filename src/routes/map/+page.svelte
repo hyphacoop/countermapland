@@ -54,7 +54,7 @@
   <Leaflet view={$currentViewStore} zoom={8}>
     {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id }, index (latLng.join(",") + "-" + index)}
       {#if visible}
-        <Marker {latLng} width={20} height={20}>
+        <Marker {latLng} width={30} height={30}>
           <Popup>
             {#if photos && photos.length}
               <div class="image-container">
