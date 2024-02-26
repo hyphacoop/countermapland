@@ -122,6 +122,26 @@
           {@html $selectedMarker.description}
         </div>
       {/if}
+      {#if $selectedMarker.maintainer}
+        <div class="maintainer-container">
+          <p class='label-header'>
+            Maintainer
+          </p>
+          <p class='label'>
+            {$selectedMarker.maintainer}
+          </p>
+        </div>
+      {/if}
+      {#if $selectedMarker.location}
+      <div class="maintainer-container">
+        <p class='label-header'>
+          Location
+        </p>
+        <p class='label'>
+          {$selectedMarker.location}
+        </p>
+      </div>
+    {/if}
     </div>
   {/if}
 </div>
@@ -158,5 +178,28 @@
   .image-container img {
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .label {
+    width: fit-content;
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.625rem;
+    border: 1px solid #000;
+    color: #000;
+    font-family: "BCSans";
+    font-size: 0.6875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0.25rem 0;
+  }
+
+  .label-header {
+    color: #000;
+    font-family: "BCSans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
 </style>
