@@ -47,7 +47,7 @@
 
 :global(a.leaflet-popup-close-button) {
   right: 5px !important;
-  font: 30px 'BC Sans' !important;
+  font: 30px 'BCSans' !important;
   color: #000 !important;
 }
 </style>
