@@ -55,7 +55,7 @@
       <h2>{name}</h2>
       <h3>{municipality}</h3>
     </div>
-    <div class='flex flex-row'>
+    <div class='flex flex-row items-center'>
         <div class='monument-id'>#{id}</div>
         <div style="width: {width}px; height: {height}px;">
             <img src="{monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
