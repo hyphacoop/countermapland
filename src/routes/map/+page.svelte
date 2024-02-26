@@ -16,8 +16,10 @@
     currentViewStore,
     mapBoundsStore,
     darkMode,
+    selectedMarkerId,
   } from "$lib/stores";
 
+  let sideBarVisible = false;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
 
@@ -38,6 +40,11 @@
   function handleUpdateView(event) {
     const { latLng } = event.detail;
     currentViewStore.set({ lat: latLng[0], lng: latLng[1] });
+  }
+
+  function showDetails(markerId) {
+        selectedMarkerId.set(markerId);
+        sideBarVisible = true;
   }
 </script>
 
@@ -100,11 +107,20 @@
                     #{id}
                 </div>
             </div>
-            {#if description}
-              <p class="description max-h-32 overflow-y-auto">
-                {@html description}
-              </p>
-            {/if}
+           
+            <div class="description-container">
+                {#if description}
+                    <div class="text-truncate">
+                        <p class="description">
+                            {@html description}
+                        </p>
+                    </div>
+              {/if}
+                <div class="learn-more-container">
+                  <button on:click={() => showDetails(id)} class="learn-more-button">learn more</button>     
+                </div>
+            </div>
+
           </Popup>
         </Marker>
       {/if}
@@ -123,6 +139,10 @@
     object-fit: contain;
     margin: 5px;
     border: 0.075rem solid #000;
+  }
+
+  img.main.single {
+    height: 115%;
   }
 
   .monument-id {
@@ -180,7 +200,52 @@
     z-index: 1;
   }
 
+  .description-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.text-truncate {
+    max-height: 4.5rem;
+    overflow: hidden;
+    position: relative;
+    flex-grow: 1;
+}
+
+.text-truncate::after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 1.2rem;
+    background: linear-gradient(to right, transparent, white 50%);
+}
   p.description {
-    margin-top: 2px;
+    margin-top: 0.075rem;
   }
+
+  .learn-more-container {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 0.5rem; 
+}
+  .learn-more-button {
+    background: none;
+    color: black;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.learn-more-button:hover,
+.learn-more-button:focus {
+    text-decoration: none;
+}
+
 </style>

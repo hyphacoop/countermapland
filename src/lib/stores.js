@@ -75,3 +75,6 @@ export const currentViewStore = writable(initialView);
 
 // Store to manage the visibility of the markers
 export const isMarkersVisible = writable(true);
+
+// Add a writable store for the current selected marker
+export const selectedMarkerId = writable(null);
