@@ -21,6 +21,8 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
         municipality = row['municipality']
         id = row['id']
         description = row['background_e'] 
+        maintainer = row['caretaker_e']
+        location = row['location_e']
         photos = []
 
         # Check for each photo and its corresponding alt text
@@ -42,7 +44,9 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
                 'visible': True,  # Assuming you want all markers to be initially visible
                 'name': name,
                 'municipality': municipality,
-                'id': id
+                'id': id,
+                'maintainer': maintainer,
+                'location': location,
             }
             if photos:
                 marker['photos'] = photos
