@@ -18,6 +18,8 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
         lat = row['latitude']  
         lng = row['longitude']  
         name = row['name_e']
+        municipality = row['municipality']
+        id = row['id']
         description = row['background_e'] 
         photos = []
 
@@ -38,7 +40,9 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
             marker = {
                 'latLng': [float(lat), float(lng)],
                 'visible': True,  # Assuming you want all markers to be initially visible
-                'name': name
+                'name': name,
+                'municipality': municipality,
+                'id': id
             }
             if photos:
                 marker['photos'] = photos
