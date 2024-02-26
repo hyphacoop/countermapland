@@ -74,6 +74,11 @@
         closestAddress = "Failed to fetch address.";
       });
   }
+
+  $: hasPhotos =
+    $selectedMarker &&
+    $selectedMarker.photos &&
+    $selectedMarker.photos.length > 0;
 </script>
 
 <div
@@ -87,19 +92,23 @@
         <ImageArray photos={$selectedMarker.photos} {baseUrl} />
       {/if}
       <div class="flex flex-col items-start">
-        <div class="monument-id">#{$selectedMarker.id}</div>
-        <div class="flex flex-row items-center">
-          <div class="flex flex-col items-start">
-            <h2>{$selectedMarker.name}</h2>
-            <h3>{$selectedMarker.municipality}</h3>
-            <h4>{$territories}</h4>
-          </div>
+        <div class="monument-id" class:mt-6={!hasPhotos}>
+          #{$selectedMarker.id}
+        </div>
+        <div class="flex flex-row items-baseline w-full justify-between">
+          <h2>{$selectedMarker.name}</h2>
           <div class="image-container">
             <img src={monumentSvg} alt="Monument Marker" />
           </div>
         </div>
+
+        <!-- Flex container for municipality and territories -->
+        <div class="flex flex-col items-start data-container">
+          <h3>{$selectedMarker.municipality}</h3>
+          <h4>{$territories}</h4>
+        </div>
       </div>
-      
+
       <div class="addressAndLatLong">
         <div>
           {closestAddress}
@@ -140,10 +149,9 @@
     line-height: normal;
   }
   .image-container {
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     display: flex;
-    justify-content: center;
     align-items: start;
   }
 
