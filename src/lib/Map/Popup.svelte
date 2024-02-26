@@ -34,7 +34,7 @@
 
 <div bind:this={popupElement}>
   {#if open}
-    <slot />
+    <slot {popup}></slot>
   {/if}
 </div>
 
@@ -42,7 +42,7 @@
 <style>
 
 :global(.leaflet-popup-content-wrapper) {
-  border-radius: 2px;
+  border-radius: 0.25rem; 
 }
 
 :global(a.leaflet-popup-close-button) {
