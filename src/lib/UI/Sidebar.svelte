@@ -3,14 +3,12 @@
 
   import { selectedMarkerId, markersStore } from "$lib/stores";
   import { writable, derived } from "svelte/store";
-  
+
   import { fetchTerritoryByPosition } from "$lib/Map/utilities";
 
-  import monumentSvg from '$lib/icons/monument.svg';
+  import monumentSvg from "$lib/icons/monument.svg";
 
   import ImageArray from "./ImageArray.svelte";
-
-  export let width, height;
 
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
@@ -26,20 +24,40 @@
 
   // Fetch territory information whenever the selected marker changes
   $: if ($selectedMarker && $selectedMarker.latLng) {
-    fetchTerritoryByPosition($selectedMarker.latLng[0], $selectedMarker.latLng[1]).then(data => {
+    // Indicate that territories are being loaded
+    territories.set("Loading territories...");
+
+    fetchTerritoryByPosition(
+      $selectedMarker.latLng[0],
+      $selectedMarker.latLng[1]
+    )
+      .then((data) => {
         if (data && data.length > 0) {
-            // Determine the correct word to use based on the number of territories
-            const territoryWord = data.length > 1 ? 'territories' : 'territory';
-            
-            // Extracting the Name from each item's properties and joining them with a comma
-            territories.set(`${data.map(item => item.properties.Name).join(", ")} ${territoryWord}`);
+          // Extract just the territory names
+          const names = data.map((item) => item.properties.Name);
+
+          // Determine the correct word to use based on the number of territories
+          const territoryWord = names.length > 1 ? "territories" : "territory";
+
+          // Format the names with 'and' before the last name if there are multiple territories
+          let formattedNames = "";
+          if (names.length > 1) {
+            const allButLast = names.slice(0, -1).join(", ");
+            const last = names[names.length - 1];
+            formattedNames = `${allButLast} and ${last}`;
+          } else {
+            formattedNames = names[0];
+          }
+
+          territories.set(`${formattedNames} ${territoryWord}`);
         } else {
-            territories.set("No territory information available.");
+          territories.set("No territory information available.");
         }
-    }).catch(error => {
+      })
+      .catch((error) => {
         console.error("Failed to fetch territory information", error);
         territories.set("Failed to fetch territory information.");
-    });
+      });
   }
 </script>
 
@@ -59,14 +77,14 @@
           <div class="flex flex-col items-start">
             <h2>{$selectedMarker.name}</h2>
             <h3>{$selectedMarker.municipality}</h3>
-            <h4>{$territories ? $territories : `Loading territories...` }</h4>
+            <h4>{$territories}</h4>
           </div>
-          <div style="width: {width}px; height: {height}px;">
-            <img src="{monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+          <div class="image-container">
+            <img src={monumentSvg} alt="Monument Marker" />
           </div>
         </div>
       </div>
-      <div class='latLong'>
+      <div class="latLong">
         {$selectedMarker.latLng[0]}, {$selectedMarker.latLng[1]}
       </div>
       {#if $selectedMarker.description}
@@ -99,5 +117,17 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+  }
+  .image-container {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+  }
+
+  .image-container img {
+    max-width: 100%;
+    max-height: 100%;
   }
 </style>
