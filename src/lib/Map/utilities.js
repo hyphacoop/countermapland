@@ -52,3 +52,22 @@ export function addTerritoriesLabels(map, data) {
     labelsLayer.addTo(map); // Add the entire group to the map
     return labelsLayer;
 }
+
+export async function fetchTerritoryByPosition(lat, lng) {
+    const baseUrl = 'https://native-land.ca/api/index.php';
+    const mapsType = 'territories'; 
+    const url = `${baseUrl}?maps=${mapsType}&position=${lat},${lng}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('territories data', data)
+        return data; 
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        return null;
+    }
+}
