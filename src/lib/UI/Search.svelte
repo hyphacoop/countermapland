@@ -46,7 +46,6 @@ function updateMap(latitude, longitude) {
 <div class="search-container">
     <input
       type="text"
-      placeholder="Enter city name"
       bind:value={city}
       on:input={() => (city = city.trim())}
       on:keydown={(event) => { if (event.key === 'Enter') findLocation() }}
