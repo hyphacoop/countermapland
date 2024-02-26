@@ -23,6 +23,7 @@
   let sideBarVisible = false;
   let width = 30;
   let height = 30;
+  let zoomLevel = 8;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
 
@@ -42,6 +43,7 @@
 
   function handleUpdateView(event) {
     const { latLng } = event.detail;
+    zoomLevel = 12;
     currentViewStore.set({ lat: latLng[0], lng: latLng[1] });
   }
 
@@ -69,7 +71,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="w-full h-screen"  on:click={handleDivClick}>
   <Search on:updateView={handleUpdateView} />
-  <Leaflet view={$currentViewStore} zoom={8}>
+  <Leaflet view={$currentViewStore} zoom={zoomLevel}>
     {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id }, index (latLng.join(",") + "-" + index)}
       {#if visible}
         <Marker {latLng} {width} {height}>
