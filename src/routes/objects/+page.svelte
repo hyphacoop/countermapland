@@ -1,10 +1,8 @@
 <script>
     import '../../app.css';
     import { derived } from 'svelte/store';
-    import { markersStore, mapBoundsStore } from '$lib/stores'; 
+    import { markersStore, mapBoundsStore, selectedMarkerId } from '$lib/stores'; 
     import Sidebar from '$lib/UI/Sidebar.svelte';
-
-    let selectedObject = []; 
 
     const transformPatterns = [
         (photoIndex, index) => `translate(${(index * 100) + (photoIndex * 50)}px, ${(photoIndex * 70)}px)`, // Right-Down, double the index translation
@@ -42,16 +40,18 @@
     });
 
     function handleImageClick(marker) {
-        selectedObject = [marker];
+        selectedMarkerId.set(marker.id); 
         console.log('selectedObject', selectedObject); 
     }
     function handleMainClick(event) {
         if (event.target === event.currentTarget) {
-            selectedObject = []; // Clear selectedObject to hide the Sidebar
+            selectedMarkerId.set(null);
         }
     }
 </script>
 
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <main on:click={handleMainClick}>
     <h1>
         *countermap
@@ -69,9 +69,10 @@
             {/if}
         {/each}
     </div>
-    {#if selectedObject.length > 0}
-        <Sidebar {selectedObject}/> 
+    {#if $selectedMarkerId}
+        <Sidebar />
     {/if}
+
 </main>
 
 <style>

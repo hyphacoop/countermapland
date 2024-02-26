@@ -1,43 +1,75 @@
 <script>
-  import { markersStore } from "$lib/stores.js";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
+  let city = "";
+  let searchResults = [];
+  let isLoading = false;
+  let errorMessage = "";
 
-  let searchTerm = "";
+  async function findLocation() {
+    if (!city) return;
+    isLoading = true;
+    errorMessage = "";
+    searchResults = []; // Clear previous results
+    const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
+      city
+    )}&format=json&limit=10`; // Currently set at 10 results
 
-  // Computed store to filter markers based on search term
-  $: filteredMarkers = $markersStore.filter((marker) =>
-    marker.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Function to dispatch an event with the latLng of the first matched marker
-  function goToMarker(marker) {
-    if (marker && marker.latLng) {
-      dispatch("updateView", { latLng: marker.latLng });
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      isLoading = false;
+      if (data.length > 0) {
+        searchResults = data; // Store the search results
+      } else {
+        errorMessage = "Location not found";
+      }
+    } catch (error) {
+      isLoading = false;
+      errorMessage = "Error fetching location";
     }
   }
+
+  function selectLocation(lat, lon) {
+    city = "";
+    searchResults = [];
+    updateMap(lat, lon);
+}
+
+function updateMap(latitude, longitude) {
+  const locationData = [ latitude, longitude ];
+  console.log('locationData', locationData);
+  dispatch('updateView', { latLng: locationData });
+}
 </script>
 <div class="search-container">
-<input
-  type="text"
-  placeholder=" "
-  bind:value={searchTerm}
-  on:input={() => (searchTerm = searchTerm.trim())}
-/>
-
-{#if searchTerm}
-
+    <input
+      type="text"
+      bind:value={city}
+      on:input={() => (city = city.trim())}
+      on:keydown={(event) => { if (event.key === 'Enter') findLocation() }}
+    />
+    
+    {#if isLoading}
+    <div class="results-list">
+      <p>Loading...</p>
+    </div>
+    {:else if searchResults.length > 0}
     <ul class="results-list">
-      {#each filteredMarkers as marker, index (marker.name + "-" + index)}
-        <li on:click={() => goToMarker(marker)}>
-          {marker.name}
-        </li>
+      {#each searchResults as result}
+      <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <li on:click={() => selectLocation(result.lat, result.lon)}>{result.display_name}</li>
       {/each}
     </ul>
-  {/if}
-</div>
-
+    {:else if errorMessage}
+    <div class="results-list">
+      <p>{errorMessage}</p>
+    </div>
+    {/if}
+    </div>
+    
 <style>
   .search-container {
     position: fixed;
@@ -51,26 +83,26 @@
     height: 2.75rem;
     border-radius: 0.25rem;
     border: 0px solid #000;
-    background: #FFF;
-    padding-left:0.5rem;
+    background: #fff;
+    padding-left: 0.5rem;
   }
 
   .results-list {
-    width: calc(16.625rem * 2); 
+    width: calc(16.625rem * 2);
     margin-top: 1rem;
-    background: #FFF; 
+    background: #fff;
     position: absolute;
     left: 0;
     border: 1px solid #ccc;
     border-radius: 0.25rem;
     padding: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-    max-height: 300px; 
-    overflow-y: auto; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
   }
 
   ul {
-    list-style: none; 
+    list-style: none;
     padding: 0;
     margin: 0;
   }
@@ -84,7 +116,5 @@
   li:hover {
     background: black;
     color: white;
-
-}
-
+  }
 </style>
