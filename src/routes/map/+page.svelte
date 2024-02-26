@@ -45,7 +45,7 @@
 <div class="w-full h-screen">
   <Search on:updateView={handleUpdateView} />
   <Leaflet view={$currentViewStore} zoom={8}>
-    {#each $visibleMarkers as { latLng, visible, name, description, photos }, index (latLng.join(",") + "-" + index)}
+    {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id }, index (latLng.join(",") + "-" + index)}
       {#if visible}
         <Marker {latLng} width={20} height={20}>
           <Popup>
@@ -87,9 +87,19 @@
                 {/if}
               </div>
             {/if}
-            <h2>
-              {name}
-            </h2>
+            <div class='flex flex-row items-center'>
+                <div class='flex flex-col'>
+                    <h2>
+                    {name}
+                    </h2>
+                    <h3>
+                        {municipality}
+                    </h3>
+                </div>
+                <div class='monument-id'>
+                    #{id}
+                </div>
+            </div>
             {#if description}
               <p class="description max-h-32 overflow-y-auto">
                 {@html description}
@@ -103,29 +113,7 @@
 </div>
 
 <style>
-  h1 {
-    font-family: "Itim", sans-serif;
-    font-size: 3rem;
-    position: fixed;
-    top: 1%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 9998;
-    pointer-events: none;
-  }
-
-  h2 {
-    margin-top: 1rem;
-    color: #000;
-    font-family: Itim;
-    font-size: 2.0625rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  }
-
-  .darkmode {
+ .darkmode {
     color: white;
   }
 
@@ -135,6 +123,15 @@
     object-fit: contain;
     margin: 5px;
     border: 0.075rem solid #000;
+  }
+
+  .monument-id {
+    color: #000;
+    font-family: "Noto Sans Mono";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
   }
 
   .image-container {
