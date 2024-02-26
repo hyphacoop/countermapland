@@ -71,3 +71,28 @@ export async function fetchTerritoryByPosition(lat, lng) {
         return null;
     }
 }
+
+export async function fetchClosestAddress(latitude, longitude) {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${encodeURIComponent(latitude)}&lon=${encodeURIComponent(longitude)}&format=json`;
+  
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Network response was not ok.');
+  
+      const data = await response.json();
+  
+      // Format the address as "Street Address, City, Province, Country"
+      const address = data.address;
+      let formattedAddress = '';
+      if (address.road) formattedAddress += `${address.road}, `;
+      if (address.city || address.town) formattedAddress += `${address.city || address.town}, `;
+      if (address.state) formattedAddress += `${address.state}, `;
+      if (address.country) formattedAddress += address.country;
+  
+      return formattedAddress;
+    } catch (error) {
+      console.error("Error fetching closest address:", error);
+      return "Address not found";
+    }
+  }
+  
