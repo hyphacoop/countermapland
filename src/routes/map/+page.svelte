@@ -95,7 +95,7 @@
     {/each}
   </Leaflet>
   {#if sideBarVisible}
-  <Sidebar on:click={stopPropagation} {width} {height} />
+  <Sidebar on:click={stopPropagation} />
 {/if}
 </div>
 
