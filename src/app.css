@@ -122,9 +122,10 @@ h3 {
 img.photos  {
     width: auto;
     height: 100px;
-    object-fit: contain;
+    object-fit: cover;
     margin: 5px;
     border: 0.075rem solid #000;
+    max-width: 150px;
   }
 
   img.main.single {
