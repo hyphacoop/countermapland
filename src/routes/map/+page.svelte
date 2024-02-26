@@ -7,6 +7,7 @@
   import Leaflet from "$lib/Map/Leaflet.svelte";
   import Marker from "$lib/Map/Marker.svelte";
   import Popup from "$lib/Map/Popup.svelte";
+  import PopupContent from "$lib/Map/PopupContent.svelte";
 
   import Search from "$lib/UI/Search.svelte";
 
@@ -20,6 +21,8 @@
   } from "$lib/stores";
 
   let sideBarVisible = false;
+  let width = 30;
+  let height = 30;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
 
@@ -54,73 +57,9 @@
   <Leaflet view={$currentViewStore} zoom={8}>
     {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id }, index (latLng.join(",") + "-" + index)}
       {#if visible}
-        <Marker {latLng} width={30} height={30}>
+        <Marker {latLng} {width} {height}>
           <Popup>
-            {#if photos && photos.length}
-              <div class="image-container">
-                {#if photos && photos.length === 1}
-                  <img
-                    src={`${baseUrl}${photos[0].url}`}
-                    alt={photos[0].alt}
-                    class="main single"
-                  />
-                {:else if photos.length === 2}
-                  <img
-                    src={`${baseUrl}${photos[0].url}`}
-                    alt={photos[0].alt}
-                    class="centered-left"
-                  />
-                  <img
-                    src={`${baseUrl}${photos[1].url}`}
-                    alt={photos[1].alt}
-                    class="centered-right"
-                  />
-                {:else if photos.length >= 3}
-                  <img
-                    src={`${baseUrl}${photos[1].url}`}
-                    alt={photos[1].alt}
-                    class="side left"
-                  />
-                  <img
-                    src={`${baseUrl}${photos[0].url}`}
-                    alt={photos[0].alt}
-                    class="main"
-                  />
-                  <img
-                    src={`${baseUrl}${photos[2].url}`}
-                    alt={photos[2].alt}
-                    class="side right"
-                  />
-                {/if}
-              </div>
-            {/if}
-            <div class='flex flex-row items-center'>
-                <div class='flex flex-col'>
-                    <h2>
-                    {name}
-                    </h2>
-                    <h3>
-                        {municipality}
-                    </h3>
-                </div>
-                <div class='monument-id'>
-                    #{id}
-                </div>
-            </div>
-           
-            <div class="description-container">
-                {#if description}
-                    <div class="text-truncate">
-                        <p class="description">
-                            {@html description}
-                        </p>
-                    </div>
-              {/if}
-                <div class="learn-more-container">
-                  <button on:click={() => showDetails(id)} class="learn-more-button">learn more</button>     
-                </div>
-            </div>
-
+            <PopupContent {width} {height} {name} {municipality} {id} {description} {photos} {baseUrl} onLearnMoreClicked={() => showDetails(id)} />
           </Popup>
         </Marker>
       {/if}
