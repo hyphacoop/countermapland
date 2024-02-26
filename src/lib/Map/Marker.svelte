@@ -2,8 +2,8 @@
   import { onMount, onDestroy, getContext, setContext } from "svelte";
   import { darkMode, clusterGroupStore, isMarkersVisible } from "../stores";
   import L from "leaflet";
-  import customMarker from "$lib/assets/custom-marker.png";
-  import customMarkerWhite from "$lib/assets/custom-marker-white-outline.png";
+
+  import monumentSvg from "$lib/icons/monument.svg";
 
   export let width;
   export let height;
@@ -18,9 +18,17 @@
 
   // Function to create and update marker
   function createOrUpdateMarker(mode) {
-
-    const iconUrl = mode === "dark" ? customMarkerWhite : customMarker;
-    let iconHtml = `<img src="${iconUrl}" style="width: ${width}px; height: ${height}px;">`;
+    let iconHtml;
+    if (mode === "dark") {
+      // Apply CSS filter to invert colors for dark mode
+      iconHtml = `<div style="width: ${width}px; height: ${height}px; filter: invert(100%);">
+          <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+        </div>`;
+  } else {
+    iconHtml = `<div style="width: ${width}px; height: ${height}px;">
+          <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+        </div>`;
+  }
 
     let icon = L.divIcon({
       html: iconHtml,
