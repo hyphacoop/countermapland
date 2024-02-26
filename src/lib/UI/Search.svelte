@@ -58,6 +58,8 @@ function updateMap(latitude, longitude) {
     {:else if searchResults.length > 0}
     <ul class="results-list">
       {#each searchResults as result}
+      <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li on:click={() => selectLocation(result.lat, result.lon)}>{result.display_name}</li>
       {/each}
     </ul>
