@@ -4,7 +4,10 @@
   import { selectedMarkerId, markersStore } from "$lib/stores";
   import { writable, derived } from "svelte/store";
 
-  import { fetchTerritoryByPosition } from "$lib/Map/utilities";
+  import {
+    fetchTerritoryByPosition,
+    fetchClosestAddress,
+  } from "$lib/Map/utilities";
 
   import monumentSvg from "$lib/icons/monument.svg";
 
@@ -21,6 +24,8 @@
 
   // Local variable to store territory names
   let territories = writable("");
+
+  let closestAddress = "";
 
   // Fetch territory information whenever the selected marker changes
   $: if ($selectedMarker && $selectedMarker.latLng) {
@@ -58,6 +63,16 @@
         console.error("Failed to fetch territory information", error);
         territories.set("Failed to fetch territory information.");
       });
+
+    // Fetch and display the closest address
+    fetchClosestAddress($selectedMarker.latLng[0], $selectedMarker.latLng[1])
+      .then((address) => {
+        closestAddress = address;
+      })
+      .catch((error) => {
+        console.error("Failed to fetch closest address", error);
+        closestAddress = "Failed to fetch address.";
+      });
   }
 </script>
 
@@ -84,8 +99,14 @@
           </div>
         </div>
       </div>
-      <div class="latLong">
-        {$selectedMarker.latLng[0]}, {$selectedMarker.latLng[1]}
+      
+      <div class="addressAndLatLong">
+        <div>
+          {closestAddress}
+        </div>
+        <div>
+          {$selectedMarker.latLng[0]}, {$selectedMarker.latLng[1]}
+        </div>
       </div>
       {#if $selectedMarker.description}
         <div class="description-container">
@@ -109,7 +130,7 @@
     z-index: 9999;
     padding: 0 1.88rem;
   }
-  .latLong {
+  .addressAndLatLong {
     margin: 1rem 0;
     color: #666565;
     font-family: "BCSans";
