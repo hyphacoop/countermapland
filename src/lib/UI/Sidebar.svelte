@@ -214,7 +214,7 @@
     width: 50px;
     height: 50px;
     display: flex;
-    align-items: start;
+    align-items: flex-start;
   }
 
   .image-container img {
