@@ -10,6 +10,7 @@
   import Sidebar from "$lib/UI/Sidebar.svelte";
 
   import Search from "$lib/UI/Search.svelte";
+  import SearchResults from "$lib/UI/SearchResults.svelte";
 
   import {
     markersStore,
@@ -18,6 +19,7 @@
     mapBoundsStore,
     darkMode,
     selectedMarkerId,
+    searchResultsVisible,
   } from "$lib/stores";
 
   let sideBarVisible = false;
@@ -98,6 +100,12 @@
   </Leaflet>
   {#if sideBarVisible}
   <Sidebar on:click={stopPropagation} />
+{/if}
+{#if $searchResultsVisible}
+  <SearchResults results={$visibleMarkers} {baseUrl}  on:closeAndShowDetails={({ detail }) => {
+    console.log(detail);
+    showDetails(detail.event, detail.id);
+  }}/>
 {/if}
 </div>
 

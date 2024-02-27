@@ -32,7 +32,7 @@
   });
 </script>
 
-<div bind:this={popupElement}>
+<div bind:this={popupElement} class='popPadding'>
   {#if open}
     <slot {popup}></slot>
   {/if}
@@ -49,5 +49,9 @@
   right: 5px !important;
   font: 30px 'BCSans' !important;
   color: #000 !important;
+}
+
+.popPadding {
+  padding-top: 1.56rem;
 }
 </style>

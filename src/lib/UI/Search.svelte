@@ -1,6 +1,8 @@
 <script>
   import { createEventDispatcher } from "svelte";
 
+  import { searchResultsVisible } from "$lib/stores";
+
   const dispatch = createEventDispatcher();
   let city = "";
   let searchResults = [];
@@ -35,6 +37,7 @@
     city = "";
     searchResults = [];
     updateMap(lat, lon);
+    searchResultsVisible.set(true);
 }
 
 function updateMap(latitude, longitude) {
@@ -73,13 +76,13 @@ function updateMap(latitude, longitude) {
 <style>
   .search-container {
     position: fixed;
-    top: 5%;
-    left: 2%;
+    top: 3.75rem;
+    left: 4.25rem;
     z-index: 9999;
   }
 
   input {
-    width: 16.625rem; /* Original width */
+    width: 12.625rem; 
     height: 2.75rem;
     border-radius: 0.25rem;
     border: 0px solid #000;
