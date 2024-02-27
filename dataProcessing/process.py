@@ -21,8 +21,11 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
         municipality = row['municipality']
         id = row['id']
         description = row['background_e'] 
+        inscription = row['inscription1']
         maintainer = row['caretaker_e']
         location = row['location_e']
+        organization = row['organization']
+        type = row['type_e']
         photos = []
 
         # Check for each photo and its corresponding alt text
@@ -47,6 +50,8 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
                 'id': id,
                 'maintainer': maintainer,
                 'location': location,
+                'type': type,
+                'organization': organization
             }
             if photos:
                 marker['photos'] = photos
@@ -54,6 +59,9 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
             if description:
                 marker['description'] = description
             
+            if inscription:
+                marker['inscription'] = inscription
+
             markers.append(marker)
 
 # Write the list of marker objects to a JSON file
