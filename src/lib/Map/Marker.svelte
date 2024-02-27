@@ -16,19 +16,14 @@
     getLayer: () => marker
   });
 
-  // Function to create and update marker
   function createOrUpdateMarker(mode) {
-    let iconHtml;
-    if (mode === "dark") {
-      // Apply CSS filter to invert colors for dark mode
-      iconHtml = `<div style="width: ${width}px; height: ${height}px; filter: invert(100%);">
+    let iconHtml = mode === "dark"
+      ? `<div style="width: ${width}px; height: ${height}px; filter: invert(100%);">
+          <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+        </div>`
+      : `<div style="width: ${width}px; height: ${height}px;">
           <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
         </div>`;
-  } else {
-    iconHtml = `<div style="width: ${width}px; height: ${height}px;">
-          <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
-        </div>`;
-  }
 
     let icon = L.divIcon({
       html: iconHtml,
@@ -36,13 +31,14 @@
       iconSize: L.point(width, height),
     });
 
+    // Update or create marker logic
     if (marker) {
+      $clusterGroupStore.removeLayer(marker); // Ensure marker is removed before updating to avoid duplicates
       marker.setIcon(icon);
-      $clusterGroupStore && $clusterGroupStore.addLayer(marker);
     } else {
       marker = L.marker(latLng, { icon });
-      $clusterGroupStore && $clusterGroupStore.addLayer(marker);
     }
+    $clusterGroupStore.addLayer(marker);
   }
 
   onMount(() => {
@@ -53,17 +49,17 @@
     }
   });
 
- // Reactively handle marker visibility
- $: if (marker && $clusterGroupStore) {
-      if ($isMarkersVisible) {
-        $clusterGroupStore.addLayer(marker);
-      } else {
-        $clusterGroupStore.removeLayer(marker);
-      }
-    };
+  $: if (marker && $clusterGroupStore) {
+    if ($isMarkersVisible) {
+      $clusterGroupStore.addLayer(marker);
+    } else {
+      $clusterGroupStore.removeLayer(marker);
+    }
+  };
 
   onDestroy(() => {
-    if (marker) {
+    if (marker && $clusterGroupStore) {
+      $clusterGroupStore.removeLayer(marker);
       marker.remove();
       marker = undefined;
     }
