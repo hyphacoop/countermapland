@@ -148,7 +148,6 @@ img.photos  {
     justify-content: center;
     align-items: center;
     perspective: 100rem;
-    margin: 1.25rem 0rem;
     height: 100px;
   }
 
@@ -192,6 +191,12 @@ img.photos  {
     flex-direction: column;
     position: relative;
     padding-bottom: 1rem;
+    color: #000;
+    font-family: "BCSans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }
 
 .text-truncate {
