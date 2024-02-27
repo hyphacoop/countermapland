@@ -76,8 +76,8 @@ function updateMap(latitude, longitude) {
 <style>
   .search-container {
     position: fixed;
-    top: 3.75rem;
-    left: 4.25rem;
+    top: 5%;
+    left: 3.75rem;
     z-index: 9999;
   }
 
