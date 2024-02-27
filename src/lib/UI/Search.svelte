@@ -1,6 +1,8 @@
 <script>
   import { createEventDispatcher } from "svelte";
 
+  import { searchResultsVisible } from "$lib/stores";
+
   const dispatch = createEventDispatcher();
   let city = "";
   let searchResults = [];
@@ -35,6 +37,7 @@
     city = "";
     searchResults = [];
     updateMap(lat, lon);
+    searchResultsVisible.set(true);
 }
 
 function updateMap(latitude, longitude) {
