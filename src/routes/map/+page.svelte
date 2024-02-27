@@ -8,9 +8,11 @@
   import Popup from "$lib/Map/Popup.svelte";
   import PopupContent from "$lib/Map/PopupContent.svelte";
   import Sidebar from "$lib/UI/Sidebar.svelte";
-
+  import MenuSidebar from "$lib/UI/MenuSidebar.svelte";
   import Search from "$lib/UI/Search.svelte";
   import SearchResults from "$lib/UI/SearchResults.svelte";
+
+  import menuIconPath from "$lib/icons/menu.svg";
 
   import {
     markersStore,
@@ -23,6 +25,7 @@
   } from "$lib/stores";
 
   let sideBarVisible = false;
+  let menuVisible = false;
   let width = 30;
   let height = 30;
   let zoomLevel = 8;
@@ -107,11 +110,26 @@
     showDetails(detail.event, detail.id);
   }}/>
 {/if}
+<div class='menu-button' on:click={() => menuVisible = !menuVisible}>
+  <img src={menuIconPath} alt="Open Sidebar"/>
+</div>
+{#if menuVisible}
+  <MenuSidebar on:click={stopPropagation} />
+{/if}
 </div>
 
 
 <style>
   .darkmode {
     color: white;
+  }
+  .menu-button {
+    position: absolute;
+    bottom: 3.31rem;
+    left: 3.75rem;
+    z-index: 9999;
+    border-radius: 0.25rem;
+    background: #FFF;
+    padding: 0.25rem;
   }
 </style>
