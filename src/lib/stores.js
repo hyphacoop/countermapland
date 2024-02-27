@@ -78,3 +78,6 @@ export const isMarkersVisible = writable(true);
 
 // Add a writable store for the current selected marker
 export const selectedMarkerId = writable(null);
+
+// Store for search result visibility
+export const searchResultsVisible = writable(false);
