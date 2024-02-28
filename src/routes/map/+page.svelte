@@ -8,9 +8,11 @@
   import Popup from "$lib/Map/Popup.svelte";
   import PopupContent from "$lib/Map/PopupContent.svelte";
   import Sidebar from "$lib/UI/Sidebar.svelte";
-
+  import MenuSidebar from "$lib/UI/MenuSidebar.svelte";
   import Search from "$lib/UI/Search.svelte";
   import SearchResults from "$lib/UI/SearchResults.svelte";
+  import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
+  import menuIconPath from "$lib/icons/menu.svg";
 
   import {
     markersStore,
@@ -20,9 +22,11 @@
     darkMode,
     selectedMarkerId,
     searchResultsVisible,
+    submissionSidebarVisible,
   } from "$lib/stores";
 
   let sideBarVisible = false;
+  let menuVisible = false;
   let width = 30;
   let height = 30;
   let zoomLevel = 8;
@@ -66,6 +70,11 @@
   function stopPropagation(event) {
     event.stopPropagation();
   }
+
+  function closeSubmission() {
+    console.log('closing sidebar');
+    submissionSidebarVisible.set(false);
+  }
 </script>
 
 <h1 class={$darkMode === "dark" ? "darkmode" : ""}>*countermap</h1>
@@ -107,11 +116,30 @@
     showDetails(detail.event, detail.id);
   }}/>
 {/if}
+<button class='menu-button' on:click={() => menuVisible = !menuVisible}>
+  <img src={menuIconPath} alt="Open Sidebar"/>
+</button>
+{#if menuVisible}
+  <MenuSidebar on:click={stopPropagation} />
+{/if}
+
+{#if $submissionSidebarVisible}
+  <SubmissionSidebar on:click={stopPropagation} on:closeSideBar={closeSubmission}/>
+{/if}
 </div>
 
 
 <style>
   .darkmode {
     color: white;
+  }
+  .menu-button {
+    position: absolute;
+    bottom: 3.31rem;
+    left: 3.75rem;
+    z-index: 9999;
+    border-radius: 0.25rem;
+    background: #FFF;
+    padding: 0.25rem;
   }
 </style>

@@ -16,7 +16,7 @@
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId, mapBoundsStore, territoriesVisible, clusterGroupStore } from '$lib/stores';
+  import { currentMapStyleId, currentMapStyleIndex, mapBoundsStore, territoriesVisible, clusterGroupStore, darkMode } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -99,8 +99,6 @@
             mapBoundsStore.set(initialBounds);
         }
 
-        initializeTerritories(map);
-
         // Add MapTiler layer
         mtLayer = new MaptilerLayer({
             Language: "fr",
@@ -124,9 +122,9 @@
        });
       });
 
-// Reactive statement to react to changes in territoriesVisible
-$: $territoriesVisible ? addTerritories() : removeTerritories();
+
 function addTerritories() {
+  console.log('Adding territories')
   if (map) {
     if (!territoriesLayer || !labelsLayer) {
       initializeTerritories(map); // This function should asynchronously set territoriesLayer and labelsLayer
@@ -177,11 +175,22 @@ function updateMapStyle(newStyleId) {
 }
 
 $: if ($currentMapStyleId) {
-  console.log('MAP TILE NAME', $currentMapStyleId.name);
+
+  if ($currentMapStyleIndex === 2) {
+    territoriesVisible.set(true);
+    darkMode.set('light');
+    console.log('setting territoriesVisible to true');
+  } else {
+    territoriesVisible.set(false);
+    darkMode.set('dark');
+  }
   if (map && mtLayer) {
     updateMapStyle($currentMapStyleId);
   }
 };
+
+// Reactive statement to react to changes in territoriesVisible
+$: $territoriesVisible ? addTerritories() : removeTerritories();
 </script>
 
 <div class="w-full h-full" bind:this={mapElement}>
