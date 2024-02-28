@@ -81,3 +81,6 @@ export const selectedMarkerId = writable(null);
 
 // Store for search result visibility
 export const searchResultsVisible = writable(false);
+
+// Store for submission sidebar visibility
+export const submissionSidebarVisible = writable(false);
