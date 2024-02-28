@@ -116,9 +116,9 @@
     showDetails(detail.event, detail.id);
   }}/>
 {/if}
-<div class='menu-button' on:click={() => menuVisible = !menuVisible}>
+<button class='menu-button' on:click={() => menuVisible = !menuVisible}>
   <img src={menuIconPath} alt="Open Sidebar"/>
-</div>
+</button>
 {#if menuVisible}
   <MenuSidebar on:click={stopPropagation} />
 {/if}
