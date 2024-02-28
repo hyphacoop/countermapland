@@ -4,6 +4,7 @@
     setMapStyleIndex,
     toggleDarkMode,
     toggleTerritoriesVisibility,
+    submissionSidebarVisible,
   } from "$lib/stores";
 
   import Peephole from "$lib/UI/Peephole.svelte";
@@ -57,10 +58,14 @@
     setMapStyleIndex(styleIndex);
     showPeephole = false;
   }
+
+  function openSubmissions() {
+    submissionSidebarVisible.set(true);
+  }
 </script>
 
 <div class="flex flex-col toolbar-container">
-  <button class="rounded">
+  <button class="rounded" on:click={openSubmissions}>
     <img src={counterMonumentIconPath} alt="Submit" />
   </button>
   <div class="zoom-container">
