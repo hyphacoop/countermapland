@@ -11,7 +11,7 @@
   import MenuSidebar from "$lib/UI/MenuSidebar.svelte";
   import Search from "$lib/UI/Search.svelte";
   import SearchResults from "$lib/UI/SearchResults.svelte";
-
+  import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
   import menuIconPath from "$lib/icons/menu.svg";
 
   import {
@@ -22,6 +22,7 @@
     darkMode,
     selectedMarkerId,
     searchResultsVisible,
+    submissionSidebarVisible,
   } from "$lib/stores";
 
   let sideBarVisible = false;
@@ -69,6 +70,11 @@
   function stopPropagation(event) {
     event.stopPropagation();
   }
+
+  function closeSubmission() {
+    console.log('closing sidebar');
+    submissionSidebarVisible.set(false);
+  }
 </script>
 
 <h1 class={$darkMode === "dark" ? "darkmode" : ""}>*countermap</h1>
@@ -115,6 +121,10 @@
 </div>
 {#if menuVisible}
   <MenuSidebar on:click={stopPropagation} />
+{/if}
+
+{#if $submissionSidebarVisible}
+  <SubmissionSidebar on:click={stopPropagation} on:closeSideBar={closeSubmission}/>
 {/if}
 </div>
 
