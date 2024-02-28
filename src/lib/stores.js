@@ -16,9 +16,9 @@ const initialBounds = L.latLngBounds(
 export const mapBoundsStore = writable(initialBounds);
 
 const mapStyles = [    
-  { id: L.MaptilerStyle.SATELITTE, name: 'Satelitte' },
-  { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
+  { id: L.MaptilerStyle.SATELLITE, name: 'Satellite' },
   { id: L.MaptilerStyle.BASIC, name: 'Basic' },
+  { id: L.MaptilerStyle.OCEAN, name: 'Ocean' },
 ];
   
 export default mapStyles; 
@@ -33,14 +33,14 @@ const mapStylesasMapLayers = [
 export const currentMapStyleIndex = writable(0);
 
 // Setting 'light' as the default mode
-export const darkMode = writable('light');
+export const darkMode = writable('dark');
 
 // Store to manage the cluster group
 export const clusterGroupStore = writable(null);
 
 // Function to select the map styles
 export function setMapStyleIndex(index) {
-  if (index >= 0 && index < mapStyles.length) {
+  if (index < mapStyles.length) {
     currentMapStyleIndex.set(index);
     console.log("Map style index set to:", index)
   } else {
