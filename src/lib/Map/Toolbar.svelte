@@ -1,15 +1,23 @@
 <script>
+  import { base } from "$app/paths";
+
   import {
     isMarkersVisible,
     setMapStyleIndex,
     toggleDarkMode,
     toggleTerritoriesVisibility,
     submissionSidebarVisible,
+    currentMapStyleIndex,
   } from "$lib/stores";
 
   import Peephole from "$lib/UI/Peephole.svelte";
 
-  export let mapInstance;
+  // Import the images for each map style
+  import territoriesImage from "$lib/icons/peephole/map-territories.png";
+  import streetsImage from "$lib/icons/peephole/map-streets.png";
+  import satelliteImage from "$lib/icons/peephole/map-satellite.png";
+
+  import objectImage from "$lib/icons/peephole/object-view.png";
 
   // SVG Icons
   import plusIconPath from "$lib/icons/plus.svg";
@@ -18,8 +26,7 @@
   import counterMonumentIconPath from "$lib/icons/countermonument.svg";
   import monumentIconPath from "$lib/icons/monument.svg";
 
-  // Peephoke image
-  import basicMapImage from "$lib/icons/peephole/map-basic.png";
+  export let mapInstance;
 
   let eye = true;
   let darkIcon = true;
@@ -62,20 +69,42 @@
   function openSubmissions() {
     submissionSidebarVisible.set(true);
   }
+
+  let currentImage = satelliteImage; // Default image, change as needed
+  $: {
+    switch ($currentMapStyleIndex) {
+      case 0:
+        currentImage = satelliteImage;
+        break;
+      case 1:
+        currentImage = streetsImage;
+        break;
+      case 2:
+        currentImage = territoriesImage;
+        break;
+      // Add more cases as needed for additional styles
+      default:
+        currentImage = satelliteImage; // Default case, can adjust as needed
+    }
+  }
 </script>
 
 <div class="flex flex-col toolbar-container">
-  <button class="rounded" on:click={openSubmissions}>
-    <img src={counterMonumentIconPath} alt="Submit" />
-  </button>
-  <div class="zoom-container">
-    <button on:click={zoomIn}>
-      <img src={plusIconPath} alt="Zoom in" />
+  <div class='mr-5'>
+    <button class="rounded" on:click={openSubmissions}>
+      <img src={counterMonumentIconPath} alt="Submit" />
     </button>
-    <button on:click={zoomOut}>
-      <img src={minusIconPath} alt="Zoom out" />
-    </button>
+    <div class="zoom-container">
+      <button on:click={zoomIn}>
+        <img src={plusIconPath} alt="Zoom in" />
+      </button>
+      <button on:click={zoomOut}>
+        <img src={minusIconPath} alt="Zoom out" />
+      </button>
+    </div>
   </div>
+
+  <!-- Hiding dev buttons for now 
   <div class='devButtons'>
   <button on:click={toggleTerritoriesLayer}>🗺️</button>
   <button type="button" on:click={clickEye} title="Show Markers">
@@ -103,12 +132,22 @@
     <img src={monumentIconPath} alt="Toggle" />
   </button>
 </div>
-  <button id='peephole'
-    on:click={() => (showPeephole = !showPeephole)}
-    title="Select Map Style"
-  >
-    <img src={basicMapImage} alt="Select Map Style" />
-  </button>
+-->
+  <div class="peephole-container flex flex-row-reverse items-center">
+    <button
+      id="peephole"
+      class="mb-2"
+      on:click={() => (showPeephole = !showPeephole)}
+      title="Select Map Style"
+    >
+      <img src={currentImage} alt="Select Map Style" />
+    </button>
+    {#if showPeephole}
+      <a href="{base}/objects" class="link-button" title="Object View">
+        <img src={objectImage} alt="Object View" />
+      </a>
+    {/if}
+  </div>
   {#if showPeephole}
     <Peephole onMapStyleSelect={handleMapStyleSelect} />
   {/if}
@@ -125,7 +164,7 @@
     top: 5%;
     z-index: 9999;
     right: 2%;
-	align-items: center;
+    align-items: end;
   }
   div.zoom-container {
     margin-bottom: 2rem;
@@ -143,17 +182,42 @@
     border-bottom-right-radius: 0.25rem;
   }
   .devButtons {
-	margin-bottom:3rem;
+    margin-bottom: 3rem;
+  }
+  #peephole,
+  .link-button {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    padding: 0.25rem;
+    transition: all 0.3s ease;
+  }
+  #peephole:hover,
+  .link-button:hover {
+    transform: scale(1.1);
+  }
+  .link-button {
+  position: relative;
+  overflow: hidden; 
+  margin-right: 0.5rem;
 }
-	#peephole {
-		width: 5rem;
-		height: 4rem;
-		border-radius: 50%;;
-	}
-	#peephole img {
-		border-radius: 50%;
-		padding: 0.5rem;
-	}
+  #peephole img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .link-button img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
   button {
     width: 2.5rem;
     height: 2.5rem;
@@ -167,7 +231,7 @@
     margin-right: 5px;
   }
 
-  button:hover {
+  button:hover:not(#peephole) {
     opacity: 100%;
     background-color: lightgray;
   }
