@@ -50,7 +50,7 @@ function updateMap(latitude, longitude) {
     <input
       type="text"
       bind:value={city}
-      on:input={() => (city = city.trim())}
+      on:input="{($event) => city = $event.target.value}"
       on:keydown={(event) => { if (event.key === 'Enter') findLocation() }}
     />
     
