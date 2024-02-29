@@ -5,7 +5,8 @@ import { MaptilerStyle } from '@maptiler/leaflet-maptilersdk';
 
 // Writable stores to manage different element's visibility
 export const markersStore = writable(initialMarkers);
-export const territoriesVisible = writable(true);
+export const filteredStore = writable([]);
+export const territoriesVisible = writable(false);
 
 const initialBounds = L.latLngBounds(
   L.latLng(-90, -180), // SouthWest
@@ -79,8 +80,7 @@ export const isMarkersVisible = writable(true);
 // Add a writable store for the current selected marker
 export const selectedMarkerId = writable(null);
 
-// Store for search result visibility
-export const searchResultsVisible = writable(false);
-
-// Store for submission sidebar visibility
-export const submissionSidebarVisible = writable(false);
+// Store for the current sidebar
+export const currentSidebar = writable(null);
+// and keep track if search results are active
+export const searchResultsActive = writable(false);
