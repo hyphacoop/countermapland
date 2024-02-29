@@ -1,7 +1,7 @@
 <script>
   import { fly } from "svelte/transition";
 
-  import { selectedMarkerId, markersStore } from "$lib/stores";
+  import { selectedMarkerId, markersStore, searchResultsActive, currentSidebar } from "$lib/stores";
   import { writable, derived } from "svelte/store";
 
   import {
@@ -82,6 +82,14 @@
       });
   }
 
+  function closingSidebar() {
+    selectedMarkerId.set(null);
+    if (searchResultsActive) {
+      currentSidebar.set("search");
+      searchResultsActive.set(false);
+    }
+  }
+
   $: hasPhotos =
     $selectedMarker &&
     $selectedMarker.photos &&
@@ -93,7 +101,7 @@
   in:fly={{ x: 300, duration: 800 }}
   out:fly={{ x: 300, duration: 800 }}
 >
-<button class="close-button" on:click={() => selectedMarkerId.set(null)} >
+<button class="close-button" on:click={closingSidebar} >
   <img src={closeImage} alt="Close Sidebar"/>
 </button>
   {#if $selectedMarker}
