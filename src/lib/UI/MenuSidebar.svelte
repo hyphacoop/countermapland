@@ -15,7 +15,7 @@
   import Contact from "$lib/Pages/Contact.svelte";
   import Projects from "$lib/Pages/Projects.svelte";
 
-  import closeImage from "$lib/icons/close.png";
+  import closeImage from "$lib/icons/close.svg";
   import { currentSidebar } from "$lib/stores";
 
   // Reactive variable to track current section

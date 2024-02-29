@@ -174,6 +174,7 @@
 <style>
   .darkmode {
     color: white;
+    text-shadow: 1px 1px 1px rgb(0, 0, 0);
   }
   .menu-button {
     position: absolute;
