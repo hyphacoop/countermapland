@@ -1,8 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
 
-  import { searchResultsVisible } from "$lib/stores";
-
+  import { currentSidebar, searchResultsActive } from "$lib/stores";
   const dispatch = createEventDispatcher();
   let city = "";
   let searchResults = [];
@@ -37,7 +36,8 @@
     city = "";
     searchResults = [];
     updateMap(lat, lon);
-    searchResultsVisible.set(true);
+    currentSidebar.set("search");
+    searchResultsActive.set(true);
 }
 
 function updateMap(latitude, longitude) {
@@ -46,7 +46,7 @@ function updateMap(latitude, longitude) {
   dispatch('updateView', { latLng: locationData });
 }
 </script>
-<div class="search-container">
+<div class="search-container sdbbtn">
     <input
       type="text"
       bind:value={city}
@@ -59,11 +59,11 @@ function updateMap(latitude, longitude) {
       <p>Loading...</p>
     </div>
     {:else if searchResults.length > 0}
-    <ul class="results-list">
+    <ul class="results-list sdbbtn">
       {#each searchResults as result}
       <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <li on:click={() => selectLocation(result.lat, result.lon)}>{result.display_name}</li>
+      <li on:click={(event) => {event.stopPropagation(); selectLocation(result.lat, result.lon);}}>{result.display_name}</li>
       {/each}
     </ul>
     {:else if errorMessage}
