@@ -88,6 +88,8 @@ function updateMap(latitude, longitude) {
     border: 0px solid #000;
     background: #fff;
     padding-left: 0.5rem;
+    box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.10); 
+    border: 0.25px solid #D9D9D9; 
   }
 
   .results-list {
