@@ -10,7 +10,7 @@
   } from "$lib/Map/utilities";
 
   import monumentSvg from "$lib/icons/monument.svg";
-  import closeImage from "$lib/icons/close.png";
+  import closeImage from "$lib/icons/close.svg";
 
   import inscriptions from "$lib/assets/inscriptions.json";
 

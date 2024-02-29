@@ -4,7 +4,7 @@
 
   import { currentSidebar } from "$lib/stores";
 
-  import closeImage from "$lib/icons/close.png";
+  import closeImage from "$lib/icons/close.svg";
 
   const dispatch = createEventDispatcher();
 

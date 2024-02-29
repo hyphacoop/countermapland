@@ -6,7 +6,7 @@
   import monumentOutlineIcon from "$lib/icons/monument-outline.svg";
   import countermonumentIcon from "$lib/icons/countermonument.svg";
   import monumentIcon from "$lib/icons/monument.svg";
-  import closeImage from "$lib/icons/close.png";
+  import closeImage from "$lib/icons/close.svg";
 
   let names = [{ id: "name1", value: "" }];
   let altText;
