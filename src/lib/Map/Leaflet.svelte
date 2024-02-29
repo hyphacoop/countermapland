@@ -16,7 +16,7 @@
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId, currentMapStyleIndex, mapBoundsStore, territoriesVisible, clusterGroupStore, darkMode } from '$lib/stores';
+  import { currentMapStyleId, currentMapStyleIndex, mapBoundsStore, territoriesVisible, clusterGroupStore, darkMode, currentSidebar, filteredStore, filtersActive } from '$lib/stores';
 
   export let bounds = undefined;
   export let view = undefined;
@@ -188,6 +188,16 @@ $: if ($currentMapStyleId) {
     updateMapStyle($currentMapStyleId);
   }
 };
+
+
+$: if (map && $currentSidebar === 'tools' && $filteredStore.length > 0 && $filtersActive) {
+  // Calculate bounds from filteredStore
+  const bounds = L.latLngBounds($filteredStore.map(marker => L.latLng(marker.latLng)));
+
+  // Adjust the map to these bounds
+  map.fitBounds(bounds, { padding: [50, 50] }); // Add some padding for a better view
+}
+
 
 // Reactive statement to react to changes in territoriesVisible
 $: $territoriesVisible ? addTerritories() : removeTerritories();
