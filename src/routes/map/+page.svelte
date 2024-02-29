@@ -12,7 +12,9 @@
   import Search from "$lib/UI/Search.svelte";
   import SearchResults from "$lib/UI/SearchResults.svelte";
   import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
+
   import menuIconPath from "$lib/icons/menu.svg";
+  import filterIconPath from "$lib/icons/filter.svg";
 
   import {
     markersStore,
@@ -21,12 +23,11 @@
     mapBoundsStore,
     darkMode,
     selectedMarkerId,
-    searchResultsVisible,
-    submissionSidebarVisible,
+    currentSidebar,
   } from "$lib/stores";
 
-  let sideBarVisible = false;
-  let menuVisible = false;
+  import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
+
   let width = 30;
   let height = 30;
   let zoomLevel = 8;
@@ -48,33 +49,58 @@
   );
 
   function handleUpdateView(event) {
+    console.log('updating view');
     const { latLng } = event.detail;
     zoomLevel = 12;
     currentViewStore.set({ lat: latLng[0], lng: latLng[1] });
+    currentSidebar.set('search');
   }
+
+  
 
   function showDetails(event, markerId) {
-    event.stopPropagation(); 
-    sideBarVisible = true;
+    console.log('showing details');
+    if (event && typeof event.stopPropagation === 'function') {
+    event.stopPropagation();
+  }
+    setCurrentSidebar('sidebar');
     selectedMarkerId.set(markerId);
   }
+  function handleDivClick(event) {
+    if ($currentSidebar !== 'search') {
+      if (!event.target.closest('.sdbbtn') && !event.target.closest('.sidebar')) {
+          setCurrentSidebar(null);
+          selectedMarkerId.set(null);
+      }
+  }
+  }
 
-    // Function to handle clicks within the fullscreen div
-    function handleDivClick() {
-    if (sideBarVisible) {
-      sideBarVisible = false;
+  function setCurrentSidebar(sidebar) {
+    currentSidebar.set(sidebar);
+  }
+
+  function closeSidebar() {
+    console.log('closing sidebar');
+    setCurrentSidebar(null);
+  }
+
+  function showMenu() {
+    if ($currentSidebar === 'menu') {
+      setCurrentSidebar(null);
+    } else {
+      setCurrentSidebar('menu');
     }
   }
 
-  // Function to stop event propagation, to be used in the Sidebar component
-  function stopPropagation(event) {
-    event.stopPropagation();
+  function showTools() {
+    if ($currentSidebar === 'tools') {
+      setCurrentSidebar(null);
+    } else {
+      setCurrentSidebar('tools');
+    }
   }
 
-  function closeSubmission() {
-    console.log('closing sidebar');
-    submissionSidebarVisible.set(false);
-  }
+  $: console.log($currentSidebar);
 </script>
 
 <h1 class={$darkMode === "dark" ? "darkmode" : ""}>*countermap</h1>
@@ -107,24 +133,36 @@
       {/if}
     {/each}
   </Leaflet>
-  {#if sideBarVisible}
-  <Sidebar on:click={stopPropagation} />
+
+
+<button class='menu-button sdbbtn' on:click={showMenu}>
+  <img src={menuIconPath} alt="Open Menu Sidebar"/>
+</button>
+<button class='filter-button sdbbtn' on:click={showTools}>
+  <img src={filterIconPath} alt="Open Filter Sidebar"/>
+</button>
+
+{#if $selectedMarkerId !== null && $currentSidebar === 'sidebar'}
+<Sidebar />
 {/if}
-{#if $searchResultsVisible}
+
+{#if $currentSidebar === 'menu'}
+  <MenuSidebar />
+{/if}
+
+{#if $currentSidebar === 'submissions'}
+  <SubmissionSidebar on:closeSideBar={closeSidebar}/>
+{/if}
+
+{#if $currentSidebar === 'tools'}
+  <ToolsSidebar />
+{/if}
+
+{#if $currentSidebar === 'search'}
   <SearchResults results={$visibleMarkers} {baseUrl}  on:closeAndShowDetails={({ detail }) => {
     console.log(detail);
     showDetails(detail.event, detail.id);
   }}/>
-{/if}
-<button class='menu-button' on:click={() => menuVisible = !menuVisible}>
-  <img src={menuIconPath} alt="Open Sidebar"/>
-</button>
-{#if menuVisible}
-  <MenuSidebar on:click={stopPropagation} />
-{/if}
-
-{#if $submissionSidebarVisible}
-  <SubmissionSidebar on:click={stopPropagation} on:closeSideBar={closeSubmission}/>
 {/if}
 </div>
 
@@ -141,5 +179,17 @@
     border-radius: 0.25rem;
     background: #FFF;
     padding: 0.25rem;
+  }
+
+  .filter-button {
+    position: absolute;
+    bottom: 3.31rem;
+    right: 3.75rem;
+    z-index: 9997;
+    border-radius: 0.25rem;
+    background: #FFF;
+    padding: 0.25rem;
+    width: 30px;
+    height: 30px;
   }
 </style>
