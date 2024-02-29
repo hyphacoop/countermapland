@@ -18,7 +18,7 @@
 
   import {
     markersStore,
-    initialViewStore,
+    filteredStore,
     currentViewStore,
     mapBoundsStore,
     darkMode,
@@ -34,19 +34,22 @@
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
 
-  const visibleMarkers = derived(
-    [markersStore, mapBoundsStore],
-    ([$markersStore, $mapBoundsStore]) => {
-      if (!$mapBoundsStore || typeof $mapBoundsStore.contains !== "function") {
-        return []; // Return an empty array if bounds are undefined or invalid
-      }
-      return $markersStore.filter((marker) => {
-        // Convert the array to a LatLng object
+ // visibleMarkers to consider both map bounds and filtering
+ const visibleMarkers = derived(
+  [markersStore, mapBoundsStore, currentSidebar, filteredStore],
+  ([$markersStore, $mapBoundsStore, $currentSidebar, $filteredStore]) => {
+    if ($currentSidebar === 'tools' && $filteredStore.length > 0) {
+      // When filtering is active, use filteredStore directly
+      return $filteredStore;
+    } else {
+      // When not filtering, apply bounds to determine visibility
+      return $markersStore.filter(marker => {
         const [lat, lng] = marker.latLng;
         return $mapBoundsStore.contains(L.latLng(lat, lng));
       });
     }
-  );
+  }
+);
 
   function handleUpdateView(event) {
     console.log('updating view');
@@ -99,6 +102,7 @@
       setCurrentSidebar('tools');
     }
   }
+
 
   $: console.log($currentSidebar);
 </script>

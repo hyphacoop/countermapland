@@ -1,15 +1,18 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
-    import { writable } from 'svelte/store';
+
+    import { filtersActive } from '$lib/stores';
+
     export let options = []; 
-    let selected = writable(''); 
+    export let selected; 
     let searchTerm = '';
     let showDropdown = false;
   
     function selectOption(event, option) {
       event.stopPropagation();
-      selected.set(option);
+      selected = option;
       showDropdown = false;
+      filtersActive.set(true);
     }
 
     $: filteredOptions = searchTerm
@@ -42,7 +45,7 @@
     class="select-selected truncate ..."
     type="text"
     placeholder="Search"
-    bind:value={$selected}
+    bind:value={selected}
     on:input="{(e) => (searchTerm = e.target.value)}"
     on:click|stopPropagation="{() => (showDropdown = true)}"
   />
