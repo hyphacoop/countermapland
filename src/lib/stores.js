@@ -84,3 +84,5 @@ export const selectedMarkerId = writable(null);
 export const currentSidebar = writable(null);
 // and keep track if search results are active
 export const searchResultsActive = writable(false);
+// or keep track if filters are active
+export const filtersActive = writable(false);

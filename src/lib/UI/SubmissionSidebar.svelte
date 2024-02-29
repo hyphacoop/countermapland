@@ -19,6 +19,23 @@
 
   let senses = ["see", "hear", "smell", "taste", "touch"];
   let media = ["drawing", "photo", "poem", "recipe", "perfume"];
+  let fields = [
+  "Year",
+  "Artist",
+  "Agencies sponsoring",
+  "Monument inscription",
+  "Subjects represented",
+  "Honorees",
+  "Object type (e.g. stele, plaque, cairn)",
+  "Material",
+  "Area",
+  "Height (m)",
+  "Width",
+  "Depth",
+  "Staging tactics",
+  "Gestures"
+]
+
 
   let activeInfoButtons = {};
   let selectedSense = senses[0];
@@ -118,7 +135,7 @@
 
   <p class='mb-0'>Add more information:</p>
   <div class="flex flex-row more-btns mb-4">
-    {#each ["creator", "maintainer", "object", "source", "inscription", "material", "gesture", "use", "other"] as info}
+    {#each fields as info}
       <button class='rounded'
         class:active={activeInfoButtons[info]}
         on:click={() => toggleInfoButton(info)}

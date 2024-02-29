@@ -6,7 +6,7 @@
     import { markersStore, filteredStore } from '$lib/stores';
     import closeImage from "$lib/icons/close.png";
 
-    import { currentSidebar } from "$lib/stores";
+    import { currentSidebar, filtersActive } from "$lib/stores";
   
     import CustomSelect from '$lib/UI/CustomSelect.svelte';
   
@@ -14,6 +14,31 @@
     let selectedOrganization = writable('');
     let selectedMaintainer = writable('');
     let selectedName = writable('');
+
+    // Map of all selection stores as reference
+    const selectionStores = {
+        type: selectedType,
+        organization: selectedOrganization,
+        maintainer: selectedMaintainer,
+        name: selectedName,
+    };
+
+       // Function to dynamically subscribe and reset other selections
+       function setupSelectionReset() {
+        Object.entries(selectionStores).forEach(([key, store]) => {
+            store.subscribe(value => {
+                if (value) {
+                    Object.entries(selectionStores).forEach(([otherKey, otherStore]) => {
+                        if (otherKey !== key) {
+                            otherStore.set('');
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    setupSelectionReset();
 
     // Derived store that filters markers based on selected criteria
     const filteredMarkers = derived(
@@ -55,6 +80,7 @@
 
   function closeSidebar() {
     currentSidebar.set(null);
+    filtersActive.set(false);
   }
 
   </script>
