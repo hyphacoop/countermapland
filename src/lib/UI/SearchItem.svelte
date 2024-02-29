@@ -1,8 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
 
-    import { searchResultsVisible } from '$lib/stores';
-
     import ImagePreview from '$lib/UI/ImagePreview.svelte';
 
     import monumentSvg from '$lib/icons/monument.svg';
@@ -21,7 +19,6 @@
 
     function handleLearnMoreClick(event) {
         dispatch('closeAndShowDetails', { id, event });
-        searchResultsVisible.set(false);
     }
   </script>
 

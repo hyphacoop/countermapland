@@ -6,8 +6,8 @@
     setMapStyleIndex,
     toggleDarkMode,
     toggleTerritoriesVisibility,
-    submissionSidebarVisible,
     currentMapStyleIndex,
+    currentSidebar,
   } from "$lib/stores";
 
   import Peephole from "$lib/UI/Peephole.svelte";
@@ -67,7 +67,7 @@
   }
 
   function openSubmissions() {
-    submissionSidebarVisible.set(true);
+    currentSidebar.set("submissions");
   }
 
   let currentImage = satelliteImage; // Default image, change as needed
@@ -89,9 +89,9 @@
   }
 </script>
 
-<div class="flex flex-col toolbar-container">
+<div class="flex flex-col toolbar-container" on:click|stopPropagation>
   <div class='mr-5'>
-    <button class="rounded" on:click={openSubmissions}>
+    <button class="rounded sdbbtn" on:click|stopPropagation={openSubmissions}>
       <img src={counterMonumentIconPath} alt="Submit" />
     </button>
     <div class="zoom-container">
