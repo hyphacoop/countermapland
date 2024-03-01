@@ -141,6 +141,11 @@
       }
     } catch (error) {
 
+  function goToContactForm() {
+    currentSidebar.set("menu");
+    currentMenuSection.set("Contact");
+  }
+
   $: submitText = submitting ? "Submitting" : "Submit";
 </script>
 
@@ -331,8 +336,9 @@
     width: 22px;
     height: auto;
   }
-  p, label {
-    font-size: 0.75rem; 
+  p,
+  label {
+    font-size: 0.75rem;
   }
   p {
     color: #000;
@@ -347,15 +353,16 @@
   }
   .prompt {
     display: flex;
-    font-size: 0.75rem; 
+    font-size: 0.75rem;
     padding: 1.1875rem 1.4375rem;
     justify-content: center;
     align-items: center;
     gap: 0.4375rem;
     border: 1px solid #000;
   }
-  .prompt button {
-    padding: 0.125rem 0.625rem; 
+  .prompt button,
+  .label {
+    padding: 0.125rem 0.625rem;
     border: 1px solid #000;
   }
   .submit {
@@ -384,7 +391,7 @@
   .more-btns button {
     margin-right: 0.5rem;
     border: 1px solid #000;
-    padding: 0.125rem 0.625rem; 
+    padding: 0.125rem 0.625rem;
   }
 
   .more-info input {
@@ -412,35 +419,35 @@
     width: 100%;
   }
 
-  textarea, input {
+  textarea,
+  input {
     padding: 0.25rem;
-    border-radius: 0.25rem; 
+    border-radius: 0.25rem;
   }
   .names input {
     margin-bottom: 0.5rem;
     width: 50%;
   }
   .custom-radio {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Adjust as needed */
-  cursor: pointer;
-}
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Adjust as needed */
+    cursor: pointer;
+  }
 
-.hidden-radio {
-  opacity: 0;
-  position: absolute;
-  pointer-events: none;
-}
+  .hidden-radio {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
 
-.radio-svg {
-  width: 0.875rem; 
-  height: 0.875rem; 
-  flex-shrink: 0;
-}
+  .radio-svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+  }
 
-.radio-svg circle {
-  stroke-width: 1px;
-}
-
+  .radio-svg circle {
+    stroke-width: 1px;
+  }
 </style>
