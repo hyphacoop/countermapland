@@ -23,40 +23,38 @@
   let senses = ["see", "hear", "smell", "taste", "touch"];
   let media = ["drawing", "photo", "poem", "recipe", "perfume"];
   let fields = [
-  "Year",
-  "Artist",
-  "Agencies sponsoring",
-  "Monument inscription",
-  "Subjects represented",
-  "Honorees",
-  "Object type (e.g. stele, plaque, cairn)",
-  "Material",
-  "Area",
-  "Height (m)",
-  "Width",
-  "Depth",
-  "Staging tactics",
-  "Gestures"
-];
+    "Year",
+    "Artist",
+    "Agencies sponsoring",
+    "Monument inscription",
+    "Subjects represented",
+    "Honorees",
+    "Object type (e.g. stele, plaque, cairn)",
+    "Material",
+    "Area",
+    "Height (m)",
+    "Width",
+    "Depth",
+    "Staging tactics",
+    "Gestures",
+  ];
 
-const fieldMapping = {
-  "Year": "year",
-  "Artist": "artist",
-  "Agencies sponsoring": "agencies",
-  "Monument inscription": "inscription",
-  "Subjects represented": "subjects",
-  "Honorees": "honorees",
-  "Object type (e.g. stele, plaque, cairn)": "objectType",
-  "Material": "material",
-  "Area": "area",
-  "Height (m)": "height",
-  "Width": "width",
-  "Depth": "depth",
-  "Staging tactics": "tactics",
-  "Gestures": "gestures"
-};
-
-
+  const fieldMapping = {
+    Year: "year",
+    Artist: "artist",
+    "Agencies sponsoring": "agencies",
+    "Monument inscription": "inscription",
+    "Subjects represented": "subjects",
+    Honorees: "honorees",
+    "Object type (e.g. stele, plaque, cairn)": "objectType",
+    Material: "material",
+    Area: "area",
+    "Height (m)": "height",
+    Width: "width",
+    Depth: "depth",
+    "Staging tactics": "tactics",
+    Gestures: "gestures",
+  };
 
   let success = false;
   let email;
