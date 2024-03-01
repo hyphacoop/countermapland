@@ -96,14 +96,14 @@ const fieldMapping = {
 
 
   // Construct your payload here, mapping fields as necessary
-  let payload = {
+  let payload = new URLSearchParams({
     'fields[latLng]': latLngValue,
     'fields[challengesPower]': challengesPowerString,
     'fields[description]': description,
     'fields[altText]': altText,
     'fields[email]': email,
     // Other fields can be added here but they also need to match the structure defined in staticman.yml
-  };
+  });
 
   // Include dynamic names handling
   names.forEach((name, index) => {
@@ -128,9 +128,6 @@ const fieldMapping = {
       const response = await fetch('https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/', {
         method: 'POST',
         body: payload,
-        headers: {
-          'Content-Type': 'application/json'
-        }
       });
 
       if (response.ok) {
