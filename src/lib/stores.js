@@ -74,15 +74,19 @@ export const initialViewStore = writable(initialView);
 // Current view store, starts as initial view
 export const currentViewStore = writable(initialView);
 
-// Store to manage the visibility of the markers
-export const isMarkersVisible = writable(true);
-
 // Add a writable store for the current selected marker
 export const selectedMarkerId = writable(null);
 
 // Store for the current sidebar
 export const currentSidebar = writable(null);
+
+// Derived store to manage the visibility of the markers
+export const isMarkersVisible = derived(currentSidebar, $currentSidebar => $currentSidebar !== 'submissions');
+
 // and keep track if search results are active
 export const searchResultsActive = writable(false);
 // or keep track if filters are active
 export const filtersActive = writable(false);
+
+// Store user's latitude and longitude for submissions
+export const userLatLng = writable(null);

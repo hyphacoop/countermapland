@@ -2,16 +2,19 @@
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
+  import { userLatLng } from "$lib/stores";
+
   import countermonumentOutlineIcon from "$lib/icons/countermonument-outline.svg";
   import monumentOutlineIcon from "$lib/icons/monument-outline.svg";
   import countermonumentIcon from "$lib/icons/countermonument.svg";
   import monumentIcon from "$lib/icons/monument.svg";
-  import closeImage from "$lib/icons/close.png";
+  import closeImage from "$lib/icons/close.svg";
 
   let names = [{ id: "name1", value: "" }];
   let altText;
-  let message;
+  let description;
   let file;
+  let dynamicFieldValues = {};
   let consentGiven = false;
   let powerDominanceAnswer = null;
 
@@ -34,9 +37,29 @@
   "Depth",
   "Staging tactics",
   "Gestures"
-]
+];
+
+const fieldMapping = {
+  "Year": "year",
+  "Artist": "artist",
+  "Agencies sponsoring": "agencies",
+  "Monument inscription": "inscription",
+  "Subjects represented": "subjects",
+  "Honorees": "honorees",
+  "Object type (e.g. stele, plaque, cairn)": "objectType",
+  "Material": "material",
+  "Area": "area",
+  "Height (m)": "height",
+  "Width": "width",
+  "Depth": "depth",
+  "Staging tactics": "tactics",
+  "Gestures": "gestures"
+};
 
 
+
+  let success = false;
+  let email;
   let activeInfoButtons = {};
   let selectedSense = senses[0];
   let selectedMedia = media[0];
@@ -64,6 +87,66 @@
   function closeSideBarEvent() {
     dispatch("closeSideBar");
   }
+
+  async function handleSubmit() {
+  // Prevent the default form submission logic if you're calling this function on form submit
+
+  // Mapping `powerDominanceAnswer` to a boolean
+  const challengesPower = powerDominanceAnswer === 'yes';
+
+  const latLngValue = [$userLatLng.lat, $userLatLng.lng];
+
+
+  // Construct your payload here, mapping fields as necessary
+  let payload = {
+    'fields[latLng]': latLngValue,
+    'fields[challengesPower]': challengesPower,
+    'fields[description]': description,
+    'fields[altText]': altText,
+    'fields[email]': email,
+    // Other fields can be added here but they also need to match the structure defined in staticman.yml
+  };
+
+  // Include dynamic names handling
+  names.forEach((name, index) => {
+    if (name.value) payload[`fields[name${index + 1}]`] = name.value;
+  });
+
+  // Adjusting the payload construction to use the robust mapping
+  Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
+    if (value) {
+      const technicalName = fieldMapping[userFriendlyName]; // Use the mapping to get the technical field name
+      if (technicalName) {
+        payload[`fields[${technicalName}]`] = value;
+      }
+    }
+  });
+
+  // Before sending the request, filter out empty fields
+  payload = Object.fromEntries(Object.entries(payload).filter(([_, value]) => value != null && value !== ''));
+
+  try {
+      console.log('Submitting form:', payload);
+      const response = await fetch('https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/', {
+        method: 'POST',
+        body: JSON.stringify(payload), // You might need to adjust this based on how your server expects the payload
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        success = true;
+        console.log('Form submitted successfully:', response.status, response.statusText);
+      } else {
+        // Handle errors (e.g., show an error message)
+        console.log('Error submitting form:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+}
+
 </script>
 
 <div
@@ -75,6 +158,10 @@
   <img src={closeImage} alt="Close Sidebar"/>
 </button>
   <h2>Add to *countermap</h2>
+
+  {#if success}
+    <p class='success'>Thank you for your submission!</p>
+  {/if}
 
   <p class='main-description'>
     A (counter)monument can be an event, ecology, object, or site that is
@@ -91,7 +178,7 @@
   </p>
 
   <h3>Leave a marker</h3>
-  <p>Click on the countermap to mark the location of this place.</p>
+  <p>{ $userLatLng ? $userLatLng : 'Click on the countermap to mark the location of this place.'}</p>
 
   <h3>What do you call this place?</h3>
   <p>This can be an “official” name, a name that you use, or something else.</p>
@@ -131,7 +218,7 @@
   <p>What is its significance?</p>
   <p>Who does it belong to?</p>
   <p>How do you encounter it?</p>
-  <textarea class='mb-2' id="message" bind:value={message} required></textarea>
+  <textarea class='mb-2' id="message" bind:value={description} required></textarea>
 
   <p class='mb-0'>Add more information:</p>
   <div class="flex flex-row more-btns mb-4">
@@ -145,10 +232,10 @@
     {/each}
   </div>
   <div class="flex flex-col more-info mb-4">
-    {#each Object.keys(activeInfoButtons).filter((info) => activeInfoButtons[info]) as activeInfo}
-      <input type="text" placeholder={`Enter ${activeInfo} details`} />
+    {#each Object.keys(activeInfoButtons).filter(info => activeInfoButtons[info]) as activeInfo}
+      <input type="text" bind:value={dynamicFieldValues[activeInfo]} placeholder={`Enter ${activeInfo} details`} />
     {/each}
-  </div>
+  </div>  
 
   <h3>How do you experience this place?</h3>
 
@@ -179,10 +266,10 @@
   </label>
 
   <p>Describe this image</p>
-  <textarea class='mb-4' bind:this={altText}></textarea>
+  <textarea class='mb-4' bind:value={altText}></textarea>
 
   <h3>Email</h3>
-  <input class='mb-4' id="email" type="email" required />
+  <input class='mb-4' id="email" type="email" bind:value={email} required />
 
   <p class='my-4'>
     <label class="custom-radio">
@@ -194,7 +281,7 @@
     </label>
     
 </p>
-  <button class="submit rounded mb-4" disabled={!consentGiven}>Submit</button>
+  <button class="submit rounded mb-4" disabled={!consentGiven} on:click={handleSubmit}>Submit</button>
 </div>
 
 <style>

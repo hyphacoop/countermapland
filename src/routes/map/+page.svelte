@@ -70,12 +70,12 @@
     selectedMarkerId.set(markerId);
   }
   function handleDivClick(event) {
-    if ($currentSidebar !== 'search') {
+    if ($currentSidebar !== 'search' && $currentSidebar !== 'submissions') {
       if (!event.target.closest('.sdbbtn') && !event.target.closest('.sidebar')) {
           setCurrentSidebar(null);
           selectedMarkerId.set(null);
       }
-  }
+    }
   }
 
   function setCurrentSidebar(sidebar) {
@@ -174,6 +174,7 @@
 <style>
   .darkmode {
     color: white;
+    text-shadow: 1px 1px 1px rgb(0, 0, 0);
   }
   .menu-button {
     position: absolute;

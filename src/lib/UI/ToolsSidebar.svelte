@@ -4,7 +4,7 @@
   
     import { writable, derived } from 'svelte/store';
     import { markersStore, filteredStore } from '$lib/stores';
-    import closeImage from "$lib/icons/close.png";
+    import closeImage from "$lib/icons/close.svg";
 
     import { currentSidebar, filtersActive } from "$lib/stores";
   

@@ -10,7 +10,7 @@
   } from "$lib/Map/utilities";
 
   import monumentSvg from "$lib/icons/monument.svg";
-  import closeImage from "$lib/icons/close.png";
+  import closeImage from "$lib/icons/close.svg";
 
   import inscriptions from "$lib/assets/inscriptions.json";
 
@@ -122,8 +122,8 @@
 
         <!-- Flex container for municipality and territories -->
         <div class="flex flex-col items-start data-container">
-          <h3>{$selectedMarker.municipality}</h3>
-          <h4>{$territories}</h4>
+          <h3>{$territories}</h3>
+          <h4>{$selectedMarker.municipality}</h4>
         </div>
       </div>
 
