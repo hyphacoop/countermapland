@@ -90,17 +90,15 @@ const fieldMapping = {
 
   async function handleSubmit() {
   // Prevent the default form submission logic if you're calling this function on form submit
+  const latLngValue = `${$userLatLng.lat},${$userLatLng.lng}`;
 
-  // Mapping `powerDominanceAnswer` to a boolean
-  const challengesPower = powerDominanceAnswer === 'yes';
-
-  const latLngValue = [$userLatLng.lat, $userLatLng.lng];
+  const challengesPowerString = powerDominanceAnswer === 'yes' ? 'true' : 'false';
 
 
   // Construct your payload here, mapping fields as necessary
   let payload = {
     'fields[latLng]': latLngValue,
-    'fields[challengesPower]': challengesPower,
+    'fields[challengesPower]': challengesPowerString,
     'fields[description]': description,
     'fields[altText]': altText,
     'fields[email]': email,
