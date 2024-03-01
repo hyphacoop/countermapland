@@ -1,6 +1,6 @@
 <script>
   import { fly } from "svelte/transition";
-  import { writable } from "svelte/store";
+  import { currentMenuSection } from "$lib/stores";
 
   let sections = [
     "Menu",
@@ -18,13 +18,10 @@
   import closeImage from "$lib/icons/close.svg";
   import { currentSidebar } from "$lib/stores";
 
-  // Reactive variable to track current section
-  let currentSection = writable("Menu");
-
   // Function to update current section
-  function setCurrentSection(section) {
+  function setcurrentMenuSection(section) {
     currentSidebar.set("menu");
-    currentSection.set(section);
+    currentMenuSection.set(section);
   }
 </script>
 
@@ -33,12 +30,12 @@
   in:fly={{ x: 300, duration: 800 }}
   out:fly={{ x: 300, duration: 800 }}
 >
-  {#if $currentSection !== "Menu"}
+  {#if $currentMenuSection !== "Menu"}
     <button
       class="close-button"
       on:click={(event) => {
         event.stopPropagation();
-        currentSection.set("Menu");
+        currentMenuSection.set("Menu");
       }}
     >
       <img src={closeImage} alt="Open Sidebar" />
@@ -55,23 +52,23 @@
     </button>
   {/if}
   <div>
-    {#if $currentSection === "About"}
+    {#if $currentMenuSection === "About"}
       <h2>About</h2>
       <About />
-    {:else if $currentSection === "Projects"}
+    {:else if $currentMenuSection === "Projects"}
       <h2>Projects</h2>
       <Projects />
-    {:else if $currentSection === "Contact"}
+    {:else if $currentMenuSection === "Contact"}
       <h2>Contact</h2>
       <Contact />
-    {:else if $currentSection === "Menu"}
+    {:else if $currentMenuSection === "Menu"}
       <ul>
         {#each sections.filter((section) => section !== "Menu") as section}
           <li>
             <button
               on:click={(event) => {
                 event.stopPropagation();
-                setCurrentSection(section);
+                setcurrentMenuSection(section);
               }}
             >
               {section}

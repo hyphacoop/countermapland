@@ -2,7 +2,7 @@
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
-  import { userLatLng } from "$lib/stores";
+  import { userLatLng, currentSidebar, currentMenuSection } from "$lib/stores";
 
   import countermonumentOutlineIcon from "$lib/icons/countermonument-outline.svg";
   import monumentOutlineIcon from "$lib/icons/monument-outline.svg";
@@ -23,42 +23,42 @@
   let senses = ["see", "hear", "smell", "taste", "touch"];
   let media = ["drawing", "photo", "poem", "recipe", "perfume"];
   let fields = [
-  "Year",
-  "Artist",
-  "Agencies sponsoring",
-  "Monument inscription",
-  "Subjects represented",
-  "Honorees",
-  "Object type (e.g. stele, plaque, cairn)",
-  "Material",
-  "Area",
-  "Height (m)",
-  "Width",
-  "Depth",
-  "Staging tactics",
-  "Gestures"
-];
+    "Year",
+    "Artist",
+    "Agencies sponsoring",
+    "Monument inscription",
+    "Subjects represented",
+    "Honorees",
+    "Object type (e.g. stele, plaque, cairn)",
+    "Material",
+    "Area",
+    "Height (m)",
+    "Width",
+    "Depth",
+    "Staging tactics",
+    "Gestures",
+  ];
 
-const fieldMapping = {
-  "Year": "year",
-  "Artist": "artist",
-  "Agencies sponsoring": "agencies",
-  "Monument inscription": "inscription",
-  "Subjects represented": "subjects",
-  "Honorees": "honorees",
-  "Object type (e.g. stele, plaque, cairn)": "objectType",
-  "Material": "material",
-  "Area": "area",
-  "Height (m)": "height",
-  "Width": "width",
-  "Depth": "depth",
-  "Staging tactics": "tactics",
-  "Gestures": "gestures"
-};
-
-
+  const fieldMapping = {
+    Year: "year",
+    Artist: "artist",
+    "Agencies sponsoring": "agencies",
+    "Monument inscription": "inscription",
+    "Subjects represented": "subjects",
+    Honorees: "honorees",
+    "Object type (e.g. stele, plaque, cairn)": "objectType",
+    Material: "material",
+    Area: "area",
+    "Height (m)": "height",
+    Width: "width",
+    Depth: "depth",
+    "Staging tactics": "tactics",
+    Gestures: "gestures",
+  };
 
   let success = false;
+  let submitting = false;
+  let errorMessage = false;
   let email;
   let activeInfoButtons = {};
   let selectedSense = senses[0];
@@ -69,9 +69,11 @@ const fieldMapping = {
   }
 
   function addName() {
-    const nextId = `name${names.length + 1}`;
-    names.push({ id: nextId, value: "" });
-    names = names;
+    if (names.length < 3) {
+      const nextId = `name${names.length + 1}`;
+      names.push({ id: nextId, value: "" });
+      names = names;
+    }
   }
 
   function toggleInfoButton(info) {
@@ -79,7 +81,7 @@ const fieldMapping = {
   }
 
   function selectRandomFromArray(array, current, setterFunction) {
-    const filteredArray = array.filter(item => item !== current);
+    const filteredArray = array.filter((item) => item !== current);
     const randomIndex = Math.floor(Math.random() * filteredArray.length);
     setterFunction(filteredArray[randomIndex]);
   }
@@ -89,59 +91,76 @@ const fieldMapping = {
   }
 
   async function handleSubmit() {
-  // Prevent the default form submission logic if you're calling this function on form submit
-  const latLngValue = `${$userLatLng.lat},${$userLatLng.lng}`;
+    submitting = true;
+    // Constructing the URLSearchParams directly without initially including potentially undefined values
+    let payload = new URLSearchParams();
 
-  const challengesPowerString = powerDominanceAnswer === 'yes' ? 'true' : 'false';
+    // Add fields conditionally
+    payload.append("fields[latLng]", `${$userLatLng.lat},${$userLatLng.lng}`);
+    payload.append(
+      "fields[challengesPower]",
+      powerDominanceAnswer === "yes" ? "true" : "false"
+    );
+    if (description) payload.append("fields[description]", description);
+    if (altText) payload.append("fields[altText]", altText); // Ensure altText is checked for undefined or empty string
+    payload.append("fields[email]", email);
 
+    // Handle dynamic names and other fields
+    names.forEach((name, index) => {
+      if (name.value) payload.append(`fields[name${index + 1}]`, name.value);
+    });
 
-  // Construct your payload here, mapping fields as necessary
-  let payload = new URLSearchParams({
-    'fields[latLng]': latLngValue,
-    'fields[challengesPower]': challengesPowerString,
-    'fields[description]': description,
-    'fields[altText]': altText,
-    'fields[email]': email,
-    // Other fields can be added here but they also need to match the structure defined in staticman.yml
-  });
-
-  // Include dynamic names handling
-  names.forEach((name, index) => {
-    if (name.value) payload[`fields[name${index + 1}]`] = name.value;
-  });
-
-  // Adjusting the payload construction to use the robust mapping
-  Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
-    if (value) {
-      const technicalName = fieldMapping[userFriendlyName]; // Use the mapping to get the technical field name
-      if (technicalName) {
-        payload[`fields[${technicalName}]`] = value;
+    Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
+      if (value) {
+        const technicalName = fieldMapping[userFriendlyName];
+        if (technicalName) {
+          payload.append(`fields[${technicalName}]`, value);
+        }
       }
-    }
-  });
-
-  // Before sending the request, filter out empty fields
-  payload = Object.fromEntries(Object.entries(payload).filter(([_, value]) => value != null && value !== ''));
-
-  try {
-      console.log('Submitting form:', payload);
-      const response = await fetch('https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/', {
-        method: 'POST',
-        body: payload,
-      });
+    });
+    try {
+      console.log("Submitting form:", payload);
+      const response = await fetch(
+        "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/",
+        {
+          method: "POST",
+          body: payload,
+        }
+      );
 
       if (response.ok) {
         success = true;
-        console.log('Form submitted successfully:', response.status, response.statusText);
+        submitting = false;
+        console.log(
+          "Form submitted successfully:",
+          response.status,
+          response.statusText
+        );
+        $userLatLng = null;
       } else {
         // Handle errors (e.g., show an error message)
-        console.log('Error submitting form:', response.status, response.statusText);
+        submitting = false;
+        errorMessage = true;
+        console.log(
+          "Error submitting form:",
+          response.status,
+          response.statusText
+        );
+        $userLatLng = null;
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
+      errorMessage = true;
+      $userLatLng = null;
     }
-}
+  }
 
+  function goToContactForm() {
+    currentSidebar.set("menu");
+    currentMenuSection.set("Contact");
+  }
+
+  $: submitText = submitting ? "Submitting" : "Submit";
 </script>
 
 <div
@@ -149,139 +168,210 @@ const fieldMapping = {
   in:fly={{ x: 300, duration: 800 }}
   out:fly={{ x: 300, duration: 800 }}
 >
-<button class="close-button" on:click={closeSideBarEvent} >
-  <img src={closeImage} alt="Close Sidebar"/>
-</button>
-  <h2>Add to *countermap</h2>
-
+  <button class="close-button" on:click={closeSideBarEvent}>
+    <img src={closeImage} alt="Close Sidebar" />
+  </button>
   {#if success}
-    <p class='success'>Thank you for your submission!</p>
-  {/if}
-
-  <p class='main-description'>
-    A (counter)monument can be an event, ecology, object, or site that is
-    important to a community. It may have been erased, still exist, or be
-    speculative.
-  </p>
-  <p class='main-description'>
-    We review each submission before adding it to the map in order to ensure
-    this remains a safe digital space.
-  </p>
-
-  <p class='main-description'>
-    Please read our <i>Community Agreements</i> to learn more.
-  </p>
-
-  <h3>Leave a marker</h3>
-  <p>{ $userLatLng ? $userLatLng : 'Click on the countermap to mark the location of this place.'}</p>
-
-  <h3>What do you call this place?</h3>
-  <p>This can be an “official” name, a name that you use, or something else.</p>
- 
- <div class="flex flex-col names items-start mb-4">
-  {#each names as name, index (name.id)}
-  <input type="text" bind:value={names[index].value} placeholder="Enter a name" id={name.id} required />
-{/each}
-<button class='add-another-name' on:click={addName}>Add another name</button>
-
-</div>
-
-
-  <h3>Does this place challenge dominant systems of power?</h3>
-
-  <div class="flex flex-col yes-no mb-4">
-    <button on:click={() => isPower("yes")}>
-      {#if powerDominanceAnswer === "yes"}
-        <img src={countermonumentIcon} alt="Yes" class="icon" />
-      {:else}
-        <img src={countermonumentOutlineIcon} alt="Yes outline" class="icon" />
-      {/if}
-      yes
-    </button>
-
-    <button on:click={() => isPower("no")}>
-      {#if powerDominanceAnswer === "no"}
-        <img src={monumentIcon} alt="No" />
-      {:else}
-        <img src={monumentOutlineIcon} alt="No outline" />
-      {/if}
-      no
-    </button>
-  </div>
-
-  <h3>What do you know about this place?</h3>
-  <p>What is its significance?</p>
-  <p>Who does it belong to?</p>
-  <p>How do you encounter it?</p>
-  <textarea class='mb-2' id="message" bind:value={description} required></textarea>
-
-  <p class='mb-0'>Add more information:</p>
-  <div class="flex flex-row more-btns mb-4">
-    {#each fields as info}
-      <button class='rounded'
-        class:active={activeInfoButtons[info]}
-        on:click={() => toggleInfoButton(info)}
+    <h2>Thank you</h2>
+    <p class="success">Your submission has been received.</p>
+    <p>
+      Our next review cycle starts on <span class="label ml-2 rounded"
+        >date</span
       >
-        {info}
+    </p>
+    <p>Are you interested in volunteering to help review submissions?</p>
+    <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
+  {:else if errorMessage}
+    <h2>Something went wrong</h2>
+    <p class="success">Your submission was not properly received.</p>
+    <p>Get in touch or try again.</p>
+
+    <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
+  {:else}
+    <h2>Add to *countermap</h2>
+
+    <p class="main-description">
+      A (counter)monument can be an event, ecology, object, or site that is
+      important to a community. It may have been erased, still exist, or be
+      speculative.
+    </p>
+    <p class="main-description">
+      We review each submission before adding it to the map in order to ensure
+      this remains a safe digital space.
+    </p>
+
+    <p class="main-description">
+      Please read our <i>Community Agreements</i> to learn more.
+    </p>
+
+    <h3>Leave a marker</h3>
+    <p>
+      {$userLatLng
+        ? $userLatLng
+        : "Click on the countermap to mark the location of this place."}
+    </p>
+
+    <h3>What do you call this place?</h3>
+    <p>
+      This can be an “official” name, a name that you use, or something else.
+    </p>
+
+    <div class="flex flex-col names items-start mb-4">
+      {#each names as name, index (name.id)}
+        <input
+          type="text"
+          bind:value={names[index].value}
+          placeholder="Enter a name"
+          id={name.id}
+          required
+        />
+      {/each}
+      {#if names.length < 3}
+        <button class="add-another-name" on:click={addName}
+          >Add another name</button
+        >
+      {/if}
+    </div>
+
+    <h3>Does this place challenge dominant systems of power?</h3>
+
+    <div class="flex flex-col yes-no mb-4">
+      <button on:click={() => isPower("yes")}>
+        {#if powerDominanceAnswer === "yes"}
+          <img src={countermonumentIcon} alt="Yes" class="icon" />
+        {:else}
+          <img
+            src={countermonumentOutlineIcon}
+            alt="Yes outline"
+            class="icon"
+          />
+        {/if}
+        yes
       </button>
-    {/each}
-  </div>
-  <div class="flex flex-col more-info mb-4">
-    {#each Object.keys(activeInfoButtons).filter(info => activeInfoButtons[info]) as activeInfo}
-      <input type="text" bind:value={dynamicFieldValues[activeInfo]} placeholder={`Enter ${activeInfo} details`} />
-    {/each}
-  </div>  
 
-  <h3>How do you experience this place?</h3>
+      <button on:click={() => isPower("no")}>
+        {#if powerDominanceAnswer === "no"}
+          <img src={monumentIcon} alt="No" />
+        {:else}
+          <img src={monumentOutlineIcon} alt="No outline" />
+        {/if}
+        no
+      </button>
+    </div>
 
-  <p>Optional: Click on the labels to create a prompt.</p>
+    <h3>What do you know about this place?</h3>
+    <p>What is its significance?</p>
+    <p>Who does it belong to?</p>
+    <p>How do you encounter it?</p>
+    <textarea class="mb-2" id="message" bind:value={description} required
+    ></textarea>
 
-  <!-- Dynamic senses and media buttons -->
-  <div class="prompt flex flex-row flex-wrap justify-center items-center mb-4 rounded">
-    Share something you can
-    <button class='rounded'
-    on:click={() =>
-      selectRandomFromArray(senses, selectedSense, (value) => (selectedSense = value))}
-    >{selectedSense}</button
-  >
-  in the form of a
-  <button class='rounded'
-    on:click={() =>
-      selectRandomFromArray(media, selectedMedia, (value) => (selectedMedia = value))}
-    >{selectedMedia}</button
-  >
-  </div>
+    <p class="mb-0">Add more information:</p>
+    <div class="flex flex-row more-btns mb-4">
+      {#each fields as info}
+        <button
+          class="rounded"
+          class:active={activeInfoButtons[info]}
+          on:click={() => toggleInfoButton(info)}
+        >
+          {info}
+        </button>
+      {/each}
+    </div>
+    <div class="flex flex-col more-info mb-4">
+      {#each Object.keys(activeInfoButtons).filter((info) => activeInfoButtons[info]) as activeInfo}
+        <input
+          type="text"
+          bind:value={dynamicFieldValues[activeInfo]}
+          placeholder={`Enter ${activeInfo} details`}
+        />
+      {/each}
+    </div>
 
-  <p>Share a file (audio, video, image, text) that represents this place.</p>
+    <h3>How do you experience this place?</h3>
 
-  <!-- File input with drag and drop -->
-  <input type="file" bind:files={file} id="file" hidden />
-  <label for="file" class="file-dropzone mb-4">
-    Choose a file or drop one here.
-  </label>
+    <p>Optional: Click on the labels to create a prompt.</p>
 
-  <p>Describe this image</p>
-  <textarea class='mb-4' bind:value={altText}></textarea>
+    <!-- Dynamic senses and media buttons -->
+    <div
+      class="prompt flex flex-row flex-wrap justify-center items-center mb-4 rounded"
+    >
+      Share something you can
+      <button
+        class="rounded"
+        on:click={() =>
+          selectRandomFromArray(
+            senses,
+            selectedSense,
+            (value) => (selectedSense = value)
+          )}>{selectedSense}</button
+      >
+      in the form of a
+      <button
+        class="rounded"
+        on:click={() =>
+          selectRandomFromArray(
+            media,
+            selectedMedia,
+            (value) => (selectedMedia = value)
+          )}>{selectedMedia}</button
+      >
+    </div>
 
-  <h3>Email</h3>
-  <input class='mb-4' id="email" type="email" bind:value={email} required />
+    <p>Share a file (audio, video, image, text) that represents this place.</p>
 
-  <p class='my-4'>
-    <label class="custom-radio">
-      <input type="radio" bind:group={consentGiven} value={true} class="hidden-radio" />
-      <svg class="radio-svg" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" on:click={() => consentGiven = true}>
-        <circle cx="7" cy="7" r="6.5" stroke="black" fill={consentGiven ? 'black' : 'none'}/>
-      </svg>
-      Let *countermap record and reuse the information you shared. Read our User and Community Agreements here.
+    <!-- File input with drag and drop -->
+    <input type="file" bind:files={file} id="file" hidden />
+    <label for="file" class="file-dropzone mb-4">
+      Choose a file or drop one here.
     </label>
-    
-</p>
-  <button class="submit rounded mb-4" disabled={!consentGiven} on:click={handleSubmit}>Submit</button>
+
+    <p>Describe this image</p>
+    <textarea class="mb-4" bind:value={altText}></textarea>
+
+    <h3>Email</h3>
+    <input class="mb-4" id="email" type="email" bind:value={email} required />
+
+    <p class="my-4">
+      <label class="custom-radio">
+        <input
+          type="radio"
+          bind:group={consentGiven}
+          value={true}
+          class="hidden-radio"
+        />
+        <svg
+          class="radio-svg"
+          viewBox="0 0 14 14"
+          xmlns="http://www.w3.org/2000/svg"
+          on:click={() => (consentGiven = true)}
+        >
+          <circle
+            cx="7"
+            cy="7"
+            r="6.5"
+            stroke="black"
+            fill={consentGiven ? "black" : "none"}
+          />
+        </svg>
+        Let *countermap record and reuse the information you shared. Read our User
+        and Community Agreements here.
+      </label>
+    </p>
+    <button
+      class="submit rounded mb-4"
+      disabled={!consentGiven}
+      on:click={handleSubmit}>{submitText}</button
+    >
+  {/if}
 </div>
 
 <style>
-
-.close-button {
+  .link {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .close-button {
     position: absolute;
     top: 1.19rem;
     right: 1.19rem;
@@ -323,8 +413,9 @@ const fieldMapping = {
     width: 22px;
     height: auto;
   }
-  p, label {
-    font-size: 0.75rem; 
+  p,
+  label {
+    font-size: 0.75rem;
   }
   p {
     color: #000;
@@ -339,15 +430,16 @@ const fieldMapping = {
   }
   .prompt {
     display: flex;
-    font-size: 0.75rem; 
+    font-size: 0.75rem;
     padding: 1.1875rem 1.4375rem;
     justify-content: center;
     align-items: center;
     gap: 0.4375rem;
     border: 1px solid #000;
   }
-  .prompt button {
-    padding: 0.125rem 0.625rem; 
+  .prompt button,
+  .label {
+    padding: 0.125rem 0.625rem;
     border: 1px solid #000;
   }
   .submit {
@@ -376,7 +468,7 @@ const fieldMapping = {
   .more-btns button {
     margin-right: 0.5rem;
     border: 1px solid #000;
-    padding: 0.125rem 0.625rem; 
+    padding: 0.125rem 0.625rem;
   }
 
   .more-info input {
@@ -404,35 +496,35 @@ const fieldMapping = {
     width: 100%;
   }
 
-  textarea, input {
+  textarea,
+  input {
     padding: 0.25rem;
-    border-radius: 0.25rem; 
+    border-radius: 0.25rem;
   }
   .names input {
     margin-bottom: 0.5rem;
     width: 50%;
   }
   .custom-radio {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Adjust as needed */
-  cursor: pointer;
-}
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Adjust as needed */
+    cursor: pointer;
+  }
 
-.hidden-radio {
-  opacity: 0;
-  position: absolute;
-  pointer-events: none;
-}
+  .hidden-radio {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
 
-.radio-svg {
-  width: 0.875rem; 
-  height: 0.875rem; 
-  flex-shrink: 0;
-}
+  .radio-svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+  }
 
-.radio-svg circle {
-  stroke-width: 1px;
-}
-
+  .radio-svg circle {
+    stroke-width: 1px;
+  }
 </style>
