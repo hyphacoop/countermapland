@@ -69,9 +69,11 @@
   }
 
   function addName() {
-    const nextId = `name${names.length + 1}`;
-    names.push({ id: nextId, value: "" });
-    names = names;
+    if (names.length < 3) {
+      const nextId = `name${names.length + 1}`;
+      names.push({ id: nextId, value: "" });
+      names = names;
+    }
   }
 
   function toggleInfoButton(info) {
@@ -177,17 +179,23 @@
   <h3>Leave a marker</h3>
   <p>{ $userLatLng ? $userLatLng : 'Click on the countermap to mark the location of this place.'}</p>
 
-  <h3>What do you call this place?</h3>
-  <p>This can be an “official” name, a name that you use, or something else.</p>
- 
- <div class="flex flex-col names items-start mb-4">
-  {#each names as name, index (name.id)}
-  <input type="text" bind:value={names[index].value} placeholder="Enter a name" id={name.id} required />
-{/each}
-<button class='add-another-name' on:click={addName}>Add another name</button>
 
-</div>
-
+    <div class="flex flex-col names items-start mb-4">
+      {#each names as name, index (name.id)}
+        <input
+          type="text"
+          bind:value={names[index].value}
+          placeholder="Enter a name"
+          id={name.id}
+          required
+        />
+      {/each}
+      {#if names.length < 3}
+        <button class="add-another-name" on:click={addName}
+          >Add another name</button
+        >
+      {/if}
+    </div>
 
   <h3>Does this place challenge dominant systems of power?</h3>
 
