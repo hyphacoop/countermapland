@@ -127,7 +127,7 @@ const fieldMapping = {
       console.log('Submitting form:', payload);
       const response = await fetch('https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/', {
         method: 'POST',
-        body: JSON.stringify(payload), // You might need to adjust this based on how your server expects the payload
+        body: payload,
         headers: {
           'Content-Type': 'application/json'
         }
