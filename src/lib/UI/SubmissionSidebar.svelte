@@ -57,6 +57,8 @@
   };
 
   let success = false;
+  let submitting = false;
+  let errorMessage = false;
   let email;
   let activeInfoButtons = {};
   let selectedSense = senses[0];
@@ -147,24 +149,26 @@
   in:fly={{ x: 300, duration: 800 }}
   out:fly={{ x: 300, duration: 800 }}
 >
-<button class="close-button" on:click={closeSideBarEvent} >
-  <img src={closeImage} alt="Close Sidebar"/>
-</button>
-  <h2>Add to *countermap</h2>
-
+  <button class="close-button" on:click={closeSideBarEvent}>
+    <img src={closeImage} alt="Close Sidebar" />
+  </button>
   {#if success}
-    <p class='success'>Thank you for your submission!</p>
-  {/if}
+    <h2>Thank you</h2>
+    <p class="success">Your submission has been received.</p>
+    <p>
+      Our next review cycle starts on <span class="label ml-2 rounded"
+        >date</span
+      >
+    </p>
+    <p>Are you interested in volunteering to help review submissions?</p>
+    <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
+  {:else if errorMessage}
+    <h2>Something went wrong</h2>
+    <p class="success">Your submission was not properly received.</p>
+    <p>Get in touch or try again.</p>
 
-  <p class='main-description'>
-    A (counter)monument can be an event, ecology, object, or site that is
-    important to a community. It may have been erased, still exist, or be
-    speculative.
-  </p>
-  <p class='main-description'>
-    We review each submission before adding it to the map in order to ensure
-    this remains a safe digital space.
-  </p>
+    <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
+  {:else}
 
   <p class='main-description'>
     Please read our <i>Community Agreements</i> to learn more.
