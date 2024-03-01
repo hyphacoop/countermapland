@@ -140,10 +140,8 @@
         console.log('Error submitting form:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-    }
-}
 
+  $: submitText = submitting ? "Submitting" : "Submit";
 </script>
 
 <div
