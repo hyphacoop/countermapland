@@ -94,13 +94,7 @@ const fieldMapping = {
   // Mapping `powerDominanceAnswer` to a boolean
   const challengesPower = powerDominanceAnswer === 'yes';
 
-  let latLngValue;
-  // Extracting numbers from the format "LatLng(49.156562, -80.980225)"
-  const matches = $userLatLng.match(/LatLng\(([^,]+),\s*([^\)]+)\)/);
-  if (matches && matches.length === 3) {
-    // Convert the matched groups to numbers and format as an array
-    latLngValue = [parseFloat(matches[1]), parseFloat(matches[2])];
-  }
+  const latLngValue = [$userLatLng.lat, $userLatLng.lng];
 
 
   // Construct your payload here, mapping fields as necessary
@@ -132,6 +126,7 @@ const fieldMapping = {
   payload = Object.fromEntries(Object.entries(payload).filter(([_, value]) => value != null && value !== ''));
 
   try {
+      console.log('Submitting form:', payload);
       const response = await fetch('https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/', {
         method: 'POST',
         body: JSON.stringify(payload), // You might need to adjust this based on how your server expects the payload
@@ -142,6 +137,7 @@ const fieldMapping = {
 
       if (response.ok) {
         success = true;
+        console.log('Form submitted successfully:', response.status, response.statusText);
       } else {
         // Handle errors (e.g., show an error message)
         console.log('Error submitting form:', response.status, response.statusText);
