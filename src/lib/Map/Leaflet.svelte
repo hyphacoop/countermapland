@@ -9,14 +9,27 @@
 
   import L from "leaflet";
   import "leaflet/dist/leaflet.css";
-  import 'leaflet.markercluster/dist/leaflet.markercluster.js';
-	import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+  import "leaflet.markercluster/dist/leaflet.markercluster.js";
+  import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
   import { addTerritoriesLayer, addTerritoriesLabels } from "./utilities";
   import { MaptilerLayer, MaptilerStyle } from "@maptiler/leaflet-maptilersdk";
 
+  import pinSvg from "$lib/icons/pin.svg";
+
   import Toolbar from "./Toolbar.svelte";
-  import { currentMapStyleId, currentMapStyleIndex, mapBoundsStore, territoriesVisible, clusterGroupStore, darkMode, currentSidebar, filteredStore, filtersActive } from '$lib/stores';
+  import {
+    currentMapStyleId,
+    currentMapStyleIndex,
+    mapBoundsStore,
+    territoriesVisible,
+    clusterGroupStore,
+    darkMode,
+    currentSidebar,
+    filteredStore,
+    filtersActive,
+    userLatLng,
+  } from "$lib/stores";
 
   export let bounds = undefined;
   export let view = undefined;
@@ -29,33 +42,52 @@
   let mtLayer;
   let territoriesLayer = null;
   let labelsLayer = null;
-
+  let marker;
+  let icon;
   let territoriesData = null;
+
+  
+  $: {
+  let iconHtml = $darkMode === "dark"
+    ? `<div style="width: 40px; height: 50px; filter: invert(100%);">
+        <img src="${pinSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+      </div>`
+    : `<div style="width: 40px; height: 50px;">
+        <img src="${pinSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+      </div>`;
+
+  icon = L.divIcon({
+    html: iconHtml,
+    className: "map-marker",
+    iconSize: L.point(40, 70),
+  });
+}
 
   async function initializeTerritories(map) {
     if (!territoriesData) {
-        try {
-            const response = await fetch('https://native-land.ca/wp-json/nativeland/v1/api/index.php?maps=territories');
-            territoriesData = await response.json();
-            
-            // Assuming addTerritoriesLayer and addTerritoriesLabels are now properly returning the layers
-            territoriesLayer = await addTerritoriesLayer(map, territoriesData);
-            labelsLayer = await addTerritoriesLabels(map, territoriesData);
-        } catch (error) {
-            console.error('Error fetching territories data:', error);
-        }
+      try {
+        const response = await fetch(
+          "https://native-land.ca/wp-json/nativeland/v1/api/index.php?maps=territories"
+        );
+        territoriesData = await response.json();
+
+        // Assuming addTerritoriesLayer and addTerritoriesLabels are now properly returning the layers
+        territoriesLayer = await addTerritoriesLayer(map, territoriesData);
+        labelsLayer = await addTerritoriesLabels(map, territoriesData);
+      } catch (error) {
+        console.error("Error fetching territories data:", error);
+      }
     }
-}
+  }
 
-
-    // Define the custom control for the toolbar before using it
-	const ToolbarControl = L.Control.extend({
-    onAdd: function(map) {
+  // Define the custom control for the toolbar before using it
+  const ToolbarControl = L.Control.extend({
+    onAdd: function (map) {
       const container = L.DomUtil.create("div", "map-toolbar-container");
       new Toolbar({
         target: container,
         props: {
-          mapInstance: map
+          mapInstance: map,
         },
       });
       return container;
@@ -64,16 +96,14 @@
 
   onMount(() => {
     if (!bounds && (!view || !zoom)) {
-        throw new Error("Must set either bounds, or view and zoom.");
+      throw new Error("Must set either bounds, or view and zoom.");
     }
 
     // Initialize the map
-    map = L.map(mapElement,
-        {
-            maxZoom: 18,
-            zoomControl: false,
-        }
-    );
+    map = L.map(mapElement, {
+      maxZoom: 18,
+      zoomControl: false,
+    });
 
     // Initialize MarkerClusterGroup
     const clusterGroup = L.markerClusterGroup({
@@ -85,63 +115,79 @@
 
     // Set initial view or bounds and initialize mapBoundsStore
     if (bounds) {
-        map.fitBounds(bounds);
-        // Directly set bounds since fitBounds does not guarantee immediate effect
-        mapBoundsStore.set(bounds);
+      map.fitBounds(bounds);
+      // Directly set bounds since fitBounds does not guarantee immediate effect
+      mapBoundsStore.set(bounds);
     } else if (view && zoom) {
-        map.setView(view, zoom);
+      map.setView(view, zoom);
     }
 
     // Wait until the map is fully loaded to set initial bounds if needed and add layers
     map.whenReady(() => {
-        if (!bounds) { // Only if bounds were not initially set
-            const initialBounds = map.getBounds();
-            mapBoundsStore.set(initialBounds);
-        }
+      if (!bounds) {
+        // Only if bounds were not initially set
+        const initialBounds = map.getBounds();
+        mapBoundsStore.set(initialBounds);
+      }
 
-        // Add MapTiler layer
-        mtLayer = new MaptilerLayer({
-            Language: "fr",
-            style: L.MaptilerStyle.SATELLITE, // Ensure correct spelling of "SATELLITE"
-            apiKey: "mPMxMiVPDDH0atXxMfF6", // Your actual MapTiler API key
-        }).addTo(map);
+      // Add MapTiler layer
+      mtLayer = new MaptilerLayer({
+        Language: "fr",
+        style: L.MaptilerStyle.SATELLITE, // Ensure correct spelling of "SATELLITE"
+        apiKey: "mPMxMiVPDDH0atXxMfF6", // Your actual MapTiler API key
+      }).addTo(map);
 
-        // Add the custom control to the map in the desired position
-        new ToolbarControl({ position: "topright" }).addTo(map);
+      // Add the custom control to the map in the desired position
+      new ToolbarControl({ position: "topright" }).addTo(map);
     });
 
     // Attach event listeners
-    map.on("zoom", (e) => dispatch("zoom", e))
-       .on('moveend', () => {
-            const bounds = map.getBounds();
-            mapBoundsStore.set(bounds);
-       })
-       .on("popupopen", async (e) => {
-            await tick();
-            e.popup.update();
-       });
+    map
+      .on('click', function(e) {
+        if ($currentSidebar === "submissions") {
+         
+        // Update the store with the clicked location's latLng
+        userLatLng.set(e.latlng);
+
+        // Check if a marker already exists, remove it
+        if (marker) {
+          map.removeLayer(marker);
+        }
+
+        // Create a new marker at the clicked location
+        marker = L.marker([e.latlng.lat, e.latlng.lng], { icon }).addTo(map);
+        }
+      })
+      .on("zoom", (e) => dispatch("zoom", e))
+      .on("moveend", () => {
+        const bounds = map.getBounds();
+        mapBoundsStore.set(bounds);
+      })
+      .on("popupopen", async (e) => {
+        await tick();
+        e.popup.update();
       });
+  });
 
-
-function addTerritories() {
-  console.log('Adding territories')
-  if (map) {
-    if (!territoriesLayer || !labelsLayer) {
-      initializeTerritories(map); // This function should asynchronously set territoriesLayer and labelsLayer
-    } else {
-      map.addLayer(territoriesLayer);
-      map.addLayer(labelsLayer);
+  function addTerritories() {
+    console.log("Adding territories");
+    if (map) {
+      if (!territoriesLayer || !labelsLayer) {
+        initializeTerritories(map); 
+      } else {
+        map.addLayer(territoriesLayer);
+        map.addLayer(labelsLayer);
+      }
     }
   }
-}
 
-function removeTerritories() {
-  if (map) {
-    if (territoriesLayer) map.removeLayer(territoriesLayer);
-    if (labelsLayer) map.removeLayer(labelsLayer);
-    console.log('Territories removed');
+  function removeTerritories() {
+    if (map) {
+      if (territoriesLayer) map.removeLayer(territoriesLayer);
+      if (labelsLayer) map.removeLayer(labelsLayer);
+      console.log("Territories removed");
+    }
   }
-}
 
   onDestroy(() => {
     map?.remove();
@@ -149,9 +195,9 @@ function removeTerritories() {
     removeTerritories();
   });
 
-  setContext('map', {
-		getMap: () => map
-	});
+  setContext("map", {
+    getMap: () => map,
+  });
 
   $: if (map) {
     if (bounds) {
@@ -160,47 +206,52 @@ function removeTerritories() {
       map.setView(view, zoom);
     }
   }
-// Function to update the map style
-function updateMapStyle(newStyleId) {
-  if (map && mtLayer) {
-    // Remove the existing MapTiler layer
-    map.removeLayer(mtLayer);
+  // Function to update the map style
+  function updateMapStyle(newStyleId) {
+    if (map && mtLayer) {
+      // Remove the existing MapTiler layer
+      map.removeLayer(mtLayer);
 
-    // Create a new MapTiler layer with the new style
-    mtLayer = new MaptilerLayer({
-      style: newStyleId, // The new style ID
-      apiKey: "mPMxMiVPDDH0atXxMfF6", // Your MapTiler API key
-    }).addTo(map);
+      // Create a new MapTiler layer with the new style
+      mtLayer = new MaptilerLayer({
+        style: newStyleId, // The new style ID
+        apiKey: "mPMxMiVPDDH0atXxMfF6", // Your MapTiler API key
+      }).addTo(map);
+    }
   }
-}
 
-$: if ($currentMapStyleId) {
-
-  if ($currentMapStyleIndex === 2) {
-    territoriesVisible.set(true);
-    darkMode.set('light');
-    console.log('setting territoriesVisible to true');
-  } else {
-    territoriesVisible.set(false);
-    darkMode.set('dark');
+  $: if ($currentMapStyleId) {
+    if ($currentMapStyleIndex === 2) {
+      territoriesVisible.set(true);
+      darkMode.set("light");
+      console.log("setting territoriesVisible to true");
+    } else {
+      territoriesVisible.set(false);
+      darkMode.set("dark");
+    }
+    if (map && mtLayer) {
+      updateMapStyle($currentMapStyleId);
+    }
   }
-  if (map && mtLayer) {
-    updateMapStyle($currentMapStyleId);
+
+  $: if (
+    map &&
+    $currentSidebar === "tools" &&
+    $filteredStore.length > 0 &&
+    $filtersActive
+  ) {
+    // Calculate bounds from filteredStore
+    const bounds = L.latLngBounds(
+      $filteredStore.map((marker) => L.latLng(marker.latLng))
+    );
+
+    // Adjust the map to these bounds
+    map.fitBounds(bounds, { padding: [50, 50] }); // Add some padding for a better view
   }
-};
 
 
-$: if (map && $currentSidebar === 'tools' && $filteredStore.length > 0 && $filtersActive) {
-  // Calculate bounds from filteredStore
-  const bounds = L.latLngBounds($filteredStore.map(marker => L.latLng(marker.latLng)));
-
-  // Adjust the map to these bounds
-  map.fitBounds(bounds, { padding: [50, 50] }); // Add some padding for a better view
-}
-
-
-// Reactive statement to react to changes in territoriesVisible
-$: $territoriesVisible ? addTerritories() : removeTerritories();
+  // Reactive statement to react to changes in territoriesVisible
+  $: $territoriesVisible ? addTerritories() : removeTerritories();
 </script>
 
 <div class="w-full h-full" bind:this={mapElement}>
