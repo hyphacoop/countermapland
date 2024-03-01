@@ -9,6 +9,7 @@
     import { currentSidebar, filtersActive } from "$lib/stores";
   
     import CustomSelect from '$lib/UI/CustomSelect.svelte';
+    import Slider from '$lib/UI/Slider.svelte';
   
     let selectedType = writable('');
     let selectedOrganization = writable('');
@@ -113,6 +114,7 @@
             Canadian military memorials
            </span>
         </div>
+        <Slider />
         <div class="category">
         <h3>Object</h3>
         <CustomSelect bind:selected={$selectedType} options={uniqueTypes} />
