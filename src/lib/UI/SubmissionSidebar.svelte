@@ -81,7 +81,7 @@
   }
 
   function selectRandomFromArray(array, current, setterFunction) {
-    const filteredArray = array.filter(item => item !== current);
+    const filteredArray = array.filter((item) => item !== current);
     const randomIndex = Math.floor(Math.random() * filteredArray.length);
     setterFunction(filteredArray[randomIndex]);
   }
@@ -91,55 +91,69 @@
   }
 
   async function handleSubmit() {
-  // Prevent the default form submission logic if you're calling this function on form submit
-  const latLngValue = `${$userLatLng.lat},${$userLatLng.lng}`;
+    submitting = true;
+    // Constructing the URLSearchParams directly without initially including potentially undefined values
+    let payload = new URLSearchParams();
 
-  const challengesPowerString = powerDominanceAnswer === 'yes' ? 'true' : 'false';
+    // Add fields conditionally
+    payload.append("fields[latLng]", `${$userLatLng.lat},${$userLatLng.lng}`);
+    payload.append(
+      "fields[challengesPower]",
+      powerDominanceAnswer === "yes" ? "true" : "false"
+    );
+    if (description) payload.append("fields[description]", description);
+    if (altText) payload.append("fields[altText]", altText); // Ensure altText is checked for undefined or empty string
+    payload.append("fields[email]", email);
 
+    // Handle dynamic names and other fields
+    names.forEach((name, index) => {
+      if (name.value) payload.append(`fields[name${index + 1}]`, name.value);
+    });
 
-  // Construct your payload here, mapping fields as necessary
-  let payload = new URLSearchParams({
-    'fields[latLng]': latLngValue,
-    'fields[challengesPower]': challengesPowerString,
-    'fields[description]': description,
-    'fields[altText]': altText,
-    'fields[email]': email,
-    // Other fields can be added here but they also need to match the structure defined in staticman.yml
-  });
-
-  // Include dynamic names handling
-  names.forEach((name, index) => {
-    if (name.value) payload[`fields[name${index + 1}]`] = name.value;
-  });
-
-  // Adjusting the payload construction to use the robust mapping
-  Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
-    if (value) {
-      const technicalName = fieldMapping[userFriendlyName]; // Use the mapping to get the technical field name
-      if (technicalName) {
-        payload[`fields[${technicalName}]`] = value;
+    Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
+      if (value) {
+        const technicalName = fieldMapping[userFriendlyName];
+        if (technicalName) {
+          payload.append(`fields[${technicalName}]`, value);
+        }
       }
-    }
-  });
-
-  // Before sending the request, filter out empty fields
-  payload = Object.fromEntries(Object.entries(payload).filter(([_, value]) => value != null && value !== ''));
-
-  try {
-      console.log('Submitting form:', payload);
-      const response = await fetch('https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/', {
-        method: 'POST',
-        body: payload,
-      });
+    });
+    try {
+      console.log("Submitting form:", payload);
+      const response = await fetch(
+        "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/",
+        {
+          method: "POST",
+          body: payload,
+        }
+      );
 
       if (response.ok) {
         success = true;
-        console.log('Form submitted successfully:', response.status, response.statusText);
+        submitting = false;
+        console.log(
+          "Form submitted successfully:",
+          response.status,
+          response.statusText
+        );
+        $userLatLng = null;
       } else {
         // Handle errors (e.g., show an error message)
-        console.log('Error submitting form:', response.status, response.statusText);
+        submitting = false;
+        errorMessage = true;
+        console.log(
+          "Error submitting form:",
+          response.status,
+          response.statusText
+        );
+        $userLatLng = null;
       }
     } catch (error) {
+      console.error("Error submitting form:", error);
+      errorMessage = true;
+      $userLatLng = null;
+    }
+  }
 
   function goToContactForm() {
     currentSidebar.set("menu");
