@@ -2,7 +2,7 @@
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
-  import { userLatLng } from "$lib/stores";
+  import { userLatLng, currentSidebar, currentMenuSection } from "$lib/stores";
 
   import countermonumentOutlineIcon from "$lib/icons/countermonument-outline.svg";
   import monumentOutlineIcon from "$lib/icons/monument-outline.svg";
