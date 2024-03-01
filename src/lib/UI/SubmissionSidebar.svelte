@@ -188,14 +188,33 @@
 
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
   {:else}
+    <h2>Add to *countermap</h2>
 
-  <p class='main-description'>
-    Please read our <i>Community Agreements</i> to learn more.
-  </p>
+    <p class="main-description">
+      A (counter)monument can be an event, ecology, object, or site that is
+      important to a community. It may have been erased, still exist, or be
+      speculative.
+    </p>
+    <p class="main-description">
+      We review each submission before adding it to the map in order to ensure
+      this remains a safe digital space.
+    </p>
 
-  <h3>Leave a marker</h3>
-  <p>{ $userLatLng ? $userLatLng : 'Click on the countermap to mark the location of this place.'}</p>
+    <p class="main-description">
+      Please read our <i>Community Agreements</i> to learn more.
+    </p>
 
+    <h3>Leave a marker</h3>
+    <p>
+      {$userLatLng
+        ? $userLatLng
+        : "Click on the countermap to mark the location of this place."}
+    </p>
+
+    <h3>What do you call this place?</h3>
+    <p>
+      This can be an “official” name, a name that you use, or something else.
+    </p>
 
     <div class="flex flex-col names items-start mb-4">
       {#each names as name, index (name.id)}
@@ -214,101 +233,145 @@
       {/if}
     </div>
 
-  <h3>Does this place challenge dominant systems of power?</h3>
+    <h3>Does this place challenge dominant systems of power?</h3>
 
-  <div class="flex flex-col yes-no mb-4">
-    <button on:click={() => isPower("yes")}>
-      {#if powerDominanceAnswer === "yes"}
-        <img src={countermonumentIcon} alt="Yes" class="icon" />
-      {:else}
-        <img src={countermonumentOutlineIcon} alt="Yes outline" class="icon" />
-      {/if}
-      yes
-    </button>
-
-    <button on:click={() => isPower("no")}>
-      {#if powerDominanceAnswer === "no"}
-        <img src={monumentIcon} alt="No" />
-      {:else}
-        <img src={monumentOutlineIcon} alt="No outline" />
-      {/if}
-      no
-    </button>
-  </div>
-
-  <h3>What do you know about this place?</h3>
-  <p>What is its significance?</p>
-  <p>Who does it belong to?</p>
-  <p>How do you encounter it?</p>
-  <textarea class='mb-2' id="message" bind:value={description} required></textarea>
-
-  <p class='mb-0'>Add more information:</p>
-  <div class="flex flex-row more-btns mb-4">
-    {#each fields as info}
-      <button class='rounded'
-        class:active={activeInfoButtons[info]}
-        on:click={() => toggleInfoButton(info)}
-      >
-        {info}
+    <div class="flex flex-col yes-no mb-4">
+      <button on:click={() => isPower("yes")}>
+        {#if powerDominanceAnswer === "yes"}
+          <img src={countermonumentIcon} alt="Yes" class="icon" />
+        {:else}
+          <img
+            src={countermonumentOutlineIcon}
+            alt="Yes outline"
+            class="icon"
+          />
+        {/if}
+        yes
       </button>
-    {/each}
-  </div>
-  <div class="flex flex-col more-info mb-4">
-    {#each Object.keys(activeInfoButtons).filter(info => activeInfoButtons[info]) as activeInfo}
-      <input type="text" bind:value={dynamicFieldValues[activeInfo]} placeholder={`Enter ${activeInfo} details`} />
-    {/each}
-  </div>  
 
-  <h3>How do you experience this place?</h3>
+      <button on:click={() => isPower("no")}>
+        {#if powerDominanceAnswer === "no"}
+          <img src={monumentIcon} alt="No" />
+        {:else}
+          <img src={monumentOutlineIcon} alt="No outline" />
+        {/if}
+        no
+      </button>
+    </div>
 
-  <p>Optional: Click on the labels to create a prompt.</p>
+    <h3>What do you know about this place?</h3>
+    <p>What is its significance?</p>
+    <p>Who does it belong to?</p>
+    <p>How do you encounter it?</p>
+    <textarea class="mb-2" id="message" bind:value={description} required
+    ></textarea>
 
-  <!-- Dynamic senses and media buttons -->
-  <div class="prompt flex flex-row flex-wrap justify-center items-center mb-4 rounded">
-    Share something you can
-    <button class='rounded'
-    on:click={() =>
-      selectRandomFromArray(senses, selectedSense, (value) => (selectedSense = value))}
-    >{selectedSense}</button
-  >
-  in the form of a
-  <button class='rounded'
-    on:click={() =>
-      selectRandomFromArray(media, selectedMedia, (value) => (selectedMedia = value))}
-    >{selectedMedia}</button
-  >
-  </div>
+    <p class="mb-0">Add more information:</p>
+    <div class="flex flex-row more-btns mb-4">
+      {#each fields as info}
+        <button
+          class="rounded"
+          class:active={activeInfoButtons[info]}
+          on:click={() => toggleInfoButton(info)}
+        >
+          {info}
+        </button>
+      {/each}
+    </div>
+    <div class="flex flex-col more-info mb-4">
+      {#each Object.keys(activeInfoButtons).filter((info) => activeInfoButtons[info]) as activeInfo}
+        <input
+          type="text"
+          bind:value={dynamicFieldValues[activeInfo]}
+          placeholder={`Enter ${activeInfo} details`}
+        />
+      {/each}
+    </div>
 
-  <p>Share a file (audio, video, image, text) that represents this place.</p>
+    <h3>How do you experience this place?</h3>
 
-  <!-- File input with drag and drop -->
-  <input type="file" bind:files={file} id="file" hidden />
-  <label for="file" class="file-dropzone mb-4">
-    Choose a file or drop one here.
-  </label>
+    <p>Optional: Click on the labels to create a prompt.</p>
 
-  <p>Describe this image</p>
-  <textarea class='mb-4' bind:value={altText}></textarea>
+    <!-- Dynamic senses and media buttons -->
+    <div
+      class="prompt flex flex-row flex-wrap justify-center items-center mb-4 rounded"
+    >
+      Share something you can
+      <button
+        class="rounded"
+        on:click={() =>
+          selectRandomFromArray(
+            senses,
+            selectedSense,
+            (value) => (selectedSense = value)
+          )}>{selectedSense}</button
+      >
+      in the form of a
+      <button
+        class="rounded"
+        on:click={() =>
+          selectRandomFromArray(
+            media,
+            selectedMedia,
+            (value) => (selectedMedia = value)
+          )}>{selectedMedia}</button
+      >
+    </div>
 
-  <h3>Email</h3>
-  <input class='mb-4' id="email" type="email" bind:value={email} required />
+    <p>Share a file (audio, video, image, text) that represents this place.</p>
 
-  <p class='my-4'>
-    <label class="custom-radio">
-      <input type="radio" bind:group={consentGiven} value={true} class="hidden-radio" />
-      <svg class="radio-svg" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" on:click={() => consentGiven = true}>
-        <circle cx="7" cy="7" r="6.5" stroke="black" fill={consentGiven ? 'black' : 'none'}/>
-      </svg>
-      Let *countermap record and reuse the information you shared. Read our User and Community Agreements here.
+    <!-- File input with drag and drop -->
+    <input type="file" bind:files={file} id="file" hidden />
+    <label for="file" class="file-dropzone mb-4">
+      Choose a file or drop one here.
     </label>
-    
-</p>
-  <button class="submit rounded mb-4" disabled={!consentGiven} on:click={handleSubmit}>Submit</button>
+
+    <p>Describe this image</p>
+    <textarea class="mb-4" bind:value={altText}></textarea>
+
+    <h3>Email</h3>
+    <input class="mb-4" id="email" type="email" bind:value={email} required />
+
+    <p class="my-4">
+      <label class="custom-radio">
+        <input
+          type="radio"
+          bind:group={consentGiven}
+          value={true}
+          class="hidden-radio"
+        />
+        <svg
+          class="radio-svg"
+          viewBox="0 0 14 14"
+          xmlns="http://www.w3.org/2000/svg"
+          on:click={() => (consentGiven = true)}
+        >
+          <circle
+            cx="7"
+            cy="7"
+            r="6.5"
+            stroke="black"
+            fill={consentGiven ? "black" : "none"}
+          />
+        </svg>
+        Let *countermap record and reuse the information you shared. Read our User
+        and Community Agreements here.
+      </label>
+    </p>
+    <button
+      class="submit rounded mb-4"
+      disabled={!consentGiven}
+      on:click={handleSubmit}>{submitText}</button
+    >
+  {/if}
 </div>
 
 <style>
-
-.close-button {
+  .link {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .close-button {
     position: absolute;
     top: 1.19rem;
     right: 1.19rem;
