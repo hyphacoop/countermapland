@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cloudinary/url-gen": "^1.18.0",
 		"@maptiler/leaflet-maptilersdk": "^2.0.0",
 		"leaflet": "^1.9.4",
 		"leaflet.markercluster": "^1.5.3"
