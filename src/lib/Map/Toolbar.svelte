@@ -1,4 +1,5 @@
 <script>
+  import { createEventDispatcher } from "svelte";	
   import { base } from "$app/paths";
 
   import {
@@ -25,26 +26,43 @@
   import layersIconPath from "$lib/icons/layers.svg";
   import counterMonumentIconPath from "$lib/icons/countermonument.svg";
   import monumentIconPath from "$lib/icons/monument.svg";
+  import { map } from "leaflet";
 
   export let mapInstance;
+  export let objectView = false;
 
   let eye = true;
   let darkIcon = true;
   let showPeephole = false;
 
+  const dispatch = createEventDispatcher();
+
   // Function to handle zoom in
   function zoomIn() {
-    console.log("zooming in");
-    if (mapInstance) {
-      mapInstance.zoomIn();
+    if (objectView) {
+      dispatch('zoom', { dir: 'in' })
     } else {
-      console.error("Map instance is not available.");
+      console.log("zooming in");
+      if (mapInstance) {
+        mapInstance.zoomIn();
+      } else {
+        console.error("Map instance is not available.");
+      }
     }
   }
 
   // Function to handle zoom out
   function zoomOut() {
-    mapInstance.zoomOut();
+    if (objectView) {
+      dispatch('zoom', { dir: 'out' })
+    } else {
+      console.log("zooming out");
+      if (mapInstance) {
+        mapInstance.zoomOut();
+      } else {
+        console.error("Map instance is not available.");
+      }
+    }
   }
 
   function clickEye() {
@@ -140,15 +158,15 @@
       on:click={() => (showPeephole = !showPeephole)}
       title="Select Map Style"
     >
-      <img src={currentImage} alt="Select Map Style" />
+      <img src={!objectView ? currentImage : objectImage} alt="Select Map Style" />
     </button>
     {#if showPeephole}
-      <a href="{base}/objects" class="link-button" title="Object View">
-        <img src={objectImage} alt="Object View" />
+      <a href={`${base}/${objectView ? 'map' : 'objects'}`} class="link-button" title="Object View">
+        <img src={!objectView ? objectImage : currentImage} alt="Object View" />
       </a>
     {/if}
   </div>
-  {#if showPeephole}
+  {#if showPeephole && !objectView}
     <Peephole onMapStyleSelect={handleMapStyleSelect} />
   {/if}
 </div>
@@ -199,7 +217,7 @@
   .link-button {
   position: relative;
   overflow: hidden; 
-  margin-right: 0.5rem;
+  margin-right: 1.5rem;
 }
   #peephole img {
     width: 100%;
@@ -213,8 +231,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 150%;
-    height: 150%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
