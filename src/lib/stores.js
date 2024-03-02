@@ -79,6 +79,8 @@ export const selectedMarkerId = writable(null);
 
 // Store for the current sidebar
 export const currentSidebar = writable(null);
+// Current menu Section
+export const currentMenuSection = writable("Menu");
 
 // Derived store to manage the visibility of the markers
 export const isMarkersVisible = derived(currentSidebar, $currentSidebar => $currentSidebar !== 'submissions');

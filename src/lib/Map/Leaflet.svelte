@@ -63,6 +63,12 @@
   });
 }
 
+// Reactive statement for removing the marker when not in submissions mode
+$: if ($currentSidebar !== "submissions" && marker) {
+    map.removeLayer(marker);
+    marker = null; 
+  }
+
   async function initializeTerritories(map) {
     if (!territoriesData) {
       try {
