@@ -29,6 +29,7 @@
     filteredStore,
     filtersActive,
     userLatLng,
+    mapInstanceStore,
   } from "$lib/stores";
 
   export let bounds = undefined;
@@ -135,7 +136,7 @@ $: if ($currentSidebar !== "submissions" && marker) {
         const initialBounds = map.getBounds();
         mapBoundsStore.set(initialBounds);
       }
-
+      mapInstanceStore.set(map);
       // Add MapTiler layer
       mtLayer = new MaptilerLayer({
         Language: "fr",

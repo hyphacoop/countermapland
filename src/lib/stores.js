@@ -92,3 +92,5 @@ export const filtersActive = writable(false);
 
 // Store user's latitude and longitude for submissions
 export const userLatLng = writable(null);
+
+export const mapInstanceStore = writable(null);
