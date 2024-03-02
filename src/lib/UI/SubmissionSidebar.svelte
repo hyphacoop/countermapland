@@ -4,6 +4,8 @@
 
   import { userLatLng, currentSidebar, currentMenuSection } from "$lib/stores";
 
+  import { uploadImage } from "$lib/Map/utilities";
+
   import countermonumentOutlineIcon from "$lib/icons/countermonument-outline.svg";
   import monumentOutlineIcon from "$lib/icons/monument-outline.svg";
   import countermonumentIcon from "$lib/icons/countermonument.svg";
@@ -13,15 +15,26 @@
   let names = [{ id: "name1", value: "" }];
   let altText;
   let description;
-  let file;
   let dynamicFieldValues = {};
   let consentGiven = false;
   let powerDominanceAnswer = null;
-
-  const dispatch = createEventDispatcher();
+  let success = false;
+  let submitting = false;
+  let errorMessage = false;
+  let email;
+  let files;
+  let file = null;
+  let activeInfoButtons = {};
 
   let senses = ["see", "hear", "smell", "taste", "touch"];
   let media = ["drawing", "photo", "poem", "recipe", "perfume"];
+
+  let selectedSense = senses[0];
+  let selectedMedia = media[0];
+
+  const dispatch = createEventDispatcher();
+
+
   let fields = [
     "Year",
     "Artist",
@@ -56,13 +69,21 @@
     Gestures: "gestures",
   };
 
-  let success = false;
-  let submitting = false;
-  let errorMessage = false;
-  let email;
-  let activeInfoButtons = {};
-  let selectedSense = senses[0];
-  let selectedMedia = media[0];
+  function resetForm() {
+    names = [{ id: "name1", value: "" }];
+    altText = "";
+    description = "";
+    dynamicFieldValues = {};
+    consentGiven = false;
+    powerDominanceAnswer = null;
+    success = false;
+    submitting = false;
+    errorMessage = false;
+    email = "";
+    files = null;
+    file = null;
+    activeInfoButtons = {};
+  }
 
   function isPower(value) {
     powerDominanceAnswer = value;
@@ -90,8 +111,21 @@
     dispatch("closeSideBar");
   }
 
+  // Function to handle the file drop event
+  async function handleDrop(e) {
+    e.preventDefault();
+    const files = e.dataTransfer ? e.dataTransfer.files : e.target.files
+    if (files && files.length > 0) {
+      file = files[0]; // only using one file for now
+    }
+  }
+
   async function handleSubmit() {
     submitting = true;
+
+    // Check if there's a file selected for upload
+    let imageUrl = file ? await uploadImage(file) : null;
+
     // Constructing the URLSearchParams directly without initially including potentially undefined values
     let payload = new URLSearchParams();
 
@@ -102,8 +136,13 @@
       powerDominanceAnswer === "yes" ? "true" : "false"
     );
     if (description) payload.append("fields[description]", description);
-    if (altText) payload.append("fields[altText]", altText); // Ensure altText is checked for undefined or empty string
     payload.append("fields[email]", email);
+    if (imageUrl) {
+      payload.append("fields[media]", imageUrl);
+    }
+    if (altText) {
+      payload.append("fields[altMedia]", altText);
+    }
 
     // Handle dynamic names and other fields
     names.forEach((name, index) => {
@@ -160,6 +199,12 @@
     currentMenuSection.set("Contact");
   }
 
+  $: if (files && files.length > 0) {
+    file = files[0];
+  } else {
+    file = null;
+  }
+
   $: submitText = submitting ? "Submitting" : "Submit";
 </script>
 
@@ -184,7 +229,7 @@
   {:else if errorMessage}
     <h2>Something went wrong</h2>
     <p class="success">Your submission was not properly received.</p>
-    <p>Get in touch or try again.</p>
+    <p>Get in touch or <a class='link' on:click={resetForm}>try again.</p>
 
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
   {:else}
@@ -321,11 +366,13 @@
     <p>Share a file (audio, video, image, text) that represents this place.</p>
 
     <!-- File input with drag and drop -->
-    <input type="file" bind:files={file} id="file" hidden />
-    <label for="file" class="file-dropzone mb-4">
+    <input type="file" bind:files={files} id="file" hidden />
+    <label for="file" class="file-dropzone mb-4"  on:drop|preventDefault={handleDrop} on:dragover|preventDefault> 
       Choose a file or drop one here.
     </label>
-
+    {#if file}
+      <p>File selected: {file.name}</p>
+    {/if}
     <p>Describe this image</p>
     <textarea class="mb-4" bind:value={altText}></textarea>
 
