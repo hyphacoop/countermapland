@@ -66,13 +66,38 @@ export const currentMapStyleId = derived(
   $index => mapStyles[$index].id
   );
 
-// Initial view coordinates
-const initialView = [49.06193, -81.02026]; // Center of North America
+//// Function to get the current view from local storage
+function getCurrentViewFromStorage() {
+  const storedView = localStorage.getItem('currentView');
+  return storedView ? JSON.parse(storedView) : null;
+}
 
+// Function to save the current view to local storage
+function saveCurrentViewToStorage(view) {
+  localStorage.setItem('currentView', JSON.stringify(view));
+}
+
+// Function to select a random marker's latLng
+function getRandomInitialView(markers) {
+  const randomIndex = Math.floor(Math.random() * markers.length);
+  return markers[randomIndex].latLng;
+}
+
+const initialView = getRandomInitialView(initialMarkers);
+
+// Initialize initialViewStore with a random latLng from markers
 export const initialViewStore = writable(initialView);
 
-// Current view store, starts as initial view
-export const currentViewStore = writable(initialView);
+// Attempt to get the current view from local storage
+const savedCurrentView = getCurrentViewFromStorage();
+
+// Initialize currentViewStore with either the saved current view or the initial view
+export const currentViewStore = writable(savedCurrentView || initialView);
+
+// Subscribe to changes in currentViewStore to save them for future sessions
+currentViewStore.subscribe((currentView) => {
+  saveCurrentViewToStorage(currentView);
+});
 
 // Add a writable store for the current selected marker
 export const selectedMarkerId = writable(null);
