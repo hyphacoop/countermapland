@@ -1,4 +1,5 @@
 <script>
+  import { base } from "$app/paths";
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
@@ -11,6 +12,8 @@
   import countermonumentIcon from "$lib/icons/countermonument.svg";
   import monumentIcon from "$lib/icons/monument.svg";
   import closeImage from "$lib/icons/close.svg";
+
+  export let objectView = false;
 
   let names = [{ id: "name1", value: "" }];
   let altText;
@@ -250,12 +253,19 @@
     </p>
 
     <h3>Leave a marker</h3>
+    {#if $userLatLng}
+    <p>{$userLatLng}</p>
+  {:else}
     <p>
-      {$userLatLng
-        ? $userLatLng
-        : "Click on the countermap to mark the location of this place."}
+      Click
+      {#if objectView}
+        {@html `<a href="${base}/map" class='underline'>here</a>`}
+      {:else}
+        on the countermap
+      {/if}
+      to mark the location of this place.
     </p>
-
+{/if}
     <h3>What do you call this place?</h3>
     <p>
       This can be an “official” name, a name that you use, or something else.
