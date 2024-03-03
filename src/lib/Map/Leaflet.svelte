@@ -232,9 +232,12 @@ $: if ($currentSidebar !== "submissions" && marker) {
       territoriesVisible.set(true);
       darkMode.set("light");
       console.log("setting territoriesVisible to true");
-    } else {
+    } else if ($currentMapStyleIndex === 0 ){
       territoriesVisible.set(false);
       darkMode.set("dark");
+    } else {
+      territoriesVisible.set(false);
+      darkMode.set("light");
     }
     if (map && mtLayer) {
       updateMapStyle($currentMapStyleId);
