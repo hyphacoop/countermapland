@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { base } from "$app/paths";
-
+  import { fade } from "svelte/transition";
   import { writable } from "svelte/store";
 
   import "../../app.css";
@@ -11,9 +11,16 @@
   import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
   import Search from "$lib/UI/Search.svelte";
   import Toolbar from "$lib/Map/Toolbar.svelte";
+  import MenuSidebar from "$lib/UI/MenuSidebar.svelte";
+  import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
+  
   import L, { latLngBounds } from "leaflet";
 
-  let zoomLevel = writable(4);
+  import menuIconPath from "$lib/icons/menu.svg";
+  import filterIconPath from "$lib/icons/filter.svg";
+  
+
+  let zoomLevel = writable(8);
   let mainElement;
   let mainWidth;
 
@@ -24,8 +31,16 @@
     if ($mapInstanceStore) {
       return;
     }
+  let onMountview;
+  if ($currentViewStore) {
+    console.log('current view store', $currentViewStore);
+
+    onMountview = $initialViewStore
+  } else {
+    onMountview = $initialViewStore
+  }
   map = L.map('map', {
-    center: [$initialViewStore[0], $initialViewStore[1]], // Set these to your desired initial view
+    center: [onMountview[0], onMountview[1]], // Set these to your desired initial view
     zoom: $zoomLevel,
     });
 
@@ -36,59 +51,46 @@
 });
 
   // Function to select a transformation pattern based on the photo index and marker index
-  function getTransformation(photoIndex, index, mainWidth) {
+  function getTransformation(indexI, mainWidth) {
+
+  const index = indexI % 3;
   // Assuming each photo has a margin or padding that should be considered in the calculation
-  const photoWidth = 100; // Width of each photo
-  const photoHeight = 150; // Height of each photo
-  const gap = 16; // Gap between photos
+  const photoWidth = 75; // Width of each photo
+  const photoHeight = 50; // Height of each photo
+  const gap = 4; // Gap between photos
   
-  const itemsPerRow = Math.floor(mainWidth / (photoWidth + gap)); // Calculate how many items can fit in a row based on the mainWidth
-
-  // Calculate the marker's row and column based on its index
-  const markerRow = Math.floor(index / itemsPerRow);
-  const markerCol = index % itemsPerRow;
-
-    const randomOffsetTop = Math.random() * 100;
-    const randomOffsetLeft = Math.random() * 100;
+ 
+    const randomOffsetTop = Math.random() * 75;
+    const randomOffsetLeft = Math.random() * 75;
     const randomDirection = Math.random() > 0.5 ? 1 : -1;
-  // Additional offset for photos within the same marker
-  // Adjust the positioning based on photoIndex if necessary
-  const additionalLeftOffset = photoIndex * (photoWidth + gap); // This will place photos next to each other within the same marker
+
+    const itemsPerRow = Math.floor(mainWidth / (photoWidth + gap + randomOffsetLeft)); // Calculate how many items can fit in a row based on the mainWidth
+
+// Calculate the marker's row and column based on its index
+const markerRow = Math.floor(index / itemsPerRow);
+const markerCol = index % itemsPerRow;
+
+
+  const additionalLeftOffset = index * (photoWidth + gap); // This will place photos next to each other within the same marker
   // You can adjust the logic here depending on how you want to position photos relative to their marker
 
-  const top = markerRow * (photoHeight + gap) + randomOffsetTop; // Calculate top based on the row
-  const baseLeft = markerCol * (photoWidth + gap) + randomOffsetLeft; // Calculate base left position for the marker
+  const top = markerRow * (photoHeight + gap) + (randomOffsetTop * randomDirection); // Calculate top based on the row
+  const baseLeft = markerCol * (photoWidth + gap) + (randomOffsetLeft * randomDirection); // Calculate base left position for the marker
   const left = baseLeft + additionalLeftOffset; // Adjust left position based on photoIndex within the marker
 
   return { top, left };
 }
-
-function getCellPosition(index, mainWidth) {
-  const cellWidth = 200; // Assuming each cell is 200px wide, adjust as needed
-  const gap = 16; // Gap between cells
-  const itemsPerRow = Math.floor(mainWidth / (cellWidth + gap));
-
-  const row = Math.floor(index / itemsPerRow);
-  const col = index % itemsPerRow;
-
-  const top = row * (cellWidth + gap);
-  const left = col * (cellWidth + gap);
-
-  return { top, left };
-}
-
 
 
   function updateZoom(event) {
     const { dir } = event.detail;
     zoomLevel.update(currentZoom => {
     if (dir === 'in') {
-      if (currentZoom < 4) {
+      if (currentZoom < 16) {
       return currentZoom + 1;
       } else {
         return 3;
       } 
-      return currentZoom + 1; // Increment the zoom level
     } else if (dir === 'out') {
       if (currentZoom > 2) {
       return currentZoom - 1;
@@ -114,13 +116,13 @@ function getCellPosition(index, mainWidth) {
         return $mapBoundsStore.contains(L.latLng(lat, lng));
       });
 
-      // Shuffle the array and pick the first 3 elements
+      // Shuffle the array and pick the first X elements
       for (let i = visibleMarkers.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [visibleMarkers[i], visibleMarkers[j]] = [
           visibleMarkers[j],
           visibleMarkers[i],
-        ]; // ES6 destructuring swap
+        ]; 
       }
 
       return visibleMarkers.slice(0, zoomLevel);
@@ -143,35 +145,7 @@ function getCellPosition(index, mainWidth) {
 }
 
 
-function calculateImageBounds(startLatLng, index, gridSpacing = 10) {
-  console.log(`Calculating bounds for:`, startLatLng, `Index:`, index, `GridSpacing:`, gridSpacing);
 
-if (!startLatLng || isNaN(startLatLng.lat) || isNaN(startLatLng.lng)) {
-  console.error("Invalid startLatLng:", startLatLng);
-  return null; // Return or handle error
-}
-  // Calculate row and column based on index
-  const row = Math.floor(index / 3); // For a 3xN grid
-  const col = index % 3;
-
-  // Calculate lat and lng offsets based on row and column
-  const latOffset = row * gridSpacing;
-  const lngOffset = col * gridSpacing;
-
-  // Calculate the southwest and northeast corners of the bounds
-  const southWest = L.latLng(startLatLng.lat - latOffset, startLatLng.lng + lngOffset);
-  const northEast = L.latLng(startLatLng.lat - latOffset - gridSpacing, startLatLng.lng + lngOffset + gridSpacing);
-
-  return L.latLngBounds(southWest, northEast);
-}
-
-function addImageOverlay(map, imageUrl, alt, LatLng, index) {
-  console.log("LatLng", LatLng, "Index", index);
-  const latLngObject = { lat: LatLng[0], lng: LatLng[1] };
-  const bounds = calculateImageBounds(latLngObject, index, 0.001); // Adjust gridSpacing based on your map's scale
-  const overlay = L.imageOverlay(imageUrl, bounds, {alt: alt});
-  overlay.addTo(map);
-}
 
   function handleUpdateView(event) {
     console.log('updating view');
@@ -187,23 +161,14 @@ function addImageOverlay(map, imageUrl, alt, LatLng, index) {
     selectedMarkerId.set(marker.id);
   }
   function handleMainClick(event) {
-    if (event.target === event.currentTarget) {
-      selectedMarkerId.set(null);
-      currentSidebar.set(null);
-    }
+    console.log('main click');
+    if (!event.target.closest('.sdbbtn') && !event.target.closest('.sidebar')) {
+          currentSidebar.set(null);
+          selectedMarkerId.set(null);
+      }
   }
 
-  $: if ($mapInstanceStore && $visibleRandomMarkers.length > 0) {
-  $visibleRandomMarkers.forEach((marker, index) => {
-    if (marker.photos) { 
-    marker.photos.forEach(photo => {
-      const imageUrl = `https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${photo.url}`;
-      const latLng = [marker.latLng[0], marker.latLng[1]]; 
-      addImageOverlay($mapInstanceStore, imageUrl, photo.alt, latLng, marker.id);
-    });
-    }
-  });
-}
+
 
 function closeSidebar() {
     console.log('closing sidebar');
@@ -214,38 +179,47 @@ function closeSidebar() {
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <main bind:this={mainElement} on:click={handleMainClick}>
+  <div class="content-container">
   <Search on:updateView={handleUpdateView} />
   <Toolbar mapInstance={$mapInstanceStore} objectView={true} on:zoom={updateZoom} />
   <h1><a href="{base}/map">*countermap</a></h1>
   <div class="image-grid">
     {#each $visibleRandomMarkers as marker, index}
-      {#if marker.photos && marker.photos.length}
-        <div class="image-container" key={index}>
-          {#each marker.photos as { url, alt }, photoIndex}
-            <div
-              class="photo-wrapper"
-              style="top: {getTransformation(photoIndex, index, mainWidth)
-                .top}px; left: {getTransformation(photoIndex, index, mainWidth).left}px;"
-            >
-              <img
-                src={`https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${url}`}
-                {alt}
-                key={photoIndex}
-                on:click={() => handleImageClick(marker)}
-              />
-            </div>
-          {/each}
-        </div>
-      {/if}
-    {/each}
+    {#if marker.photos && marker.photos.length > 0}
+      <div class="image-container" key={index} style="top: {getTransformation(index, mainWidth).top}px; left: {getTransformation(index, mainWidth).left}px;">
+        <img
+          on:click|stopPropagation
+          src={`https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${marker.photos[0].url}`}
+          alt={marker.photos[0].alt}
+          on:click={() => handleImageClick(marker)}
+          in:fade={{ duration: 300 }}
+          out:fade={{ duration: 300 }}
+          style="cursor: pointer;"
+        />
+      </div>
+    {/if}
+  {/each}
+
+  
     <div id="map" style='display:none'></div>
   </div>
   {#if $selectedMarkerId}
     <Sidebar />
   {/if}
   {#if $currentSidebar === 'submissions'}
-  <SubmissionSidebar on:closeSideBar={closeSidebar}/>
+  <SubmissionSidebar on:closeSideBar={closeSidebar} objectView={true}/>
 {/if}
+
+{#if $currentSidebar === 'menu'}
+  <MenuSidebar />
+{/if}
+
+{#if $currentSidebar === 'tools'}
+  <ToolsSidebar />
+{/if}
+</div>
+
+
 </main>
 
 <style>
@@ -256,12 +230,17 @@ function closeSidebar() {
   }
   main {
     background-color: black;
+  }
+  .content-container {
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: auto;
     overflow: hidden;
+    position: relative;
+  }
+  h1 {
+    text-shadow: 1px 1px 1px rgb(0, 0, 0);
   }
   h1,
   a {
@@ -278,26 +257,14 @@ function closeSidebar() {
     padding: 0 100px;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: -250px;
-    margin-left: -250px;
   }
   .image-container {
     position: relative;
-    width: 200px;
+    width: 150px;
     height: auto;
+    transition: all 0.3s ease;
   }
-  .photo-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transition: all 0.2 ease;
-    border: 2px solid #000;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .photo-wrapper:hover {
+  .image-container:hover {
     transform: scale(1.2);
     z-index: 5;
   }
@@ -307,5 +274,26 @@ function closeSidebar() {
     height: auto;
     object-fit: cover;
     max-height: 50vh;
+  }
+  .menu-button {
+    position: absolute;
+    bottom: 3.31rem;
+    left: 3.75rem;
+    z-index: 9999;
+    border-radius: 0.25rem;
+    background: #FFF;
+    padding: 0.25rem;
+  }
+
+  .filter-button {
+    position: absolute;
+    bottom: 3.31rem;
+    right: 3.75rem;
+    z-index: 9997;
+    border-radius: 0.25rem;
+    background: #FFF;
+    padding: 0.25rem;
+    width: 30px;
+    height: 30px;
   }
 </style>
