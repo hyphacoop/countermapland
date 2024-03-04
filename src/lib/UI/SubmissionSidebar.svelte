@@ -37,6 +37,7 @@
 
   const dispatch = createEventDispatcher();
 
+  $: isFormValid = names.some(name => name.value.trim() !== '') && description && $userLatLng && email;
 
   let fields = [
     "Year",
@@ -195,6 +196,15 @@
       errorMessage = true;
       $userLatLng = null;
     }
+  }
+
+  $: missingFields = [];
+  $: {
+    missingFields = []; // Reset the array on each reactivity cycle
+    if (!names.some(name => name.value.trim() !== '')) missingFields.push("Name");
+    if (!description) missingFields.push("Description");
+    if (!$userLatLng) missingFields.push("Location (latitude/longitude)");
+    if (!email) missingFields.push("Email");
   }
 
   function goToContactForm() {
@@ -419,11 +429,18 @@
         Let *countermap record and reuse the information you shared. 
       </label>
     </p>
+
+        <!-- Display missing fields -->
+{#if missingFields.length > 0}
+<p class="missing-fields">Missing required fields: {missingFields.join(", ")}</p>
+{/if}
+
     <button
       class="submit rounded mb-4"
-      disabled={!consentGiven}
+      disabled={!isFormValid || !consentGiven}
       on:click={handleSubmit}>{submitText}</button
     >
+
   {/if}
 </div>
 
