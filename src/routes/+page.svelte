@@ -4,8 +4,8 @@
 
   import IconMosaic from "$lib/UI/IconMosaic.svelte";
 
-  import Satellite from "$lib/icons/peephole/satellite-view.png";
-  import Object from "$lib/icons/peephole/object-view.png";
+  import Satellite from "$lib/icons/peephole/satellite-view.webp";
+  import Object from "$lib/icons/peephole/object-view.webp";
 
   import { onMount, onDestroy } from "svelte";
 

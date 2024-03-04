@@ -14,11 +14,10 @@
   import Peephole from "$lib/UI/Peephole.svelte";
 
   // Import the images for each map style
-  import territoriesImage from "$lib/icons/peephole/map-territories.png";
-  import streetsImage from "$lib/icons/peephole/map-streets.png";
-  import satelliteImage from "$lib/icons/peephole/map-satellite.png";
-
-  import objectImage from "$lib/icons/peephole/object-view.png";
+  import territoriesImage from "$lib/icons/peephole/map-territories.webp";
+  import streetsImage from "$lib/icons/peephole/map-streets.webp";
+  import satelliteImage from "$lib/icons/peephole/map-satellite.webp";
+  import objectImage from "$lib/icons/peephole/object-view.webp";
 
   // SVG Icons
   import plusIconPath from "$lib/icons/plus.svg";

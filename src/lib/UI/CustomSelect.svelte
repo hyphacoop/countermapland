@@ -46,16 +46,17 @@
   });
   </script>
   
-  <div class="custom-select {options.length ? 'cursor-pointer' : 'cursor-not-allowed'}" on:click={toggleDropdown}
+  <div class="custom-select" on:click={toggleDropdown}
     style="background-color: {options.length ? '#FED5BE' : 'transparent'}; width: {options.length ? 'auto' : '60%'};">
     <input
     class="select-selected truncate ..."
     type="text"
-    placeholder="Search"
+    placeholder="{options.length ? 'Search' : 'No data'}"
     bind:value={selected}
     on:input="{(e) => (searchTerm = e.target.value)}"
     on:click|stopPropagation="{() => (showDropdown = true)}"
     style="background-color: {options.length ? '#FED5BE' : 'transparent'}"
+    disabled={!options.length}
   />
     {#if showDropdown}
       <div class="select-items {!showDropdown ? 'select-hide' : ''}">

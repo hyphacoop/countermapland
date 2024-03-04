@@ -171,8 +171,8 @@ $: if ($currentSidebar !== "submissions" && marker) {
         mapBoundsStore.set(bounds);
       })
       .on("popupopen", async (e) => {
-        await tick();
         e.popup.update();
+        await tick();
       });
   });
 
