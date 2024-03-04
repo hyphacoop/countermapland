@@ -26,7 +26,7 @@
 
   onMount(() => {
     if (mainElement) {
-      mainWidth = mainElement.offsetWidth; // Get the width of the main element
+      mainWidth = mainElement.offsetWidth; 
     }
     if ($mapInstanceStore) {
       return;
@@ -168,6 +168,27 @@ const markerCol = index % itemsPerRow;
       }
   }
 
+  function setCurrentSidebar(sidebar) {
+    currentSidebar.set(sidebar);
+  }
+
+  
+  function showMenu() {
+    if ($currentSidebar === 'menu') {
+      setCurrentSidebar(null);
+    } else {
+      setCurrentSidebar('menu');
+    }
+  }
+
+  function showTools() {
+    if ($currentSidebar === 'tools') {
+      setCurrentSidebar(null);
+    } else {
+      setCurrentSidebar('tools');
+    }
+  }
+
 
 
 function closeSidebar() {
@@ -217,6 +238,15 @@ function closeSidebar() {
 {#if $currentSidebar === 'tools'}
   <ToolsSidebar />
 {/if}
+</div>
+
+<div class='buttons-container'>
+<button class='menu-button sdbbtn' on:click={showMenu}>
+  <img src={menuIconPath} alt="Open Menu Sidebar"/>
+</button>
+<button class='filter-button sdbbtn' on:click={showTools}>
+  <img src={filterIconPath} alt="Open Filter Sidebar"/>
+</button>
 </div>
 
 
@@ -276,7 +306,7 @@ function closeSidebar() {
     max-height: 50vh;
   }
   .menu-button {
-    position: absolute;
+    position: fixed;
     bottom: 3.31rem;
     left: 3.75rem;
     z-index: 9999;
@@ -286,7 +316,7 @@ function closeSidebar() {
   }
 
   .filter-button {
-    position: absolute;
+    position: fixed;
     bottom: 3.31rem;
     right: 3.75rem;
     z-index: 9997;
@@ -296,4 +326,10 @@ function closeSidebar() {
     width: 30px;
     height: 30px;
   }
+  .buttons-container {
+  position: fixed; /* or absolute, depending on need */
+  bottom: 20px;
+  right: 20px;
+  z-index: 10; /* Ensure it's above other content if overlapping */
+}
 </style>
