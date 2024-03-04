@@ -1,37 +1,51 @@
 <p>
     
-This project was initiated on territory occupied by many nations including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples for thousands of years. Today Tkaronto is home to many diverse Indigenous people from across Turtle Island. We recognize that although this land is covered by Treaty 13, colonialism is an ongoing process. 
+    This project was initiated on territory occupied by many nations including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples for thousands of years. Today T’karonto is home to many diverse Indigenous people from across Turtle Island. We recognize that although this land is covered by Treaty 13, colonialism is an ongoing process. *countermap is committed to working with Indigenous communities to expose, impair, and end settler colonialism.
 
 </p>
 
 <p>
 
-    Beyond this land acknowledgement, we are committed to continually questioning how countermap can work with Indigenous communities to expose, impair, and end settler colonialism.
+    *countermap is a non-profit organization and collaborative platform exploring relationships between heritage and power. We work to;
+</p>
+    <ol>
+        <li>
+            Expand the definition of “monument” to recognize events, ecologies, histories, movements, and communities –including those which have experienced erasure; 
 
+        </li>
+        <li>
+            Create space for reimagining monuments and futures that challenge dominant systems of power; 
+        </li>
+        <li>
+            Disclose structural and ideological networks maintaining the current monument landscape through public-facing research;
+        </li>
+        <li>
+            Explore practices in critical cartography through collaborations, commissions, and capacity-building work; 
+        </li>
+        <li>Support experimental cultural infrastructures that challenge oppression.
+        </li>
+    </ol>
+
+
+<p>
+    *countermap is in progress. The map currently contains limited data and functionality. Although our project is currently limited to Canada’s settler colonial borders, we are building capacity to expand the project. Interested in collaborating? Discussing? Sharing? Contact us. 
 
 </p>
 
-
-<ol>
-
-
-  <li>  Building public datasets around the current monument landscape and its morphology; </li>
-  <li>    Disentangling the processes, agencies, policies, and legal frameworks that manage and maintain the current monument landscape; </li>
-    <li>   Investigating the existence and emergence of racist and colonial spaces and institutions in Canada, including spaces and institutions that no longer exist;  </li>
-        <li>   Recognizing a broader definition of ‘monument’ that includes living or lost ecologies, communities, histories, and movements;  </li>
-            <li>  Continually challenging the imperial roots of mapping technology and its projections; </li>
-                <li>  Countering histories of erasure and inequality through new discussions, interventions, collaborations, and a culture of openness/learning;  </li>
-                    <li>      Supporting and building infrastructure in arts and culture that expand practice beyond prevalent colonial frameworks.  </li>
+<p>
+    <span  class='underline'>Current team</span>
+    <br>
+    Dana Salama 
+    <br>
+    Clayton Windatt 
+    <br>
+    Jesse McKee
     
-
-
-</ol>
-
-<p>
-    countermap.land is in progress. Although our project is currently limited to Canada’s settler colonial borders, we are building capacity to expand the project. We are also interested in projects that question cartography’s colonial roots. Interested in collaborating? Discussing? Sharing? Contact us. 
 </p>
 
+<p>This website was built by Hypha Worker Co-operative and designed by Sarah Ingle. </p>
 <ul>
+    <li class='underline'>Previous collaborators</li>
     <li>Evelyn Hoffman </li>
     <li>   Heather Breeze </li>
     <li>   Jamie Lipson </li>
@@ -53,7 +67,9 @@ This project was initiated on territory occupied by many nations including the M
         margin-bottom: 1.5rem;
     }
     ol {
+        margin-left: 1rem;
         margin-bottom: 1.5rem;
+        list-style: decimal;
     }
     ul {
         margin-bottom: 1.5rem;
