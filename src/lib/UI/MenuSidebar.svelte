@@ -15,7 +15,7 @@
   import Projects from "$lib/Pages/Projects.svelte";
   import CommunityAgreements from "$lib/Pages/CommunityAgreements.svelte";
 
-  import countermonumentIcon from '$lib/icons/countermonument.svg';
+  import countermonumentIcon from "$lib/icons/countermonument.svg";
   import closeImage from "$lib/icons/close.svg";
   import { currentSidebar } from "$lib/stores";
 
@@ -62,7 +62,7 @@
     {:else if $currentMenuSection === "Contact"}
       <h2>Contact</h2>
       <Contact />
-      {:else if $currentMenuSection === "Community Agreements"}
+    {:else if $currentMenuSection === "Community Agreements"}
       <h2>Community Agreements</h2>
       <CommunityAgreements />
     {:else if $currentMenuSection === "Menu"}
@@ -76,7 +76,11 @@
               }}
             >
               {section}
-              <img class="menu-icon" src={countermonumentIcon} alt="Hover Icon" />
+              <img
+                class="menu-icon"
+                src={countermonumentIcon}
+                alt="Hover Icon"
+              />
             </button>
           </li>
         {/each}
@@ -123,15 +127,15 @@
     margin-bottom: 2.75rem;
   }
   .menu-icon {
-  width: 24px; 
-  margin-left: 10px; /* Space between icon and text */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
+    width: 24px;
+    margin-left: 10px; /* Space between icon and text */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
-li button:hover .menu-icon {
-  opacity: 1;
-}
+  li button:hover .menu-icon {
+    opacity: 1;
+  }
   h2 {
     margin-bottom: 2rem;
   }
