@@ -7,11 +7,14 @@
     "About",
     "Projects",
     "Contact",
+    "Community Agreements",
   ];
 
   import About from "$lib/Pages/About.svelte";
   import Contact from "$lib/Pages/Contact.svelte";
   import Projects from "$lib/Pages/Projects.svelte";
+  import CommunityAgreements from "$lib/Pages/CommunityAgreements.svelte";
+
 
   import closeImage from "$lib/icons/close.svg";
   import { currentSidebar } from "$lib/stores";
@@ -59,6 +62,9 @@
     {:else if $currentMenuSection === "Contact"}
       <h2>Contact</h2>
       <Contact />
+      {:else if $currentMenuSection === "Community Agreements"}
+      <h2>Community Agreements</h2>
+      <CommunityAgreements />
     {:else if $currentMenuSection === "Menu"}
       <ul>
         {#each sections.filter((section) => section !== "Menu") as section}
