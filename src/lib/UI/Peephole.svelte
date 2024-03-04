@@ -3,9 +3,9 @@
 
   import { currentMapStyleIndex } from "$lib/stores";
 
-  import territoriesImage from "$lib/icons/peephole/map-territories.png";
-  import streetsImage from "$lib/icons/peephole/map-streets.png";
-  import satelitteImage from "$lib/icons/peephole/map-satellite.png";
+  import territoriesImage from "$lib/icons/peephole/map-territories.webp";
+  import streetsImage from "$lib/icons/peephole/map-streets.webp";
+  import satelitteImage from "$lib/icons/peephole/map-satellite.webp";
 
   let mapStyleId;
   currentMapStyleIndex.subscribe((value) => {
