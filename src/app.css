@@ -239,3 +239,25 @@ img.photos  {
 .learn-more-button:focus {
     text-decoration: none;
 }
+
+.menu-button {
+  position: fixed;
+  bottom: 1.31rem;
+  left: 3.75rem;
+  z-index: 9999;
+  border-radius: 0.25rem;
+  background: #FFF;
+  padding: 0.25rem;
+}
+
+.filter-button {
+  position: fixed;
+  bottom: 1.31rem;
+  right: 3.4rem;
+  z-index: 9997;
+  border-radius: 0.25rem;
+  background: #FFF;
+  padding: 0.25rem;
+  width: 30px;
+  height: 30px;
+}

@@ -269,3 +269,12 @@ $: if ($currentSidebar !== "submissions" && marker) {
     <slot />
   {/if}
 </div>
+
+<style>
+  :global(.leaflet-control-attribution.leaflet-control) {
+    display: none !important; 
+  }
+  :global(a[href="https://www.maptiler.com"]) {
+    display: none !important;
+}
+</style>
