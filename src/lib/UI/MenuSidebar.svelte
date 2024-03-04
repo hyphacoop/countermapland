@@ -6,8 +6,6 @@
     "Menu",
     "About",
     "Projects",
-    "Research",
-    "Credits",
     "Contact",
   ];
 
