@@ -305,31 +305,10 @@ function closeSidebar() {
     object-fit: cover;
     max-height: 50vh;
   }
-  .menu-button {
-    position: fixed;
-    bottom: 3.31rem;
-    left: 3.75rem;
-    z-index: 9999;
-    border-radius: 0.25rem;
-    background: #FFF;
-    padding: 0.25rem;
-  }
-
-  .filter-button {
-    position: fixed;
-    bottom: 3.31rem;
-    right: 3.75rem;
-    z-index: 9997;
-    border-radius: 0.25rem;
-    background: #FFF;
-    padding: 0.25rem;
-    width: 30px;
-    height: 30px;
-  }
   .buttons-container {
   position: fixed; /* or absolute, depending on need */
-  bottom: 20px;
-  right: 20px;
+  bottom: 0;
+  right: 0;
   z-index: 10; /* Ensure it's above other content if overlapping */
 }
 </style>
