@@ -12,6 +12,9 @@
 
   onMount(() => {
     popup = L.popup().setContent(popupElement);
+    popup.options.closeOnClick = false;
+    popup.options.autoClose = false;
+    popup._initLayout();
 
 	if (layer) {
       layer.bindPopup(popup);
@@ -53,5 +56,9 @@
 
 .popPadding {
   padding-top: 1.56rem;
+  width: 300px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
+
 </style>
