@@ -202,6 +202,11 @@
     currentMenuSection.set("Contact");
   }
 
+  function gotoComAgr() {
+    currentSidebar.set("menu");
+    currentMenuSection.set("Community Agreements");
+  }
+
   $: if (files && files.length > 0) {
     file = files[0];
   } else {
@@ -249,7 +254,7 @@
     </p>
 
     <p class="main-description">
-      Please read our <i>Community Agreements</i> to learn more.
+      Please read our <a class='link' on:click={gotoComAgr}>Community Agreements</a> to learn more.
     </p>
 
     <h3>Leave a marker</h3>
@@ -411,8 +416,7 @@
             fill={consentGiven ? "black" : "none"}
           />
         </svg>
-        Let *countermap record and reuse the information you shared. Read our User
-        and Community Agreements here.
+        Let *countermap record and reuse the information you shared. 
       </label>
     </p>
     <button
