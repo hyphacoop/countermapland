@@ -85,7 +85,7 @@
           </li>
         {/each}
       </ul>
-      <div>*countermap is based in Tkaronto on the traditional lands...</div>
+      <div>*countermap was initiated on territory occupied by many nations including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples for thousands of years. Today T’karonto is home to many diverse Indigenous people from across Turtle Island. </div>
     {:else}
       <p>no content for this section yet.</p>
     {/if}
