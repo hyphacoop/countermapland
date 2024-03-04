@@ -7,6 +7,11 @@
     import closeImage from "$lib/icons/close.svg";
 
     import { currentSidebar, filtersActive } from "$lib/stores";
+
+    import uniqueNames from '$lib/assets/dataHelper/uniqueNames.json';
+    import uniqueOrganizations from '$lib/assets/dataHelper/uniqueOrgs.json';
+    import uniqueMaintainers from '$lib/assets/dataHelper/uniqueMaintainers.json';
+    import uniqueTypes from '$lib/assets/dataHelper/uniqueTypes.json';
   
     import CustomSelect from '$lib/UI/CustomSelect.svelte';
   
@@ -23,22 +28,36 @@
         name: selectedName,
     };
 
-       // Function to dynamically subscribe and reset other selections
-       function setupSelectionReset() {
-        Object.entries(selectionStores).forEach(([key, store]) => {
-            store.subscribe(value => {
-                if (value) {
-                    Object.entries(selectionStores).forEach(([otherKey, otherStore]) => {
-                        if (otherKey !== key) {
-                            otherStore.set('');
-                        }
-                    });
-                }
-            });
+// Function to dynamically subscribe and reset other selections, with custom debounce
+function setupSelectionReset() {
+    const resetOthers = debounce((key) => {
+        Object.entries(selectionStores).forEach(([otherKey, otherStore]) => {
+            if (otherKey !== key) {
+                otherStore.set('');
+            }
         });
-    }
+    }, 200); // Adjust debounce time as needed
 
-    setupSelectionReset();
+    Object.entries(selectionStores).forEach(([key, store]) => {
+        store.subscribe(value => {
+            if (value) {
+                resetOthers(key);
+            }
+        });
+    });
+}
+
+// Custom debounce function
+function debounce(func, delay) {
+    let debounceTimer;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
 
     // Derived store that filters markers based on selected criteria
     const filteredMarkers = derived(
@@ -52,17 +71,6 @@
       )
   );
 
-    // Extract unique values function
-    const extractUniqueValues = (data, key) => {
-    if (!Array.isArray(data)) return [];
-    const allValues = data.map(item => item[key]).filter(Boolean);
-    return [...new Set(allValues)].sort();
-  };
-
-  let uniqueTypes = [];
-  let uniqueOrganizations = [];
-  let uniqueMaintainers = [];
-  let uniqueNames = [];
 
   // Subscribe to filteredMarkers to update filteredStore whenever it changes
   filteredMarkers.subscribe((filtered) => {
@@ -70,12 +78,7 @@
   });
 
   onMount(() => {
-    markersStore.subscribe($markersStore => {
-      uniqueTypes = extractUniqueValues($markersStore, 'type');
-      uniqueOrganizations = extractUniqueValues($markersStore, 'organization');
-      uniqueMaintainers = extractUniqueValues($markersStore, 'maintainer');
-      uniqueNames = extractUniqueValues($markersStore, 'name');
-    });
+    setupSelectionReset();
   });
 
   function closeSidebar() {
