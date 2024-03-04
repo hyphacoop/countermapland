@@ -38,12 +38,7 @@
           (!$selectedName || marker.name === $selectedName)
       );
       filteredStore.set(filtered);
-    } else {
-      // If no selections are made, consider setting filteredStore to the full list or an optimized subset
-      // This might depend on your app's requirements (e.g., displaying all markers by default or none until a filter is applied)
-      // For displaying all markers by default, you could directly link markersStore to filteredStore, or simply not update filteredStore to retain its current state
-      filteredStore.set($markersStore);
-    }
+    } 
   }
   function closeSidebar() {
     currentSidebar.set(null);
@@ -74,8 +69,8 @@
     </div>
     <div class="category">
       <h3>Source</h3>
-      <span class="label"> community </span>
       <span class="label active"> Canadian military memorials </span>
+      <span class="label"> community </span>
     </div>
     <div class="data-group">
       <div class="category">
