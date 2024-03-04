@@ -15,7 +15,7 @@
   import Projects from "$lib/Pages/Projects.svelte";
   import CommunityAgreements from "$lib/Pages/CommunityAgreements.svelte";
 
-
+  import countermonumentIcon from '$lib/icons/countermonument.svg';
   import closeImage from "$lib/icons/close.svg";
   import { currentSidebar } from "$lib/stores";
 
@@ -76,6 +76,7 @@
               }}
             >
               {section}
+              <img class="menu-icon" src={countermonumentIcon} alt="Hover Icon" />
             </button>
           </li>
         {/each}
@@ -109,6 +110,10 @@
   }
 
   li button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #000;
     font-family: Itim;
     font-size: 2.0625rem;
@@ -117,6 +122,16 @@
     line-height: normal;
     margin-bottom: 2.75rem;
   }
+  .menu-icon {
+  width: 24px; 
+  margin-left: 10px; /* Space between icon and text */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+li button:hover .menu-icon {
+  opacity: 1;
+}
   h2 {
     margin-bottom: 2rem;
   }
