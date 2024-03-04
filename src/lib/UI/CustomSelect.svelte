@@ -15,6 +15,12 @@
       filtersActive.set(true);
     }
 
+    function toggleDropdown() {
+    if (options.length > 0) { // Only toggle showDropdown if there are options
+      showDropdown = !showDropdown;
+    }
+  }
+
     $: filteredOptions = searchTerm
     ? options.filter(option =>
         option.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,7 +46,8 @@
   });
   </script>
   
-  <div class="custom-select" on:click={() => (showDropdown = !showDropdown)}>
+  <div class="custom-select {options.length ? 'cursor-pointer' : 'cursor-not-allowed'}" on:click={toggleDropdown}
+    style="background-color: {options.length ? '#FED5BE' : 'transparent'}; width: {options.length ? 'auto' : '60%'};">
     <input
     class="select-selected truncate ..."
     type="text"
@@ -48,6 +55,7 @@
     bind:value={selected}
     on:input="{(e) => (searchTerm = e.target.value)}"
     on:click|stopPropagation="{() => (showDropdown = true)}"
+    style="background-color: {options.length ? '#FED5BE' : 'transparent'}"
   />
     {#if showDropdown}
       <div class="select-items {!showDropdown ? 'select-hide' : ''}">
@@ -67,12 +75,12 @@
       background-color: #FED5BE;
       border-radius: 0.25rem; 
       border: 1px solid #000;
+      width: fit-content;
     }
   
     .select-selected {
         background-color: #FED5BE;
       padding: 0.125rem 0.625rem; 
-      cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -120,11 +128,9 @@
   
     .select-items div {
         padding: 0.125rem 0.625rem; 
-      cursor: pointer;
       border: 1px solid #000;
       width: fit-content;
-      margin: 0.25rem 0;
-      margin-left: 0.25rem;
+      margin: 0.25rem 0.25rem;
       border-radius:  0.25rem;
 
     }
@@ -144,6 +150,7 @@
     }
     p {
         margin-top: 0.25rem;
+        width: fit-content;
     }
 </style>
   
