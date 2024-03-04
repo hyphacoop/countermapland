@@ -251,10 +251,10 @@
 
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
   {:else}
-    <h2>Add to *countermap</h2>
+    <h2>Add a monument*</h2>
 
     <p class="main-description">
-      A (counter)monument can be an event, ecology, object, or site that is
+      A monument can be an event, ecology, object, or site that is
       important to a community. It may have been erased, still exist, or be
       speculative.
     </p>
@@ -303,8 +303,8 @@
       {/if}
     </div>
 
-    <h3>Does this place challenge dominant systems of power?</h3>
-
+    <h3>Countermonument</h3>
+    <p>Does this place challenge dominant systems of power?</p>
     <div class="flex flex-col yes-no mb-4">
       <button on:click={() => isPower("yes")}>
         {#if powerDominanceAnswer === "yes"}
@@ -329,14 +329,15 @@
       </button>
     </div>
 
-    <h3>What do you know about this place?</h3>
-    <p>What is its significance?</p>
-    <p>Who does it belong to?</p>
-    <p>How do you encounter it?</p>
+    <h3>Please give us more information</h3>
+    <p class="mb-0">What is its significance?</p>
+    <p class="mb-0">Who does it belong to?</p>
+    <p class="mb-0">How do you encounter it?</p>
+    <p class="mb-0">What do you remember?</p>
     <textarea class="mb-2" id="message" bind:value={description} required
     ></textarea>
 
-    <p class="mb-0">Add more information:</p>
+    <h3>Add some tags:</h3>
     <div class="flex flex-row more-btns mb-4">
       {#each fields as info}
         <button
@@ -359,7 +360,8 @@
     </div>
 
     <h3>How do you experience this place?</h3>
-
+    <p>Share an image that represents your experience with a place or write it below.
+    </p>
     <p>Optional: Click on the labels to create a prompt.</p>
 
     <!-- Dynamic senses and media buttons -->
