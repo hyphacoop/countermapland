@@ -390,10 +390,9 @@
     <p>Share a file (audio, video, image, text) that represents this place.</p>
 
     <!-- File input with drag and drop -->
-    <input type="file" bind:files={files} id="file" hidden />
-    <label for="file" class="file-dropzone mb-4"  on:drop|preventDefault={handleDrop} on:dragover|preventDefault> 
-      Choose a file or drop one here.
-    </label>
+    <label for="file" class="file-dropzone mb-4" on:drop|preventDefault={handleFileSelected} on:dragover|preventDefault>Choose a file or drop one here.</label>
+    <input type="file" bind:files={files} id="file" hidden on:change={handleFileSelected} />
+    
     {#if file}
       <p>File selected: {file.name}</p>
     {/if}
