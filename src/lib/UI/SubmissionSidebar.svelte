@@ -124,8 +124,8 @@
   async function handleSubmit() {
     submitting = true;
 
-    // Check if there's a file selected for upload
-    let imageUrl = file ? await uploadImage(file) : null;
+    // Assume imageUrl is already obtained from the file upload process
+    let imageUrl = file && file.url ? file.url : null;
 
     // Constructing the URLSearchParams directly without initially including potentially undefined values
     let payload = new URLSearchParams();
