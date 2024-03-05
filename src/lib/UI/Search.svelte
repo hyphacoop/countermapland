@@ -1,12 +1,31 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   import { currentSidebar, searchResultsActive } from "$lib/stores";
+
+  import pinImg from '$lib/icons/pin.svg';
+
   const dispatch = createEventDispatcher();
   let city = "";
   let searchResults = [];
   let isLoading = false;
   let errorMessage = "";
+  let placeholderText = '';
+
+  onMount(() => {
+    const updatePlaceholder = () => {
+      placeholderText = window.innerWidth < 768 ? "Search *countermap" : "";
+    };
+
+    // Call once on mount
+    updatePlaceholder();
+
+    // Add event listener to update on resize
+    window.addEventListener('resize', updatePlaceholder);
+
+    // Cleanup on component destruction
+    return () => window.removeEventListener('resize', updatePlaceholder);
+  });
 
   async function findLocation() {
     if (!city) return;
@@ -47,13 +66,16 @@ function updateMap(latitude, longitude) {
 }
 </script>
 <div class="search-container sdbbtn">
+  <div class="input-wrapper">
+    <img src={pinImg} alt="Pin" class="pin-icon"/>
     <input
       type="text"
       bind:value={city}
       on:input="{($event) => city = $event.target.value}"
       on:keydown={(event) => { if (event.key === 'Enter') findLocation() }}
+      placeholder={placeholderText}
     />
-    
+  </div>
     {#if isLoading}
     <div class="results-list">
       <p>Loading...</p>
@@ -76,7 +98,7 @@ function updateMap(latitude, longitude) {
 <style>
   .search-container {
     position: fixed;
-    top: 5%;
+    top: 4.9%;
     left: 3.75rem;
     z-index: 9999;
   }
@@ -121,5 +143,33 @@ function updateMap(latitude, longitude) {
   li:hover {
     background: black;
     color: white;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .pin-icon {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    .search-container {
+      left: 1.88rem;
+    }
+    input {
+      padding-left: 2rem;
+    }
+    input::placeholder {
+      font-size: 0.75rem;
+    }
+    .pin-icon {
+      display: block;
+      position: absolute;
+      left: 0.5rem;
+      height: 20px; 
+      z-index: 10;
+  }
   }
 </style>
