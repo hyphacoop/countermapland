@@ -170,6 +170,9 @@ function updateMap(latitude, longitude) {
       left: 0.5rem;
       height: 20px; 
       z-index: 10;
-  }
+    } 
+    .results-list {
+      width: 115%;
+    }
   }
 </style>
