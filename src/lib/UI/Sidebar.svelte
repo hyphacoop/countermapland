@@ -291,4 +291,11 @@
     font-size: 0.65rem;
     margin-bottom: 1rem;
   }
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 1.88rem;
+      padding-top: 1.69rem;
+    }
+  }
 </style>
