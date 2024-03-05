@@ -5,6 +5,8 @@
 
   import { userLatLng, currentSidebar, currentMenuSection } from "$lib/stores";
 
+  import CustomSelect from "./CustomSelect.svelte";
+
   import { uploadImage } from "$lib/Map/utilities";
 
   import countermonumentOutlineIcon from "$lib/icons/countermonument-outline.svg";
@@ -12,6 +14,8 @@
   import countermonumentIcon from "$lib/icons/countermonument.svg";
   import monumentIcon from "$lib/icons/monument.svg";
   import closeImage from "$lib/icons/close.svg";
+
+  import { gestureTypes, stagingTactics, materialTypes, objectTypes, fields, senses, media, fieldMapping } from "$lib/data/types";
 
   export let objectView = false;
 
@@ -29,8 +33,21 @@
   let file = null;
   let activeInfoButtons = {};
 
-  let senses = ["see", "hear", "smell", "taste", "touch"];
-  let media = ["drawing", "photo", "poem", "recipe", "perfume"];
+  // Find the appropriate options to pass to CustomSelect based on the field name
+  function getOptionsForField(technicalName) {
+    switch (technicalName) {
+      case "objectType":
+        return objectTypes;
+      case "material":
+        return materialTypes;
+      case "tactics":
+        return stagingTactics;
+      case "gestures":
+        return gestureTypes;
+      default:
+        return []; // No options for fields that do not match
+    }
+  }
 
   let selectedSense = senses[0];
   let selectedMedia = media[0];
@@ -38,40 +55,6 @@
   const dispatch = createEventDispatcher();
 
   $: isFormValid = names.some(name => name.value.trim() !== '') && description && $userLatLng && email;
-
-  let fields = [
-    "Year",
-    "Artist",
-    "Agencies sponsoring",
-    "Monument inscription",
-    "Subjects represented",
-    "Honorees",
-    "Object type (e.g. stele, plaque, cairn)",
-    "Material",
-    "Area",
-    "Height (m)",
-    "Width",
-    "Depth",
-    "Staging tactics",
-    "Gestures",
-  ];
-
-  const fieldMapping = {
-    Year: "year",
-    Artist: "artist",
-    "Agencies sponsoring": "agencies",
-    "Monument inscription": "inscription",
-    "Subjects represented": "subjects",
-    Honorees: "honorees",
-    "Object type (e.g. stele, plaque, cairn)": "objectType",
-    Material: "material",
-    Area: "area",
-    "Height (m)": "height",
-    Width: "width",
-    Depth: "depth",
-    "Staging tactics": "tactics",
-    Gestures: "gestures",
-  };
 
   function resetForm() {
     names = [{ id: "name1", value: "" }];
@@ -99,6 +82,11 @@
       names.push({ id: nextId, value: "" });
       names = names;
     }
+  }
+
+  function getOptionsForFieldByFriendlyName(friendlyName) {
+    const technicalName = fieldMapping[friendlyName]; 
+    return getOptionsForField(technicalName);
   }
 
   function toggleInfoButton(info) {
@@ -350,12 +338,21 @@
       {/each}
     </div>
     <div class="flex flex-col more-info mb-4">
-      {#each Object.keys(activeInfoButtons).filter((info) => activeInfoButtons[info]) as activeInfo}
-        <input
-          type="text"
-          bind:value={dynamicFieldValues[activeInfo]}
-          placeholder={`Enter ${activeInfo} details`}
-        />
+      {#each Object.keys(activeInfoButtons).filter(info => activeInfoButtons[info]) as activeInfo}
+        {#if ['objectType', 'material', 'tactics', 'gestures'].includes(fieldMapping[activeInfo])}
+          <h4>{activeInfo}</h4>
+          <CustomSelect
+            options={getOptionsForFieldByFriendlyName(activeInfo)}
+            bind:selectedValue={dynamicFieldValues[activeInfo]}
+            altBgColor={'#40b37c'}
+          />
+        {:else}
+          <input
+            type="text"
+            bind:value={dynamicFieldValues[activeInfo]}
+            placeholder={`Enter ${activeInfo} details`}
+          />
+        {/if}
       {/each}
     </div>
 
