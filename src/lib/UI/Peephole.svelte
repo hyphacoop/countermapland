@@ -67,4 +67,11 @@
     object-fit: cover;
     border-radius: 50%;
   }
+  @media (max-width: 768px) {
+    .peephole-container button {
+      width: 4rem;
+      height: 4rem;
+      margin-right: 0.5rem;
+    }
+  }
 </style>
