@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import { base } from "$app/paths";
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
@@ -32,6 +33,8 @@
   let files;
   let file = null;
   let activeInfoButtons = {};
+
+  const staticmanEndpoint = "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/";
 
   // Find the appropriate options to pass to CustomSelect based on the field name
   function getOptionsForField(technicalName) {
@@ -161,7 +164,7 @@
     try {
       console.log("Submitting form:", payload);
       const response = await fetch(
-        "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/",
+        staticmanEndpoint,
         {
           method: "POST",
           body: payload,
@@ -219,6 +222,25 @@
   } else {
     file = null;
   }
+
+  onMount(async () => {
+    const endpoint = "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/";
+    try {
+        // Sending an empty POST request to wake up the server
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                // Add headers if required by your endpoint
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}) // An empty body or minimal payload
+        });
+        console.log('Server response:', response.status, response.statusText);
+    } catch (error) {
+        console.error('Error waking up the server:', error);
+    }
+});
+
 
   $: submitText = submitting ? "Submitting" : "Submit";
 </script>
