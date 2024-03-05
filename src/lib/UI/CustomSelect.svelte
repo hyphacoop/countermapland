@@ -5,6 +5,7 @@
 
     export let options = []; 
     export let selected; 
+    export let altBgColor;
     let searchTerm = '';
     let showDropdown = false;
   
@@ -47,7 +48,7 @@
   </script>
   
   <div class="custom-select" on:click={toggleDropdown}
-    style="background-color: {options.length ? '#FED5BE' : 'transparent'}; width: {options.length ? 'auto' : '60%'};">
+    style="background-color: {(!options.length || altBgColor) ? 'transparent' : '#FED5BE'}; width: {options.length ? 'auto' : '60%'};">
     <input
     class="select-selected truncate ..."
     type="text"
@@ -55,11 +56,12 @@
     bind:value={selected}
     on:input="{(e) => (searchTerm = e.target.value)}"
     on:click|stopPropagation="{() => (showDropdown = true)}"
-    style="background-color: {options.length ? '#FED5BE' : 'transparent'}"
+    style="background-color: {(!options.length || altBgColor) ? 'transparent' : '#FED5BE'}"
     disabled={!options.length}
   />
     {#if showDropdown}
-      <div class="select-items {!showDropdown ? 'select-hide' : ''}">
+      <div class="select-items {!showDropdown ? 'select-hide' : ''}"
+      style="background-color: {altBgColor ? `${altBgColor}` : '#FED5BE'};">
         {#each filteredOptions as option}
           <div on:click|stopPropagation={() => selectOption(event, option)}>{option}</div>
         {/each}
@@ -73,14 +75,12 @@
     }
     .custom-select {
       position: relative;
-      background-color: #FED5BE;
       border-radius: 0.25rem; 
       border: 1px solid #000;
       width: fit-content;
     }
-  
+ 
     .select-selected {
-        background-color: #FED5BE;
       padding: 0.125rem 0.625rem; 
       display: flex;
       justify-content: space-between;
@@ -114,28 +114,32 @@
 
   
     .select-items {
-      margin-top: 0.125rem;
+      margin: 0.25rem 0;
       position: absolute;
-      background-color: #FED5BE;
       top: 100%;
       left: 0;
       right: 0;
       z-index: 99;
       max-height: 200px; 
-    overflow-y: auto;
-        border: 1px solid #000;
-        border-radius: 0.25rem;
+      overflow-y: auto;
+      border: 1px solid #000;
+      border-radius: 0.25rem;
+      padding-bottom: 0.125rem;
     }
   
     .select-items div {
-        padding: 0.125rem 0.625rem; 
+      padding: 0.25rem 0.625rem; 
       border: 1px solid #000;
       width: fit-content;
       margin: 0.25rem 0.25rem;
       border-radius:  0.25rem;
-
     }
   
+  
+    .select-items div:last-child {
+      border-bottom: none;
+    }
+
     .select-items div:last-child {
       border-bottom: none;
     }
