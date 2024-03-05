@@ -436,7 +436,12 @@
     <button
       class="submit rounded mb-4"
       disabled={!isFormValid || !consentGiven}
-      on:click={handleSubmit}>{submitText}</button
+      on:click={handleSubmit}>
+      {submitText}
+      {#if submitting}
+        <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      {/if}
+      </button
     >
 
   {/if}
@@ -603,6 +608,22 @@
   .radio-svg circle {
     stroke-width: 1px;
   }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+  .dot {
+    animation: blink 1.4s infinite both;
+    display: inline-block;
+    margin-left: 4px;
+  }
+
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
   @media (max-width: 768px) {
     .sidebar {
       width: 100%;
