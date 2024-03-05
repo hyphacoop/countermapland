@@ -68,4 +68,11 @@
     top: 1.19rem;
     right: 1.19rem;
   }
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 0.88rem;
+      padding-top: 1.69rem;
+    }
+  }
 </style>

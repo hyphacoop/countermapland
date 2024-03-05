@@ -102,7 +102,7 @@
     right: 0;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     overflow-y: auto;
-    z-index: 9998;
+    z-index: 9999;
     padding: 0 1.88rem;
     padding-top: 1.69rem;
   }
@@ -138,5 +138,15 @@
   }
   h2 {
     margin-bottom: 2rem;
+  }
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 0.88rem;
+      padding-top: 2rem;
+    }
+    li button {
+      font-size: 1.75rem;
+    }
   }
 </style>

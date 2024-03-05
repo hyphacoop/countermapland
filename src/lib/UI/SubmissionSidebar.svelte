@@ -607,4 +607,11 @@
   .radio-svg circle {
     stroke-width: 1px;
   }
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 0.88rem;
+      padding-top: 2rem;
+    }
+  }
 </style>

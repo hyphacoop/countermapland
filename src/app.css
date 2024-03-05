@@ -261,3 +261,12 @@ img.photos  {
   width: 30px;
   height: 30px;
 }
+
+@media (max-width: 768px) {
+  .menu-button {
+    left: 1.88rem;
+  }
+  .filter-button {
+    right: 2.22rem;
+  }
+}

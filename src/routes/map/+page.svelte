@@ -176,4 +176,9 @@
     color: white;
     text-shadow: 1px 1px 1px rgb(0, 0, 0);
   }
+  @media (max-width: 768px) {
+    h1 {
+      display: none;
+    }
+  }
 </style>
