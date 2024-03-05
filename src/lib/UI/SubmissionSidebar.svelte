@@ -343,7 +343,7 @@
           <h4>{activeInfo}</h4>
           <CustomSelect
             options={getOptionsForFieldByFriendlyName(activeInfo)}
-            bind:selectedValue={dynamicFieldValues[activeInfo]}
+            bind:selected={dynamicFieldValues[activeInfo]}
             altBgColor={'#40b37c'}
           />
         {:else}
