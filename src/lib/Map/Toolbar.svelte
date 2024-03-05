@@ -183,7 +183,7 @@
     right: 2%;
     align-items: end;
   }
-  div.zoom-container {
+  .zoom-container {
     margin-bottom: 2rem;
   }
   .zoom-container button {
@@ -253,5 +253,34 @@
   button:hover:not(#peephole) {
     opacity: 100%;
     background-color: lightgray;
+  }
+
+  @media (max-width: 768px) {
+    #peephole,
+    .link-button {
+      width: 4rem;
+      height: 4rem;
+    }
+    #peephole {
+      margin-right: 0.8rem;
+    }
+    .link-button {
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .zoom-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .zoom-container button {
+      width: 2rem;
+      height: 2rem;
+    }
+    .zoom-container button img {
+      width:50%;
+      height: 50%;
+    }
   }
 </style>
