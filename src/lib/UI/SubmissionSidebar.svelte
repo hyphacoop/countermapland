@@ -103,15 +103,24 @@
     dispatch("closeSideBar");
   }
 
-  // Function to handle the file drop event
-  async function handleDrop(e) {
+  // Function to upload the file as soon as it is received
+  async function handleFileSelected(e) {
+    console.log('File selected:', e.dataTransfer ? e.dataTransfer.files : e.target.files)
     e.preventDefault();
-    const files = e.dataTransfer ? e.dataTransfer.files : e.target.files
+    const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     if (files && files.length > 0) {
-      file = files[0]; // only using one file for now
+        file = files[0]; // only using one file for now
+        // Immediately upload the file and store the URL
+        try {
+            const imageUrl = await uploadImage(file);
+            file.url = imageUrl; // Store the URL for later use
+            console.log("File uploaded successfully:", imageUrl);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            // Handle upload error (e.g., show an error message)
+        }
     }
-  }
-
+}
   async function handleSubmit() {
     submitting = true;
 
