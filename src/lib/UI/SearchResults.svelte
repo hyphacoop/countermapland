@@ -63,11 +63,6 @@
     padding: 0 1.25rem;
     padding-top: 2.69rem;
   }
-  .close-button {
-    position: absolute;
-    top: 1.19rem;
-    right: 1.19rem;
-  }
   @media (max-width: 768px) {
     .sidebar {
       width: 100%;

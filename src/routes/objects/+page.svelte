@@ -6,13 +6,14 @@
 
   import "../../app.css";
   import { derived } from "svelte/store";
-  import { markersStore, mapBoundsStore, selectedMarkerId, currentViewStore, mapInstanceStore, initialViewStore, currentSidebar } from "$lib/stores";
+  import { markersStore, mapBoundsStore, selectedMarkerId, currentViewStore, mapInstanceStore, initialViewStore, currentSidebar, bannerClosed } from "$lib/stores";
   import Sidebar from "$lib/UI/Sidebar.svelte";
   import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
   import Search from "$lib/UI/Search.svelte";
   import Toolbar from "$lib/Map/Toolbar.svelte";
   import MenuSidebar from "$lib/UI/MenuSidebar.svelte";
   import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
+  import Banner from "$lib/UI/Banner.svelte";
   
   import L, { latLngBounds } from "leaflet";
 
@@ -23,23 +24,24 @@
   let zoomLevel = writable(8);
   let mainElement;
   let mainWidth;
+  let map;
 
   onMount(() => {
     if (mainElement) {
       mainWidth = mainElement.offsetWidth; 
     }
+
+    let onMountview;
+    if ($currentViewStore) {
+      console.log('current view store', $currentViewStore);
+      onMountview = $initialViewStore
+    } else {
+      onMountview = $initialViewStore
+    }
     if ($mapInstanceStore) {
       return;
     }
-  let onMountview;
-  if ($currentViewStore) {
-    console.log('current view store', $currentViewStore);
-
-    onMountview = $initialViewStore
-  } else {
-    onMountview = $initialViewStore
-  }
-  map = L.map('map', {
+    map = L.map('map', {
     center: [onMountview[0], onMountview[1]], // Set these to your desired initial view
     zoom: $zoomLevel,
     });
@@ -162,7 +164,7 @@ const markerCol = index % itemsPerRow;
   }
   function handleMainClick(event) {
     console.log('main click');
-    if (!event.target.closest('.sdbbtn') && !event.target.closest('.sidebar')) {
+    if (!event.target.closest('.sdbbtn') && !event.target.closest('.sidebar') && !event.target.closest('.banner-container')) {
           currentSidebar.set(null);
           selectedMarkerId.set(null);
       }
@@ -189,12 +191,14 @@ const markerCol = index % itemsPerRow;
     }
   }
 
-
-
-function closeSidebar() {
-    console.log('closing sidebar');
-    currentSidebar.set(null);
+  function openSubmissions() {
+    setCurrentSidebar('submissions');
   }
+
+  function closeSidebar() {
+      console.log('closing sidebar');
+      currentSidebar.set(null);
+    }
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -248,7 +252,11 @@ function closeSidebar() {
   <img src={filterIconPath} alt="Open Filter Sidebar"/>
 </button>
 </div>
-
+{#if !$bannerClosed}
+  <div class='banner-container'>
+    <Banner on:openSubmissions={openSubmissions}/>
+  </div>
+{/if}
 
 </main>
 
@@ -260,6 +268,7 @@ function closeSidebar() {
   }
   main {
     background-color: black;
+    overflow: hidden;
   }
   .content-container {
     height: 100vh;
@@ -311,4 +320,17 @@ function closeSidebar() {
   right: 0;
   z-index: 10; /* Ensure it's above other content if overlapping */
 }
+.banner-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 10%;
+}
+@media (max-width: 768px) {
+    h1 {
+      display: none;
+    }
+  }
 </style>

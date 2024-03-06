@@ -14,6 +14,7 @@
   import Search from "$lib/UI/Search.svelte";
   import SearchResults from "$lib/UI/SearchResults.svelte";
   import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
+  import Banner from "$lib/UI/Banner.svelte";
 
   import menuIconPath from "$lib/icons/menu.svg";
   import filterIconPath from "$lib/icons/filter.svg";
@@ -27,6 +28,7 @@
     selectedMarkerId,
     currentSidebar,
     isPopupOpen,
+    bannerClosed,
   } from "$lib/stores";
 
   import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
@@ -106,6 +108,11 @@
     }
   }
 
+  function openSubmissions() {
+    setCurrentSidebar('submissions');
+  }
+
+
 
   $: console.log($currentSidebar);
 </script>
@@ -177,6 +184,11 @@
     showDetails(detail.event, detail.id);
   }}/>
 {/if}
+{#if $bannerClosed === false}
+  <div class='banner-container'>
+    <Banner on:openSubmissions={openSubmissions}/>
+  </div>
+{/if}
 </div>
 
 
@@ -184,6 +196,14 @@
   .darkmode {
     color: white;
     text-shadow: 1px 1px 1px rgb(0, 0, 0);
+  }
+  .banner-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100vw;
+    height: 10%;
   }
   @media (max-width: 768px) {
     h1 {
