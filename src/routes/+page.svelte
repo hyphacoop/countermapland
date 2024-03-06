@@ -4,8 +4,8 @@
 
   import IconMosaic from "$lib/UI/IconMosaic.svelte";
 
-  import Satellite from "$lib/icons/peephole/satellite-view.png";
-  import Object from "$lib/icons/peephole/object-view.png";
+  import Satellite from "$lib/icons/peephole/satellite-view.webp";
+  import Object from "$lib/icons/peephole/object-view.webp";
 
   import { onMount, onDestroy } from "svelte";
 
@@ -43,7 +43,7 @@
       </li>
       <li>
         <a href="{base}/objects">
-          <img src={Object} alt="Object View" />
+          <img src={Object} alt="Object View" class='setborder'/>
         </a>
       </li>
     </ul>
@@ -71,5 +71,16 @@
   }
   li {
     font-size: 2rem;
+  }
+  .setborder {
+    border-radius: 50%;
+    padding: 0.3rem;
+    background-color:#fff;
+  }
+  img {
+    transition: all 0.3s ease;
+  }
+  img:hover {
+    transform: scale(1.1);
   }
 </style>

@@ -30,7 +30,7 @@
 
   let width = 30;
   let height = 30;
-  let zoomLevel = 8;
+  let zoomLevel = 10;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
 
@@ -176,25 +176,9 @@
     color: white;
     text-shadow: 1px 1px 1px rgb(0, 0, 0);
   }
-  .menu-button {
-    position: absolute;
-    bottom: 3.31rem;
-    left: 3.75rem;
-    z-index: 9999;
-    border-radius: 0.25rem;
-    background: #FFF;
-    padding: 0.25rem;
-  }
-
-  .filter-button {
-    position: absolute;
-    bottom: 3.31rem;
-    right: 3.75rem;
-    z-index: 9997;
-    border-radius: 0.25rem;
-    background: #FFF;
-    padding: 0.25rem;
-    width: 30px;
-    height: 30px;
+  @media (max-width: 768px) {
+    h1 {
+      display: none;
+    }
   }
 </style>

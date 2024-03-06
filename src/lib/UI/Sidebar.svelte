@@ -193,6 +193,11 @@
     </div>
   </div>
   {/if}
+  <p class='disclaimer'>
+    <i>
+      This information is imported from third-party datasets and does not reflect the opinions of the countermap project
+    </i>
+  </p>
 </div>
 
 <style>
@@ -280,5 +285,17 @@
   }
   .metadata div {
     margin-right: 0.5rem;
+  }
+  p.disclaimer {
+    margin-top:5rem;
+    font-size: 0.65rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 1.88rem;
+      padding-top: 1.69rem;
+    }
   }
 </style>

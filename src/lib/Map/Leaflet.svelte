@@ -29,6 +29,7 @@
     filteredStore,
     filtersActive,
     userLatLng,
+    mapInstanceStore,
   } from "$lib/stores";
 
   export let bounds = undefined;
@@ -135,7 +136,7 @@ $: if ($currentSidebar !== "submissions" && marker) {
         const initialBounds = map.getBounds();
         mapBoundsStore.set(initialBounds);
       }
-
+      mapInstanceStore.set(map);
       // Add MapTiler layer
       mtLayer = new MaptilerLayer({
         Language: "fr",
@@ -170,8 +171,8 @@ $: if ($currentSidebar !== "submissions" && marker) {
         mapBoundsStore.set(bounds);
       })
       .on("popupopen", async (e) => {
-        await tick();
         e.popup.update();
+        await tick();
       });
   });
 
@@ -231,9 +232,12 @@ $: if ($currentSidebar !== "submissions" && marker) {
       territoriesVisible.set(true);
       darkMode.set("light");
       console.log("setting territoriesVisible to true");
-    } else {
+    } else if ($currentMapStyleIndex === 0 ){
       territoriesVisible.set(false);
       darkMode.set("dark");
+    } else {
+      territoriesVisible.set(false);
+      darkMode.set("light");
     }
     if (map && mtLayer) {
       updateMapStyle($currentMapStyleId);
@@ -265,3 +269,12 @@ $: if ($currentSidebar !== "submissions" && marker) {
     <slot />
   {/if}
 </div>
+
+<style>
+  :global(.leaflet-control-attribution.leaflet-control) {
+    display: none !important; 
+  }
+  :global(a[href="https://www.maptiler.com"]) {
+    display: none !important;
+}
+</style>

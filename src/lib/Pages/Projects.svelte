@@ -1,10 +1,10 @@
 <script>
-  import project1 from "$lib/assets/images/project1.jpeg";
-  import project2 from "$lib/assets/images/project2.jpg";
-  import project3 from "$lib/assets/images/project3.jpeg";
-  import project4 from "$lib/assets/images/project4.jpeg";
-  import project5 from "$lib/assets/images/project5.jpeg";
-  import project6 from "$lib/assets/images/project6.jpeg";
+  import project1 from "$lib/assets/images/project1.webp";
+  import project2 from "$lib/assets/images/project2.webp";
+  import project3 from "$lib/assets/images/project3.webp";
+  import project4 from "$lib/assets/images/project4.webp";
+  import project5 from "$lib/assets/images/project5.webp";
+  import project6 from "$lib/assets/images/project6.webp";
 </script>
 
 <p>

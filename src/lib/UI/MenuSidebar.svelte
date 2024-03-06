@@ -6,15 +6,16 @@
     "Menu",
     "About",
     "Projects",
-    "Research",
-    "Credits",
     "Contact",
+    "Community Agreements",
   ];
 
   import About from "$lib/Pages/About.svelte";
   import Contact from "$lib/Pages/Contact.svelte";
   import Projects from "$lib/Pages/Projects.svelte";
+  import CommunityAgreements from "$lib/Pages/CommunityAgreements.svelte";
 
+  import countermonumentIcon from "$lib/icons/countermonument.svg";
   import closeImage from "$lib/icons/close.svg";
   import { currentSidebar } from "$lib/stores";
 
@@ -61,6 +62,9 @@
     {:else if $currentMenuSection === "Contact"}
       <h2>Contact</h2>
       <Contact />
+    {:else if $currentMenuSection === "Community Agreements"}
+      <h2>Community Agreements</h2>
+      <CommunityAgreements />
     {:else if $currentMenuSection === "Menu"}
       <ul>
         {#each sections.filter((section) => section !== "Menu") as section}
@@ -72,11 +76,16 @@
               }}
             >
               {section}
+              <img
+                class="menu-icon"
+                src={countermonumentIcon}
+                alt="Hover Icon"
+              />
             </button>
           </li>
         {/each}
       </ul>
-      <div>*countermap is based in Tkaronto on the traditional lands...</div>
+      <div>*countermap was initiated on territory occupied by many nations including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples for thousands of years. Today T’karonto is home to many diverse Indigenous people from across Turtle Island. </div>
     {:else}
       <p>no content for this section yet.</p>
     {/if}
@@ -93,7 +102,7 @@
     right: 0;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     overflow-y: auto;
-    z-index: 9998;
+    z-index: 9999;
     padding: 0 1.88rem;
     padding-top: 1.69rem;
   }
@@ -105,6 +114,10 @@
   }
 
   li button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #000;
     font-family: Itim;
     font-size: 2.0625rem;
@@ -113,7 +126,27 @@
     line-height: normal;
     margin-bottom: 2.75rem;
   }
+  .menu-icon {
+    width: 24px;
+    margin-left: 10px; /* Space between icon and text */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  li button:hover .menu-icon {
+    opacity: 1;
+  }
   h2 {
     margin-bottom: 2rem;
+  }
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 0.88rem;
+      padding-top: 2rem;
+    }
+    li button {
+      font-size: 1.75rem;
+    }
   }
 </style>

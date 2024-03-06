@@ -1,8 +1,12 @@
 <script>
+  import { onMount } from "svelte";
+  import { base } from "$app/paths";
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
-  import { userLatLng, currentSidebar, currentMenuSection } from "$lib/stores";
+  import { userLatLng, currentSidebar, currentMenuSection, formData } from "$lib/stores";
+
+  import CustomSelect from "./CustomSelect.svelte";
 
   import { uploadImage } from "$lib/Map/utilities";
 
@@ -12,93 +16,75 @@
   import monumentIcon from "$lib/icons/monument.svg";
   import closeImage from "$lib/icons/close.svg";
 
-  let names = [{ id: "name1", value: "" }];
-  let altText;
-  let description;
-  let dynamicFieldValues = {};
-  let consentGiven = false;
-  let powerDominanceAnswer = null;
-  let success = false;
-  let submitting = false;
-  let errorMessage = false;
-  let email;
-  let files;
-  let file = null;
-  let activeInfoButtons = {};
+  import { gestureTypes, stagingTactics, materialTypes, objectTypes, fields, senses, media, fieldMapping } from "$lib/data/types";
 
-  let senses = ["see", "hear", "smell", "taste", "touch"];
-  let media = ["drawing", "photo", "poem", "recipe", "perfume"];
+  export let objectView = false;
+
+  const staticmanURL = "https://countermap.onrender.com/";
+  const staticmanEndpoint = `${staticmanURL}v3/entry/github/hyphacoop/countermapland/staging/submissions/`;
+
+  // Find the appropriate options to pass to CustomSelect based on the field name
+  function getOptionsForField(technicalName) {
+    switch (technicalName) {
+      case "objectType":
+        return objectTypes;
+      case "material":
+        return materialTypes;
+      case "tactics":
+        return stagingTactics;
+      case "gestures":
+        return gestureTypes;
+      default:
+        return []; // No options for fields that do not match
+    }
+  }
 
   let selectedSense = senses[0];
   let selectedMedia = media[0];
 
   const dispatch = createEventDispatcher();
 
-
-  let fields = [
-    "Year",
-    "Artist",
-    "Agencies sponsoring",
-    "Monument inscription",
-    "Subjects represented",
-    "Honorees",
-    "Object type (e.g. stele, plaque, cairn)",
-    "Material",
-    "Area",
-    "Height (m)",
-    "Width",
-    "Depth",
-    "Staging tactics",
-    "Gestures",
-  ];
-
-  const fieldMapping = {
-    Year: "year",
-    Artist: "artist",
-    "Agencies sponsoring": "agencies",
-    "Monument inscription": "inscription",
-    "Subjects represented": "subjects",
-    Honorees: "honorees",
-    "Object type (e.g. stele, plaque, cairn)": "objectType",
-    Material: "material",
-    Area: "area",
-    "Height (m)": "height",
-    Width: "width",
-    Depth: "depth",
-    "Staging tactics": "tactics",
-    Gestures: "gestures",
-  };
+  $: isFormValid = $formData.names.some(name => name.value.trim() !== '') && $formData.description && $userLatLng && $formData.email && $formData.consentGiven;
 
   function resetForm() {
-    names = [{ id: "name1", value: "" }];
-    altText = "";
-    description = "";
-    dynamicFieldValues = {};
-    consentGiven = false;
-    powerDominanceAnswer = null;
-    success = false;
-    submitting = false;
-    errorMessage = false;
-    email = "";
-    files = null;
-    file = null;
-    activeInfoButtons = {};
+    formData.set({
+      names: [{ id: "name1", value: "" }],
+      altText: "",
+      description: "",
+      dynamicFieldValues: {},
+      consentGiven: false,
+      powerDominanceAnswer: null,
+      success: false,
+      submitting: false,
+      errorMessage: false,
+      email: "",
+      files: null,
+      file: null,
+      activeInfoButtons: {},
+      serverResponds: false,
+      imageUrl: null,
+    });
   }
 
   function isPower(value) {
-    powerDominanceAnswer = value;
+    $formData.powerDominanceAnswer = value;
   }
 
   function addName() {
-    if (names.length < 3) {
-      const nextId = `name${names.length + 1}`;
-      names.push({ id: nextId, value: "" });
-      names = names;
+    if ($formData.names.length < 3) {
+      const nextId = `name${$formData.names.length + 1}`;
+      $formData.names.push({ id: nextId, value: "" });
+      $formData.names = $formData.names;
     }
   }
 
+  function getOptionsForFieldByFriendlyName(friendlyName) {
+    const technicalName = fieldMapping[friendlyName]; 
+    return getOptionsForField(technicalName);
+  }
+
   function toggleInfoButton(info) {
-    activeInfoButtons[info] = !activeInfoButtons[info];
+    $formData.activeInfoButtons[info] = !$formData.activeInfoButtons[info];
   }
 
   function selectRandomFromArray(array, current, setterFunction) {
@@ -111,20 +97,28 @@
     dispatch("closeSideBar");
   }
 
-  // Function to handle the file drop event
-  async function handleDrop(e) {
+  // Function to upload the file as soon as it is received
+  async function handleFileSelected(e) {
+    console.log('File selected:', e.dataTransfer ? e.dataTransfer.files : e.target.files)
     e.preventDefault();
-    const files = e.dataTransfer ? e.dataTransfer.files : e.target.files
-    if (files && files.length > 0) {
-      file = files[0]; // only using one file for now
+    $formData.files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+    if ($formData.files && $formData.files.length > 0) {
+        $formData.file = $formData.files[0]; // only using one file for now
+        // Immediately upload the file and store the URL
+        try {
+            $formData.imageUrl = await uploadImage($formData.file);
+            console.log("File uploaded successfully:", $formData.imageUrl);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            // Handle upload error (e.g., show an error message)
+        }
     }
-  }
-
+}
   async function handleSubmit() {
-    submitting = true;
+    $formData.submitting = true;
 
-    // Check if there's a file selected for upload
-    let imageUrl = file ? await uploadImage(file) : null;
+    // Assume imageUrl is already obtained from the file upload process
+    $formData.imageUrl = $formData.file && $formData.file.url ? $formData.file.url : null;
 
     // Constructing the URLSearchParams directly without initially including potentially undefined values
     let payload = new URLSearchParams();
@@ -133,23 +127,23 @@
     payload.append("fields[latLng]", `${$userLatLng.lat},${$userLatLng.lng}`);
     payload.append(
       "fields[challengesPower]",
-      powerDominanceAnswer === "yes" ? "true" : "false"
+      $formData.powerDominanceAnswer === "yes" ? "true" : "false"
     );
-    if (description) payload.append("fields[description]", description);
-    payload.append("fields[email]", email);
-    if (imageUrl) {
-      payload.append("fields[media]", imageUrl);
+    if ($formData.description) payload.append("fields[description]", $formData.description);
+    payload.append("fields[email]", $formData.email);
+    if ($formData.imageUrl) {
+      payload.append("fields[media]", $formData.imageUrl);
     }
-    if (altText) {
-      payload.append("fields[altMedia]", altText);
+    if ($formData.altText) {
+      payload.append("fields[altMedia]", $formData.altText);
     }
 
     // Handle dynamic names and other fields
-    names.forEach((name, index) => {
+    $formData.names.forEach((name, index) => {
       if (name.value) payload.append(`fields[name${index + 1}]`, name.value);
     });
 
-    Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
+    Object.entries($formData.dynamicFieldValues).forEach(([userFriendlyName, value]) => {
       if (value) {
         const technicalName = fieldMapping[userFriendlyName];
         if (technicalName) {
@@ -160,7 +154,7 @@
     try {
       console.log("Submitting form:", payload);
       const response = await fetch(
-        "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/",
+        staticmanEndpoint,
         {
           method: "POST",
           body: payload,
@@ -168,8 +162,8 @@
       );
 
       if (response.ok) {
-        success = true;
-        submitting = false;
+        $formData.success = true;
+        $formData.submitting = false;
         console.log(
           "Form submitted successfully:",
           response.status,
@@ -178,8 +172,8 @@
         $userLatLng = null;
       } else {
         // Handle errors (e.g., show an error message)
-        submitting = false;
-        errorMessage = true;
+        $formData.submitting = false;
+        $formData.errorMessage = true;
         console.log(
           "Error submitting form:",
           response.status,
@@ -189,9 +183,19 @@
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      errorMessage = true;
+      $formData.errorMessage = true;
       $userLatLng = null;
     }
+  }
+
+  $: missingFields = [];
+  $: {
+    missingFields = []; // Reset the array on each reactivity cycle
+    if (!$formData.names.some(name => name.value.trim() !== '')) missingFields.push("Name");
+    if (!$formData.description) missingFields.push("Description");
+    if (!$userLatLng) missingFields.push("Location (latitude/longitude)");
+    if (!$formData.email) missingFields.push("Email");
+    if (!$formData.consentGiven) missingFields.push("Consent");
   }
 
   function goToContactForm() {
@@ -199,13 +203,47 @@
     currentMenuSection.set("Contact");
   }
 
-  $: if (files && files.length > 0) {
-    file = files[0];
-  } else {
-    file = null;
+  function gotoComAgr() {
+    currentSidebar.set("menu");
+    currentMenuSection.set("Community Agreements");
   }
 
-  $: submitText = submitting ? "Submitting" : "Submit";
+  $: if ($formData.files && $formData.files.length > 0) {
+    $formData.file = $formData.files[0];
+  } else {
+    $formData.file = null;
+  }
+
+  async function verifyServerResponds() {
+    if (!$formData.serverResponds) {
+      try {
+          // Sending a request to wake up the server
+          const response = await fetch(staticmanURL, {
+              method: 'GET',
+            });
+            if (response.ok) {
+              const text = await response.text(); // Retrieves the response body as plain text
+              if (text.includes("Hello from Staticman version 3.0.0!")) {
+                  console.log("Staticman is active:", text.match(/Hello from Staticman version 3.0.0!/g));
+                  $formData.serverResponds = true;
+              } else {
+                  console.log('Server response does not include the expected message.');
+              }
+          } else {
+              console.log('Server response:', response.status, response.statusText);
+          }
+      } catch (error) {
+          console.error('Error waking up the server:', error);
+      }
+    }
+  }
+
+  onMount(async () => {
+    verifyServerResponds();
+});
+
+
+  $: submitText = $formData.submitting ? "Submitting" : "Submit";
 </script>
 
 <div
@@ -216,7 +254,7 @@
   <button class="close-button" on:click={closeSideBarEvent}>
     <img src={closeImage} alt="Close Sidebar" />
   </button>
-  {#if success}
+  {#if $formData.success}
     <h2>Thank you</h2>
     <p class="success">Your submission has been received.</p>
     <p>
@@ -226,17 +264,17 @@
     </p>
     <p>Are you interested in volunteering to help review submissions?</p>
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
-  {:else if errorMessage}
+  {:else if $formData.errorMessage}
     <h2>Something went wrong</h2>
     <p class="success">Your submission was not properly received.</p>
     <p>Get in touch or <a class='link' on:click={resetForm}>try again.</p>
 
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
   {:else}
-    <h2>Add to *countermap</h2>
+    <h2>Add a monument*</h2>
 
     <p class="main-description">
-      A (counter)monument can be an event, ecology, object, or site that is
+      A monument can be an event, ecology, object, or site that is
       important to a community. It may have been erased, still exist, or be
       speculative.
     </p>
@@ -246,43 +284,50 @@
     </p>
 
     <p class="main-description">
-      Please read our <i>Community Agreements</i> to learn more.
+      Please read our <a class='link' on:click={gotoComAgr}>Community Agreements</a> to learn more.
     </p>
 
     <h3>Leave a marker</h3>
+    {#if $userLatLng}
+    <p>{$userLatLng}</p>
+  {:else}
     <p>
-      {$userLatLng
-        ? $userLatLng
-        : "Click on the countermap to mark the location of this place."}
+      Click
+      {#if objectView}
+        {@html `<a href="${base}/map" class='underline'>here</a>`}
+      {:else}
+        on the countermap
+      {/if}
+      to mark the location of this place.
     </p>
-
+{/if}
     <h3>What do you call this place?</h3>
     <p>
       This can be an “official” name, a name that you use, or something else.
     </p>
 
     <div class="flex flex-col names items-start mb-4">
-      {#each names as name, index (name.id)}
+      {#each $formData.names as name, index (name.id)}
         <input
           type="text"
-          bind:value={names[index].value}
+          bind:value={$formData.names[index].value}
           placeholder="Enter a name"
           id={name.id}
           required
         />
       {/each}
-      {#if names.length < 3}
+      {#if $formData.names.length < 3}
         <button class="add-another-name" on:click={addName}
           >Add another name</button
         >
       {/if}
     </div>
 
-    <h3>Does this place challenge dominant systems of power?</h3>
-
+    <h3>Countermonument</h3>
+    <p>Does this place challenge dominant systems of power?</p>
     <div class="flex flex-col yes-no mb-4">
       <button on:click={() => isPower("yes")}>
-        {#if powerDominanceAnswer === "yes"}
+        {#if $formData.powerDominanceAnswer === "yes"}
           <img src={countermonumentIcon} alt="Yes" class="icon" />
         {:else}
           <img
@@ -295,7 +340,7 @@
       </button>
 
       <button on:click={() => isPower("no")}>
-        {#if powerDominanceAnswer === "no"}
+        {#if $formData.powerDominanceAnswer === "no"}
           <img src={monumentIcon} alt="No" />
         {:else}
           <img src={monumentOutlineIcon} alt="No outline" />
@@ -304,19 +349,20 @@
       </button>
     </div>
 
-    <h3>What do you know about this place?</h3>
-    <p>What is its significance?</p>
-    <p>Who does it belong to?</p>
-    <p>How do you encounter it?</p>
-    <textarea class="mb-2" id="message" bind:value={description} required
+    <h3>Please give us more information</h3>
+    <p class="mb-0">What is its significance?</p>
+    <p class="mb-0">Who does it belong to?</p>
+    <p class="mb-0">How do you encounter it?</p>
+    <p class="mb-0">What do you remember?</p>
+    <textarea class="mb-2" id="message" bind:value={$formData.description} required
     ></textarea>
 
-    <p class="mb-0">Add more information:</p>
+    <h3>Add some tags:</h3>
     <div class="flex flex-row more-btns mb-4">
       {#each fields as info}
         <button
           class="rounded"
-          class:active={activeInfoButtons[info]}
+          class:active={$formData.activeInfoButtons[info]}
           on:click={() => toggleInfoButton(info)}
         >
           {info}
@@ -324,17 +370,27 @@
       {/each}
     </div>
     <div class="flex flex-col more-info mb-4">
-      {#each Object.keys(activeInfoButtons).filter((info) => activeInfoButtons[info]) as activeInfo}
-        <input
-          type="text"
-          bind:value={dynamicFieldValues[activeInfo]}
-          placeholder={`Enter ${activeInfo} details`}
-        />
+      {#each Object.keys($formData.activeInfoButtons).filter(info => $formData.activeInfoButtons[info]) as activeInfo}
+        {#if ['objectType', 'material', 'tactics', 'gestures'].includes(fieldMapping[activeInfo])}
+          <h4>{activeInfo}</h4>
+          <CustomSelect
+            options={getOptionsForFieldByFriendlyName(activeInfo)}
+            bind:selected={$formData.dynamicFieldValues[activeInfo]}
+            altBgColor={'#40b37c'}
+          />
+        {:else}
+          <input
+            type="text"
+            bind:value={$formData.dynamicFieldValues[activeInfo]}
+            placeholder={`Enter ${activeInfo} details`}
+          />
+        {/if}
       {/each}
     </div>
 
     <h3>How do you experience this place?</h3>
-
+    <p>Share an image that represents your experience with a place or write it below.
+    </p>
     <p>Optional: Click on the labels to create a prompt.</p>
 
     <!-- Dynamic senses and media buttons -->
@@ -366,24 +422,23 @@
     <p>Share a file (audio, video, image, text) that represents this place.</p>
 
     <!-- File input with drag and drop -->
-    <input type="file" bind:files={files} id="file" hidden />
-    <label for="file" class="file-dropzone mb-4"  on:drop|preventDefault={handleDrop} on:dragover|preventDefault> 
-      Choose a file or drop one here.
-    </label>
-    {#if file}
-      <p>File selected: {file.name}</p>
+    <label for="file" class="file-dropzone mb-4" on:drop|preventDefault={handleFileSelected} on:dragover|preventDefault>Choose a file or drop one here.</label>
+    <input type="file" bind:files={$formData.files} id="file" hidden on:change={handleFileSelected} />
+    
+    {#if $formData.file}
+      <p>File selected: {$formData.file.name}</p>
     {/if}
     <p>Describe this image</p>
-    <textarea class="mb-4" bind:value={altText}></textarea>
+    <textarea class="mb-4" bind:value={$formData.altText}></textarea>
 
     <h3>Email</h3>
-    <input class="mb-4" id="email" type="email" bind:value={email} required />
+    <input class="mb-4" id="email" type="email" bind:value={$formData.email} required />
 
     <p class="my-4">
       <label class="custom-radio">
         <input
           type="radio"
-          bind:group={consentGiven}
+          bind:group={$formData.consentGiven}
           value={true}
           class="hidden-radio"
         />
@@ -391,25 +446,51 @@
           class="radio-svg"
           viewBox="0 0 14 14"
           xmlns="http://www.w3.org/2000/svg"
-          on:click={() => (consentGiven = true)}
+          on:click={() => ($formData.consentGiven = true)}
         >
           <circle
             cx="7"
             cy="7"
             r="6.5"
             stroke="black"
-            fill={consentGiven ? "black" : "none"}
+            fill={$formData.consentGiven ? "black" : "none"}
           />
         </svg>
-        Let *countermap record and reuse the information you shared. Read our User
-        and Community Agreements here.
+        Let *countermap record and reuse the information you shared. 
       </label>
     </p>
+
+        <!-- Display missing fields -->
+{#if missingFields.length > 0}
+<p class="missing-fields">
+  <strong>
+    Missing required fields:
+  </strong>
+</p>
+  <ul>
+  {#each missingFields as field, index}
+    <li style='background-image: url({countermonumentIcon});'>
+    {field}
+  </li>
+  {/each}
+</ul>
+
+{/if}
+{#if !$formData.serverResponds}
+<p>There seems to be an issue with the submission server</p>
+<p>Try closing and reopening this sidebar. Don't worry the data you submitted won't be lost.</p>
+{/if}
     <button
       class="submit rounded mb-4"
-      disabled={!consentGiven}
-      on:click={handleSubmit}>{submitText}</button
+      disabled={!isFormValid || !$formData.consentGiven}
+      on:click={handleSubmit}>
+      {submitText}
+      {#if $formData.submitting}
+        <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      {/if}
+      </button
     >
+
   {/if}
 </div>
 
@@ -461,7 +542,7 @@
     height: auto;
   }
   p,
-  label {
+  label, li {
     font-size: 0.75rem;
   }
   p {
@@ -573,5 +654,42 @@
 
   .radio-svg circle {
     stroke-width: 1px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+  .dot {
+    animation: blink 1.4s infinite both;
+    display: inline-block;
+    margin-left: 4px;
+  }
+
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+ul {
+    list-style-type: none; /* Removes default list bullets */
+    padding: 0;
+    margin: 0;
+  }
+
+li {
+    margin: 0.5rem 0.25rem;
+    background-repeat: no-repeat;
+    background-size: 10px 10px; /* Adjust size of the icon */
+    background-position: 0 0px; /* Adjust position of the icon */
+    padding-left: 10px; /* Adjust padding to make space for the icon */
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      padding: 0 0.88rem;
+      padding-top: 2rem;
+    }
   }
 </style>
