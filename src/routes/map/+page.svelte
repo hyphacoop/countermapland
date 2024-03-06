@@ -2,6 +2,8 @@
   import { derived } from "svelte/store";
   import L from "leaflet";
 
+  import { fade } from "svelte/transition";
+
   import "../../app.css";
   import Leaflet from "$lib/Map/Leaflet.svelte";
   import Marker from "$lib/Map/Marker.svelte";
@@ -24,6 +26,7 @@
     darkMode,
     selectedMarkerId,
     currentSidebar,
+    isPopupOpen,
   } from "$lib/stores";
 
   import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
@@ -106,8 +109,14 @@
 
   $: console.log($currentSidebar);
 </script>
-
-<h1 class={$darkMode === "dark" ? "darkmode" : ""}>*countermap</h1>
+{#if $isPopupOpen === false}
+  <h1 
+    in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}
+    class={$darkMode === "dark" ? "darkmode" : ""}
+  >
+    *countermap
+  </h1>
+{/if}
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="w-full h-screen"  on:click={handleDivClick}>
