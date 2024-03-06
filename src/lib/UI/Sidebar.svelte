@@ -288,7 +288,7 @@
   }
   p.disclaimer {
     margin-top:5rem;
-    font-size: 0.65rem;
+    font-size: 0.95rem;
     margin-bottom: 1rem;
   }
   @media (max-width: 768px) {
