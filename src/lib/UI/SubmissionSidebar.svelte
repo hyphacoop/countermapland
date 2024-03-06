@@ -33,8 +33,10 @@
   let files;
   let file = null;
   let activeInfoButtons = {};
+  let serverResponds = false;
 
-  const staticmanEndpoint = "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/";
+  const staticmanURL = "https://countermap.onrender.com/";
+  const staticmanEndpoint = `${staticmanURL}v3/entry/github/hyphacoop/countermapland/staging/submissions/`;
 
   // Find the appropriate options to pass to CustomSelect based on the field name
   function getOptionsForField(technicalName) {
@@ -223,22 +225,30 @@
     file = null;
   }
 
-  onMount(async () => {
-    const endpoint = "https://countermap.onrender.com/v3/entry/github/hyphacoop/countermapland/staging/submissions/";
+  async function verifyServerResponds() {
     try {
-        // Sending an empty POST request to wake up the server
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                // Add headers if required by your endpoint
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}) // An empty body or minimal payload
-        });
-        console.log('Server response:', response.status, response.statusText);
+        // Sending a request to wake up the server
+        const response = await fetch(staticmanURL, {
+            method: 'GET',
+          });
+          if (response.ok) {
+            const text = await response.text(); // Retrieves the response body as plain text
+            if (text.includes("Hello from Staticman version 3.0.0!")) {
+                console.log("Staticman is active:", text.match(/Hello from Staticman version 3.0.0!/g));
+                serverResponds = true;
+            } else {
+                console.log('Server response does not include the expected message.');
+            }
+        } else {
+            console.log('Server response:', response.status, response.statusText);
+        }
     } catch (error) {
         console.error('Error waking up the server:', error);
     }
+  }
+
+  onMount(async () => {
+    verifyServerResponds();
 });
 
 
