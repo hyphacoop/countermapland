@@ -14,8 +14,6 @@
 
   onMount(() => {
     popup = L.popup().setContent(popupElement);
-    popup.options.closeOnClick = false;
-    popup.options.autoClose = false;
     popup._initLayout();
 
 	if (layer) {
