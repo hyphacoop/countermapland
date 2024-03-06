@@ -59,7 +59,7 @@
 
   const dispatch = createEventDispatcher();
 
-  $: isFormValid = names.some(name => name.value.trim() !== '') && description && $userLatLng && email;
+  $: isFormValid = names.some(name => name.value.trim() !== '') && description && $userLatLng && email && consentGiven;
 
   function resetForm() {
     names = [{ id: "name1", value: "" }];
@@ -207,6 +207,7 @@
     if (!description) missingFields.push("Description");
     if (!$userLatLng) missingFields.push("Location (latitude/longitude)");
     if (!email) missingFields.push("Email");
+    if (!consentGiven) missingFields.push("Consent");
   }
 
   function goToContactForm() {
