@@ -485,8 +485,10 @@
 </ul>
 
 {/if}
+{#if !serverResponds}
+<p>There seems to be an issue with the submission server</p>
+<p>Try closing and reopening this sidebar. Don't worry the data you submitted won't be lost.</p>
 {/if}
-
     <button
       class="submit rounded mb-4"
       disabled={!isFormValid || !consentGiven}
