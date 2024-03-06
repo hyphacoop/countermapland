@@ -28,8 +28,8 @@
 
   import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
 
-  let width = 30;
-  let height = 30;
+  let width = 25;
+  let height = 25;
   let zoomLevel = 10;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
