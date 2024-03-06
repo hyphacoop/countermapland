@@ -551,7 +551,7 @@
     height: auto;
   }
   p,
-  label {
+  label, li {
     font-size: 0.75rem;
   }
   p {
