@@ -84,7 +84,7 @@
 
   function closingSidebar() {
     selectedMarkerId.set(null);
-    if (searchResultsActive) {
+    if ($searchResultsActive) {
       currentSidebar.set("search");
       searchResultsActive.set(false);
     }
@@ -193,7 +193,7 @@
     </div>
   </div>
   {/if}
-  {#if $selectedMarker.challengesPower === false}
+  {#if $selectedMarker?.challengesPower === false}
   <p class='disclaimer'>
     <i>
       This information is imported from third-party datasets and does not reflect the opinions of countermap.
@@ -233,7 +233,7 @@
   }
 
   .image-container img {
-    max-width: 100%;
+    max-width: 20px;
     max-height: 100%;
   }
 
@@ -258,11 +258,6 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-  }
-  .close-button {
-    position: absolute;
-    top: 1.19rem;
-    right: 1.19rem;
   }
   .inscription-container {
     margin: 1rem 0rem;
