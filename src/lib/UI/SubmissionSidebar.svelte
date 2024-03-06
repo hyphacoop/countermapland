@@ -680,6 +680,20 @@
 .dot:nth-child(2) { animation-delay: 0.2s; }
 .dot:nth-child(3) { animation-delay: 0.4s; }
 
+ul {
+    list-style-type: none; /* Removes default list bullets */
+    padding: 0;
+    margin: 0;
+  }
+
+li {
+    margin: 0.5rem 0.25rem;
+    background-repeat: no-repeat;
+    background-size: 10px 10px; /* Adjust size of the icon */
+    background-position: 0 0px; /* Adjust position of the icon */
+    padding-left: 10px; /* Adjust padding to make space for the icon */
+  }
+
   @media (max-width: 768px) {
     .sidebar {
       width: 100%;
