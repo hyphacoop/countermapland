@@ -189,7 +189,9 @@ const markerCol = index % itemsPerRow;
     }
   }
 
-
+  function openSubmissions() {
+    setCurrentSidebar('submissions');
+  }
 
 function closeSidebar() {
     console.log('closing sidebar');
@@ -248,7 +250,11 @@ function closeSidebar() {
   <img src={filterIconPath} alt="Open Filter Sidebar"/>
 </button>
 </div>
-
+{#if !$bannerClosed}
+  <div class='banner-container'>
+    <Banner on:openSubmissions={openSubmissions}/>
+  </div>
+{/if}
 
 </main>
 
