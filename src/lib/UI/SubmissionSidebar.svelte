@@ -4,7 +4,7 @@
   import { fly } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
-  import { userLatLng, currentSidebar, currentMenuSection } from "$lib/stores";
+  import { userLatLng, currentSidebar, currentMenuSection, formData } from "$lib/stores";
 
   import CustomSelect from "./CustomSelect.svelte";
 
@@ -19,21 +19,6 @@
   import { gestureTypes, stagingTactics, materialTypes, objectTypes, fields, senses, media, fieldMapping } from "$lib/data/types";
 
   export let objectView = false;
-
-  let names = [{ id: "name1", value: "" }];
-  let altText;
-  let description;
-  let dynamicFieldValues = {};
-  let consentGiven = false;
-  let powerDominanceAnswer = null;
-  let success = false;
-  let submitting = false;
-  let errorMessage = false;
-  let email;
-  let files;
-  let file = null;
-  let activeInfoButtons = {};
-  let serverResponds = false;
 
   const staticmanURL = "https://countermap.onrender.com/";
   const staticmanEndpoint = `${staticmanURL}v3/entry/github/hyphacoop/countermapland/staging/submissions/`;
@@ -59,33 +44,37 @@
 
   const dispatch = createEventDispatcher();
 
-  $: isFormValid = names.some(name => name.value.trim() !== '') && description && $userLatLng && email && consentGiven;
+  $: isFormValid = $formData.names.some(name => name.value.trim() !== '') && $formData.description && $userLatLng && $formData.email && $formData.consentGiven;
 
   function resetForm() {
-    names = [{ id: "name1", value: "" }];
-    altText = "";
-    description = "";
-    dynamicFieldValues = {};
-    consentGiven = false;
-    powerDominanceAnswer = null;
-    success = false;
-    submitting = false;
-    errorMessage = false;
-    email = "";
-    files = null;
-    file = null;
-    activeInfoButtons = {};
+    formData.set({
+      names: [{ id: "name1", value: "" }],
+      altText: "",
+      description: "",
+      dynamicFieldValues: {},
+      consentGiven: false,
+      powerDominanceAnswer: null,
+      success: false,
+      submitting: false,
+      errorMessage: false,
+      email: "",
+      files: null,
+      file: null,
+      activeInfoButtons: {},
+      serverResponds: false,
+      imageUrl: null,
+    });
   }
 
   function isPower(value) {
-    powerDominanceAnswer = value;
+    $formData.powerDominanceAnswer = value;
   }
 
   function addName() {
-    if (names.length < 3) {
-      const nextId = `name${names.length + 1}`;
-      names.push({ id: nextId, value: "" });
-      names = names;
+    if ($formData.names.length < 3) {
+      const nextId = `name${$formData.names.length + 1}`;
+      $formData.names.push({ id: nextId, value: "" });
+      $formData.names = $formData.names;
     }
   }
 
@@ -95,7 +84,7 @@
   }
 
   function toggleInfoButton(info) {
-    activeInfoButtons[info] = !activeInfoButtons[info];
+    $formData.activeInfoButtons[info] = !$formData.activeInfoButtons[info];
   }
 
   function selectRandomFromArray(array, current, setterFunction) {
@@ -112,14 +101,13 @@
   async function handleFileSelected(e) {
     console.log('File selected:', e.dataTransfer ? e.dataTransfer.files : e.target.files)
     e.preventDefault();
-    const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-    if (files && files.length > 0) {
-        file = files[0]; // only using one file for now
+    $formData.files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+    if ($formData.files && $formData.files.length > 0) {
+        $formData.file = $formData.files[0]; // only using one file for now
         // Immediately upload the file and store the URL
         try {
-            const imageUrl = await uploadImage(file);
-            file.url = imageUrl; // Store the URL for later use
-            console.log("File uploaded successfully:", imageUrl);
+            $formData.imageUrl = await uploadImage($formData.file);
+            console.log("File uploaded successfully:", $formData.imageUrl);
         } catch (error) {
             console.error("Error uploading file:", error);
             // Handle upload error (e.g., show an error message)
@@ -127,10 +115,10 @@
     }
 }
   async function handleSubmit() {
-    submitting = true;
+    $formData.submitting = true;
 
     // Assume imageUrl is already obtained from the file upload process
-    let imageUrl = file && file.url ? file.url : null;
+    $formData.imageUrl = $formData.file && $formData.file.url ? $formData.file.url : null;
 
     // Constructing the URLSearchParams directly without initially including potentially undefined values
     let payload = new URLSearchParams();
@@ -139,23 +127,23 @@
     payload.append("fields[latLng]", `${$userLatLng.lat},${$userLatLng.lng}`);
     payload.append(
       "fields[challengesPower]",
-      powerDominanceAnswer === "yes" ? "true" : "false"
+      $formData.powerDominanceAnswer === "yes" ? "true" : "false"
     );
-    if (description) payload.append("fields[description]", description);
-    payload.append("fields[email]", email);
-    if (imageUrl) {
-      payload.append("fields[media]", imageUrl);
+    if ($formData.description) payload.append("fields[description]", $formData.description);
+    payload.append("fields[email]", $formData.email);
+    if ($formData.imageUrl) {
+      payload.append("fields[media]", $formData.imageUrl);
     }
-    if (altText) {
-      payload.append("fields[altMedia]", altText);
+    if ($formData.altText) {
+      payload.append("fields[altMedia]", $formData.altText);
     }
 
     // Handle dynamic names and other fields
-    names.forEach((name, index) => {
+    $formData.names.forEach((name, index) => {
       if (name.value) payload.append(`fields[name${index + 1}]`, name.value);
     });
 
-    Object.entries(dynamicFieldValues).forEach(([userFriendlyName, value]) => {
+    Object.entries($formData.dynamicFieldValues).forEach(([userFriendlyName, value]) => {
       if (value) {
         const technicalName = fieldMapping[userFriendlyName];
         if (technicalName) {
@@ -174,8 +162,8 @@
       );
 
       if (response.ok) {
-        success = true;
-        submitting = false;
+        $formData.success = true;
+        $formData.submitting = false;
         console.log(
           "Form submitted successfully:",
           response.status,
@@ -184,8 +172,8 @@
         $userLatLng = null;
       } else {
         // Handle errors (e.g., show an error message)
-        submitting = false;
-        errorMessage = true;
+        $formData.submitting = false;
+        $formData.errorMessage = true;
         console.log(
           "Error submitting form:",
           response.status,
@@ -195,7 +183,7 @@
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      errorMessage = true;
+      $formData.errorMessage = true;
       $userLatLng = null;
     }
   }
@@ -203,11 +191,11 @@
   $: missingFields = [];
   $: {
     missingFields = []; // Reset the array on each reactivity cycle
-    if (!names.some(name => name.value.trim() !== '')) missingFields.push("Name");
-    if (!description) missingFields.push("Description");
+    if (!$formData.names.some(name => name.value.trim() !== '')) missingFields.push("Name");
+    if (!$formData.description) missingFields.push("Description");
     if (!$userLatLng) missingFields.push("Location (latitude/longitude)");
-    if (!email) missingFields.push("Email");
-    if (!consentGiven) missingFields.push("Consent");
+    if (!$formData.email) missingFields.push("Email");
+    if (!$formData.consentGiven) missingFields.push("Consent");
   }
 
   function goToContactForm() {
@@ -220,31 +208,33 @@
     currentMenuSection.set("Community Agreements");
   }
 
-  $: if (files && files.length > 0) {
-    file = files[0];
+  $: if ($formData.files && $formData.files.length > 0) {
+    $formData.file = $formData.files[0];
   } else {
-    file = null;
+    $formData.file = null;
   }
 
   async function verifyServerResponds() {
-    try {
-        // Sending a request to wake up the server
-        const response = await fetch(staticmanURL, {
-            method: 'GET',
-          });
-          if (response.ok) {
-            const text = await response.text(); // Retrieves the response body as plain text
-            if (text.includes("Hello from Staticman version 3.0.0!")) {
-                console.log("Staticman is active:", text.match(/Hello from Staticman version 3.0.0!/g));
-                serverResponds = true;
-            } else {
-                console.log('Server response does not include the expected message.');
-            }
-        } else {
-            console.log('Server response:', response.status, response.statusText);
-        }
-    } catch (error) {
-        console.error('Error waking up the server:', error);
+    if (!$formData.serverResponds) {
+      try {
+          // Sending a request to wake up the server
+          const response = await fetch(staticmanURL, {
+              method: 'GET',
+            });
+            if (response.ok) {
+              const text = await response.text(); // Retrieves the response body as plain text
+              if (text.includes("Hello from Staticman version 3.0.0!")) {
+                  console.log("Staticman is active:", text.match(/Hello from Staticman version 3.0.0!/g));
+                  $formData.serverResponds = true;
+              } else {
+                  console.log('Server response does not include the expected message.');
+              }
+          } else {
+              console.log('Server response:', response.status, response.statusText);
+          }
+      } catch (error) {
+          console.error('Error waking up the server:', error);
+      }
     }
   }
 
@@ -253,7 +243,7 @@
 });
 
 
-  $: submitText = submitting ? "Submitting" : "Submit";
+  $: submitText = $formData.submitting ? "Submitting" : "Submit";
 </script>
 
 <div
@@ -264,7 +254,7 @@
   <button class="close-button" on:click={closeSideBarEvent}>
     <img src={closeImage} alt="Close Sidebar" />
   </button>
-  {#if success}
+  {#if $formData.success}
     <h2>Thank you</h2>
     <p class="success">Your submission has been received.</p>
     <p>
@@ -274,7 +264,7 @@
     </p>
     <p>Are you interested in volunteering to help review submissions?</p>
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
-  {:else if errorMessage}
+  {:else if $formData.errorMessage}
     <h2>Something went wrong</h2>
     <p class="success">Your submission was not properly received.</p>
     <p>Get in touch or <a class='link' on:click={resetForm}>try again.</p>
@@ -317,16 +307,16 @@
     </p>
 
     <div class="flex flex-col names items-start mb-4">
-      {#each names as name, index (name.id)}
+      {#each $formData.names as name, index (name.id)}
         <input
           type="text"
-          bind:value={names[index].value}
+          bind:value={$formData.names[index].value}
           placeholder="Enter a name"
           id={name.id}
           required
         />
       {/each}
-      {#if names.length < 3}
+      {#if $formData.names.length < 3}
         <button class="add-another-name" on:click={addName}
           >Add another name</button
         >
@@ -337,7 +327,7 @@
     <p>Does this place challenge dominant systems of power?</p>
     <div class="flex flex-col yes-no mb-4">
       <button on:click={() => isPower("yes")}>
-        {#if powerDominanceAnswer === "yes"}
+        {#if $formData.powerDominanceAnswer === "yes"}
           <img src={countermonumentIcon} alt="Yes" class="icon" />
         {:else}
           <img
@@ -350,7 +340,7 @@
       </button>
 
       <button on:click={() => isPower("no")}>
-        {#if powerDominanceAnswer === "no"}
+        {#if $formData.powerDominanceAnswer === "no"}
           <img src={monumentIcon} alt="No" />
         {:else}
           <img src={monumentOutlineIcon} alt="No outline" />
@@ -364,7 +354,7 @@
     <p class="mb-0">Who does it belong to?</p>
     <p class="mb-0">How do you encounter it?</p>
     <p class="mb-0">What do you remember?</p>
-    <textarea class="mb-2" id="message" bind:value={description} required
+    <textarea class="mb-2" id="message" bind:value={$formData.description} required
     ></textarea>
 
     <h3>Add some tags:</h3>
@@ -372,7 +362,7 @@
       {#each fields as info}
         <button
           class="rounded"
-          class:active={activeInfoButtons[info]}
+          class:active={$formData.activeInfoButtons[info]}
           on:click={() => toggleInfoButton(info)}
         >
           {info}
@@ -380,18 +370,18 @@
       {/each}
     </div>
     <div class="flex flex-col more-info mb-4">
-      {#each Object.keys(activeInfoButtons).filter(info => activeInfoButtons[info]) as activeInfo}
+      {#each Object.keys($formData.activeInfoButtons).filter(info => $formData.activeInfoButtons[info]) as activeInfo}
         {#if ['objectType', 'material', 'tactics', 'gestures'].includes(fieldMapping[activeInfo])}
           <h4>{activeInfo}</h4>
           <CustomSelect
             options={getOptionsForFieldByFriendlyName(activeInfo)}
-            bind:selected={dynamicFieldValues[activeInfo]}
+            bind:selected={$formData.dynamicFieldValues[activeInfo]}
             altBgColor={'#40b37c'}
           />
         {:else}
           <input
             type="text"
-            bind:value={dynamicFieldValues[activeInfo]}
+            bind:value={$formData.dynamicFieldValues[activeInfo]}
             placeholder={`Enter ${activeInfo} details`}
           />
         {/if}
@@ -433,22 +423,22 @@
 
     <!-- File input with drag and drop -->
     <label for="file" class="file-dropzone mb-4" on:drop|preventDefault={handleFileSelected} on:dragover|preventDefault>Choose a file or drop one here.</label>
-    <input type="file" bind:files={files} id="file" hidden on:change={handleFileSelected} />
+    <input type="file" bind:files={$formData.files} id="file" hidden on:change={handleFileSelected} />
     
-    {#if file}
-      <p>File selected: {file.name}</p>
+    {#if $formData.file}
+      <p>File selected: {$formData.file.name}</p>
     {/if}
     <p>Describe this image</p>
-    <textarea class="mb-4" bind:value={altText}></textarea>
+    <textarea class="mb-4" bind:value={$formData.altText}></textarea>
 
     <h3>Email</h3>
-    <input class="mb-4" id="email" type="email" bind:value={email} required />
+    <input class="mb-4" id="email" type="email" bind:value={$formData.email} required />
 
     <p class="my-4">
       <label class="custom-radio">
         <input
           type="radio"
-          bind:group={consentGiven}
+          bind:group={$formData.consentGiven}
           value={true}
           class="hidden-radio"
         />
@@ -456,14 +446,14 @@
           class="radio-svg"
           viewBox="0 0 14 14"
           xmlns="http://www.w3.org/2000/svg"
-          on:click={() => (consentGiven = true)}
+          on:click={() => ($formData.consentGiven = true)}
         >
           <circle
             cx="7"
             cy="7"
             r="6.5"
             stroke="black"
-            fill={consentGiven ? "black" : "none"}
+            fill={$formData.consentGiven ? "black" : "none"}
           />
         </svg>
         Let *countermap record and reuse the information you shared. 
@@ -486,16 +476,16 @@
 </ul>
 
 {/if}
-{#if !serverResponds}
+{#if !$formData.serverResponds}
 <p>There seems to be an issue with the submission server</p>
 <p>Try closing and reopening this sidebar. Don't worry the data you submitted won't be lost.</p>
 {/if}
     <button
       class="submit rounded mb-4"
-      disabled={!isFormValid || !consentGiven}
+      disabled={!isFormValid || !$formData.consentGiven}
       on:click={handleSubmit}>
       {submitText}
-      {#if submitting}
+      {#if $formData.submitting}
         <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
       {/if}
       </button
