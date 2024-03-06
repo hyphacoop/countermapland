@@ -140,3 +140,21 @@ export const formData = writable({
 });
 
 export const isPopupOpen = writable(false);
+
+// Generic function to create a writable store that synchronizes with localStorage
+function createPersistedStore(key, startValue) {
+  const storedValue = localStorage.getItem(key);
+  const initialValue = storedValue ? JSON.parse(storedValue) : startValue;
+  
+  const store = writable(initialValue, () => {
+    const unsubscribe = store.subscribe(value => {
+      localStorage.setItem(key, JSON.stringify(value));
+    });
+    return unsubscribe;
+  });
+
+  return store;
+}
+
+// Use this function to create your persistable stores
+export const bannerClosed = createPersistedStore('bannerClosed', false);
