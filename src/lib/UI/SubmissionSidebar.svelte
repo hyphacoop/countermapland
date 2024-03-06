@@ -328,7 +328,7 @@ onDestroy(() => {
 
         {#if $isScreenWidthLessThan768}
         {#if !$halfSidebarApplied}
-        Click
+          Click
           <button class="underline" on:click={toggleHalfSidebar}>here</button>
           to 
 
@@ -337,9 +337,9 @@ onDestroy(() => {
           Place a marker on the map
           {/if}
         {:else if objectView}
-          {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
+          Click {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
         {:else}
-          on the countermap to mark the location of this place.
+          Click on the countermap to mark the location of this place.
         {/if}
 
       </p>
