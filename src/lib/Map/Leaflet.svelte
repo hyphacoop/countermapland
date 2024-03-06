@@ -50,17 +50,17 @@
   
   $: {
   let iconHtml = $darkMode === "dark"
-    ? `<div style="width: 40px; height: 50px; filter: invert(100%);">
+    ? `<div style="width: 30px; height: 40px; filter: invert(100%);">
         <img src="${pinSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
       </div>`
-    : `<div style="width: 40px; height: 50px;">
+    : `<div style="width: 30px; height: 40px;">
         <img src="${pinSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
       </div>`;
 
   icon = L.divIcon({
     html: iconHtml,
     className: "map-marker",
-    iconSize: L.point(40, 70),
+    iconSize: L.point(25, 65),
   });
 }
 

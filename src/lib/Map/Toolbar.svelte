@@ -63,6 +63,9 @@
   }
 
   function openSubmissions() {
+    if ($currentSidebar === "submissions") {
+      currentSidebar.set(null);
+    } else
     currentSidebar.set("submissions");
   }
 
