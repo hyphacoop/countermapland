@@ -556,9 +556,6 @@ onDestroy(() => {
     padding: 0 1.88rem;
     padding-top: 2.69rem;
   }
-  .inner-sidebar {
-    height: 100%;
-  }
   h2 {
     color: #000;
     font-family: Itim;
@@ -735,9 +732,11 @@ li {
       padding: 0 0.88rem;
       padding-top: 2rem;
       top: 25%;
+      height: 75%;
     }
   }
   .half-sidebar {
     top: 50%;
+    height: 50%;
   }
 </style>
