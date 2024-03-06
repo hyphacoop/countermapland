@@ -499,12 +499,7 @@
     text-decoration: underline;
     cursor: pointer;
   }
-  .close-button {
-    position: absolute;
-    top: 1.19rem;
-    right: 1.19rem;
-    z-index: 9999;
-  }
+
   .sidebar {
     width: 450px;
     height: 100%;
@@ -605,10 +600,13 @@
 
   .yes-no button {
     display: flex;
-    align-items: left;
     justify-content: left;
     gap: 0.5rem;
     padding: 0.25rem;
+  }
+
+  .yes-no button img {
+    max-width: 22px;
   }
 
   .add-another-name {
