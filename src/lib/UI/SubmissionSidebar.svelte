@@ -471,7 +471,20 @@
 
         <!-- Display missing fields -->
 {#if missingFields.length > 0}
-<p class="missing-fields">Missing required fields: {missingFields.join(", ")}</p>
+<p class="missing-fields">
+  <strong>
+    Missing required fields:
+  </strong>
+</p>
+  <ul>
+  {#each missingFields as field, index}
+    <li style='background-image: url({countermonumentIcon});'>
+    {field}
+  </li>
+  {/each}
+</ul>
+
+{/if}
 {/if}
 
     <button
