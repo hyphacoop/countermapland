@@ -119,3 +119,22 @@ export const filtersActive = writable(false);
 export const userLatLng = writable(null);
 
 export const mapInstanceStore = writable(null);
+
+// keep track of formData
+export const formData = writable({
+  names: [{ id: "name1", value: "" }],
+  altText: "",
+  description: "",
+  dynamicFieldValues: {},
+  consentGiven: false,
+  powerDominanceAnswer: null,
+  success: false,
+  submitting: false,
+  errorMessage: false,
+  email: "",
+  files: null,
+  file: null,
+  activeInfoButtons: {},
+  serverResponds: false,
+  imageUrl: null,
+});
