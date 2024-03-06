@@ -92,10 +92,10 @@
     </button>
     <div class="zoom-container">
       <button on:click={zoomIn}>
-        <img src={plusIconPath} alt="Zoom in" />
+        <img src={plusIconPath} alt="Zoom in" class='max-w' />
       </button>
       <button on:click={zoomOut}>
-        <img src={minusIconPath} alt="Zoom out" />
+        <img src={minusIconPath} alt="Zoom out" class='max-w'/>
       </button>
     </div>
   </div>
@@ -200,6 +200,10 @@
   button:hover:not(#peephole) {
     opacity: 100%;
     background-color: lightgray;
+  }
+
+  .max-w {
+    max-width: 22px;
   }
 
   @media (max-width: 768px) {

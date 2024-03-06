@@ -106,12 +106,6 @@
     padding: 0 1.88rem;
     padding-top: 1.69rem;
   }
-  .close-button {
-    position: absolute;
-    top: 1.19rem;
-    right: 1.19rem;
-    z-index: 9999;
-  }
 
   li button {
     position: relative;
