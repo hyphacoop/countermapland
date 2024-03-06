@@ -43,6 +43,8 @@ with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
             marker = {
                 'latLng': [float(lat), float(lng)],
                 'visible': True,
+                'challengesPower': False,
+                'source': 'MM',
                 'name': name,
                 'municipality': municipality,
                 'id': id,
