@@ -1,8 +1,8 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
+  import { writable } from "svelte/store";
   import { base } from "$app/paths";
   import { fly } from "svelte/transition";
-  import { createEventDispatcher } from "svelte";
 
   import { userLatLng, currentSidebar, currentMenuSection, formData } from "$lib/stores";
 
@@ -42,10 +42,30 @@
   let selectedSense = senses[0];
   let selectedMedia = media[0];
 
+  // Reactive store to monitor screen width and toggle sidebar class
+  let isScreenWidthLessThan768 = writable(false);
+  let halfSidebarApplied = writable(false);
+
+   // Function to check and update the screen width
+   function updateScreenWidth() {
+    isScreenWidthLessThan768.set(window.innerWidth < 768);
+  }
+
+   // Function to toggle the .half-sidebar class
+   function toggleHalfSidebar() {
+    if ($isScreenWidthLessThan768) {
+      halfSidebarApplied.update(n => !n);
+    }
+  }
+
   const dispatch = createEventDispatcher();
 
   $: isFormValid = $formData.names.some(name => name.value.trim() !== '') && $formData.description && $userLatLng && $formData.email && $formData.consentGiven;
 
+  // Reactive statement to manage the half-sidebar class application based on screen width and $userLatLng
+  $: halfSidebarApplied.set($isScreenWidthLessThan768 && $userLatLng);
+
+  $: console.log($halfSidebarApplied, 'is half sidebar applied');
   function resetForm() {
     formData.set({
       names: [{ id: "name1", value: "" }],
@@ -240,7 +260,13 @@
 
   onMount(async () => {
     verifyServerResponds();
+    window.addEventListener('resize', updateScreenWidth);
+    updateScreenWidth();
 });
+
+onDestroy(() => {
+    window.removeEventListener('resize', updateScreenWidth);
+  });
 
 
   $: submitText = $formData.submitting ? "Submitting" : "Submit";
@@ -250,6 +276,7 @@
   class="sidebar"
   in:fly={{ x: 300, duration: 800 }}
   out:fly={{ x: 300, duration: 800 }}
+  class:half-sidebar={$halfSidebarApplied}
 >
   <button class="close-button" on:click={closeSideBarEvent}>
     <img src={closeImage} alt="Close Sidebar" />
@@ -289,18 +316,34 @@
 
     <h3>Leave a marker</h3>
     {#if $userLatLng}
-    <p>{$userLatLng}</p>
-  {:else}
-    <p>
-      Click
-      {#if objectView}
-        {@html `<a href="${base}/map" class='underline'>here</a>`}
-      {:else}
-        on the countermap
+      <p>{$userLatLng}</p>
+      {#if $isScreenWidthLessThan768 && $halfSidebarApplied}
+        <p>Click 
+        <button class="underline" on:click={toggleHalfSidebar}>here</button>
+        to minimize the map to continue filling the form.
+      </p>
       {/if}
-      to mark the location of this place.
-    </p>
-{/if}
+    {:else}
+      <p>
+
+        {#if $isScreenWidthLessThan768}
+        {#if !$halfSidebarApplied}
+        Click
+          <button class="underline" on:click={toggleHalfSidebar}>here</button>
+          to 
+
+          expand the map in order to mark the location of this place.
+          {:else}
+          Place a marker on the map
+          {/if}
+        {:else if objectView}
+          {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
+        {:else}
+          on the countermap to mark the location of this place.
+        {/if}
+
+      </p>
+    {/if}
     <h3>What do you call this place?</h3>
     <p>
       This can be an “official” name, a name that you use, or something else.
@@ -513,6 +556,9 @@
     padding: 0 1.88rem;
     padding-top: 2.69rem;
   }
+  .inner-sidebar {
+    height: 100%;
+  }
   h2 {
     color: #000;
     font-family: Itim;
@@ -688,6 +734,10 @@ li {
       width: 100%;
       padding: 0 0.88rem;
       padding-top: 2rem;
+      top: 25%;
     }
+  }
+  .half-sidebar {
+    top: 50%;
   }
 </style>
