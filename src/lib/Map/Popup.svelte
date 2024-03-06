@@ -2,6 +2,8 @@
   import { onMount, onDestroy, getContext } from "svelte";
   import L from "leaflet";
 
+  import { isPopupOpen } from "$lib/stores";
+
   let popup;
   let popupElement;
   
@@ -18,8 +20,16 @@
 
 	if (layer) {
       layer.bindPopup(popup);
-      layer.on("popupopen", () => (open = true));
-      layer.on("popupclose", () => (open = false));
+      layer.on("popupopen", () => {
+        open = true;
+        isPopupOpen.set(true);
+        }
+      );
+      layer.on("popupclose", () => {
+        open = false;
+        isPopupOpen.set(false);
+        }
+      );
     }
   });
 
