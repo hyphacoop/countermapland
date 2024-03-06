@@ -248,18 +248,26 @@ img.photos  {
   border-radius: 0.25rem;
   background: #FFF;
   padding: 0.25rem;
+  max-width: 40px;
 }
 
 .filter-button {
   position: fixed;
   bottom: 1.31rem;
-  right: 3.4rem;
+  right: 3.75rem;
   z-index: 9997;
   border-radius: 0.25rem;
   background: #FFF;
   padding: 0.25rem;
-  width: 30px;
-  height: 30px;
+  max-width: 40px;
+}
+
+.close-button {
+  position: absolute;
+  top: 1.19rem;
+  right: 1.19rem;
+  z-index: 9999;
+  max-width: 20px;
 }
 
 @media (max-width: 768px) {
@@ -268,5 +276,9 @@ img.photos  {
   }
   .filter-button {
     right: 2.22rem;
+  }
+  .menu-button,
+  .filter-button {
+    max-width: 33px;
   }
 }
