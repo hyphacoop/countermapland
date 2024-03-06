@@ -193,11 +193,13 @@
     </div>
   </div>
   {/if}
+  {#if $selectedMarker.challengesPower === false}
   <p class='disclaimer'>
     <i>
       This information is imported from third-party datasets and does not reflect the opinions of countermap.
     </i>
   </p>
+  {/if}
 </div>
 
 <style>
