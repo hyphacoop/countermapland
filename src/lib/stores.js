@@ -138,3 +138,5 @@ export const formData = writable({
   serverResponds: false,
   imageUrl: null,
 });
+
+export const isPopupOpen = writable(false);
