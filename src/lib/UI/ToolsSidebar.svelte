@@ -177,12 +177,7 @@
     padding: 0 1.88rem;
     padding-top: 2.69rem;
   }
-  .close-button {
-    position: absolute;
-    top: 1.19rem;
-    right: 1.19rem;
-    z-index: 9999;
-  }
+
   h3 {
     font-size: 0.875rem;
     margin-bottom: 0.38rem;
