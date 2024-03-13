@@ -268,6 +268,7 @@
     font-weight: 400;
     line-height: normal;
     border-radius: 0.25rem;
+    background: #FFD966; 
     border: 1px solid #000;
     padding: 1.19rem 1rem;
   }
