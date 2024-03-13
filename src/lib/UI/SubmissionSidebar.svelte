@@ -296,9 +296,9 @@ onDestroy(() => {
     <p class="success">Your submission was not properly received.</p>
     <p>Get in touch or <a class='link' on:click={resetForm}>try again.</p>
 
-    <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
+    <button type="button" class="link" on:click={goToContactForm}>Reach out</button>
   {:else}
-    <h2>Add a monument*</h2>
+    <h2>Add to *countermap</h2>
 
     <p class="main-description">
       A monument can be an event, ecology, object, or site that is
@@ -382,7 +382,7 @@ onDestroy(() => {
         yes
       </button>
 
-      <button on:click={() => isPower("no")}>
+      <button on:click={() => isPower("no")} class='monumentIcon'>
         {#if $formData.powerDominanceAnswer === "no"}
           <img src={monumentIcon} alt="No" />
         {:else}
@@ -651,6 +651,10 @@ onDestroy(() => {
   .yes-no button img {
     max-width: 22px;
   }
+  .yes-no .monumentIcon img {
+    max-width: 15px;
+    margin-left:3px;
+  }
 
   .add-another-name {
     color: #000;
@@ -669,6 +673,7 @@ onDestroy(() => {
   input {
     padding: 0.25rem;
     border-radius: 0.25rem;
+    border: 1px solid #000; 
   }
   .names input {
     margin-bottom: 0.5rem;
