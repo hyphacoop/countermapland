@@ -77,6 +77,7 @@
         gap: 0.75rem;
         bottom: 0;
         width: 100%;
+        border-top: 1px solid #000;
     }
     .banner div {
         flex: 1 0 90%; 
