@@ -569,7 +569,7 @@ onDestroy(() => {
   h3 {
     color: #000;
     font-family: Itim;
-    font-size: 1.125rem;
+    font-size: 1.5rem; 
     font-style: normal;
     font-weight: 400;
     line-height: normal;
