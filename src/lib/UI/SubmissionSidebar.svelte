@@ -317,17 +317,7 @@ onDestroy(() => {
       Please read our <a class='link' on:click={gotoComAgr}>Community Agreements</a> to learn more.
     </p>
 
-    <h3>Leave a marker</h3>
-    {#if $userLatLng}
-      <p>{$userLatLng}</p>
-      {#if $isScreenWidthLessThan768 && $halfSidebarApplied}
-        <p>Click 
-        <button class="underline" on:click={toggleHalfSidebar}>here</button>
-        to minimize the map to continue filling the form.
-      </p>
-      {/if}
-    {:else}
-      <p>
+    <h3>1. Leave a marker</h3>
 
         {#if $isScreenWidthLessThan768}
         {#if !$halfSidebarApplied}
@@ -345,9 +335,8 @@ onDestroy(() => {
           Click on the countermap to mark the location of this place.
         {/if}
 
-      </p>
-    {/if}
-    <h3>What do you call this place?</h3>
+    </div>
+    <h3>2. What do you call this place?</h3>
     <p>
       This can be an “official” name, a name that you use, or something else.
     </p>
@@ -369,9 +358,9 @@ onDestroy(() => {
       {/if}
     </div>
 
-    <h3>Countermonument</h3>
-    <p>Does this place challenge dominant systems of power?</p>
-    <div class="flex flex-col yes-no mb-4">
+    
+    <h3>3. Does this place challenge dominant systems of power?</h3>
+    <div class="flex flex-col yes-no mb-11">
       <button on:click={() => isPower("yes")}>
         {#if $formData.powerDominanceAnswer === "yes"}
           <img src={countermonumentIcon} alt="Yes" class="icon" />
@@ -395,13 +384,7 @@ onDestroy(() => {
       </button>
     </div>
 
-    <h3>Please give us more information</h3>
-    <p class="mb-0">What is its significance?</p>
-    <p class="mb-0">Who does it belong to?</p>
-    <p class="mb-0">How do you encounter it?</p>
-    <p class="mb-0">What do you remember?</p>
-    <textarea class="mb-2" id="message" bind:value={$formData.description} required
-    ></textarea>
+    <h3>4. What do you know about this place?</h3>
 
     <h3>Add some tags:</h3>
     <div class="flex flex-row more-btns mb-4">
@@ -434,8 +417,7 @@ onDestroy(() => {
       {/each}
     </div>
 
-    <h3>How do you experience this place?</h3>
-    <p>Share an image that represents your experience with a place or write it below.
+    <h3>5. How do you experience this place?</h3>
     </p>
     <p>Optional: Click on the labels to create a prompt.</p>
 
@@ -477,7 +459,7 @@ onDestroy(() => {
     <p>Describe this image</p>
     <textarea class="mb-4" bind:value={$formData.altText}></textarea>
 
-    <h3>Email</h3>
+    <h3>6. Email</h3>
     <input class="mb-4" id="email" type="email" bind:value={$formData.email} required />
 
     <p class="my-4">
