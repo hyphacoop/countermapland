@@ -32,7 +32,7 @@
     isLoading = true;
     errorMessage = "";
     searchResults = []; // Clear previous results
-    const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
       city
     )}&format=json&limit=10`; // Currently set at 10 results
 

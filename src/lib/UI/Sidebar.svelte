@@ -215,6 +215,10 @@
     z-index: 9999;
     padding: 0 1.88rem;
     padding-top: 2.69rem;
+    min-height:100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .addressAndLatLong {
     margin: 1rem 0;
@@ -268,6 +272,7 @@
     font-weight: 400;
     line-height: normal;
     border-radius: 0.25rem;
+    background: #FFD966; 
     border: 1px solid #000;
     padding: 1.19rem 1rem;
   }
