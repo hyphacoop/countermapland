@@ -289,6 +289,7 @@ onDestroy(() => {
         >date</span
       >
     </p>
+    <p><a class="link" on:click={resetForm}>Add another submission</a></p>
     <p>Are you interested in volunteering to help review submissions?</p>
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
   {:else if $formData.errorMessage}
