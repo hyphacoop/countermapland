@@ -215,6 +215,10 @@
     z-index: 9999;
     padding: 0 1.88rem;
     padding-top: 2.69rem;
+    min-height:100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .addressAndLatLong {
     margin: 1rem 0;
