@@ -305,6 +305,9 @@ onDestroy(() => {
       important to a community. It may have been erased, still exist, or be
       speculative.
     </p>
+    <p class='main-description'>
+      We define “countermonument” as a submission that challenges dominant systems of power.
+    </p>
     <p class="main-description">
       We review each submission before adding it to the map in order to ensure
       this remains a safe digital space.
