@@ -135,9 +135,6 @@
   async function handleSubmit() {
     $formData.submitting = true;
 
-    // Assume imageUrl is already obtained from the file upload process
-    $formData.imageUrl = $formData.file && $formData.file.url ? $formData.file.url : null;
-
     // Constructing the URLSearchParams directly without initially including potentially undefined values
     let payload = new URLSearchParams();
 
