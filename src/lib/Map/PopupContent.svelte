@@ -4,6 +4,7 @@
     import ImageArray from '$lib/UI/ImageArray.svelte';
 
     import monumentSvg from '$lib/icons/monument.svg';
+    import countermonumentSvg from "$lib/icons/countermonument.svg";
 
     export let width;
     export let height;
@@ -13,12 +14,15 @@
     export let description;
     export let photos;
     export let baseUrl;
+    export let challengesPower;
 
     const dispatch = createEventDispatcher();
 
     function handleLearnMoreClick(event) {
         dispatch('closeAndShowDetails', { id, event });
     }
+  
+    const svgToUse = challengesPower ? countermonumentSvg : monumentSvg;
   </script>
   
   {#if photos && photos.length}
@@ -27,12 +31,14 @@
   <div class='flex flex-row items-center'>
     <div class='flex flex-col items-start'>
       <h2>{name}</h2>
-      <h3>{municipality}</h3>
+      {#if municipality && municipality !== 'null' && municipality !== 'undefined'}
+        <h3>{municipality}</h3>
+      {/if}
     </div>
     <div class='flex flex-row items-center'>
         <div class='monument-id'>#{id}</div>
         <div style="width: {width}px; height: {height}px;">
-            <img src="{monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+            <img src="{svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%; {challengesPower ? 'margin-left:5px' : ''}" />
           </div>
     </div>
   </div>
