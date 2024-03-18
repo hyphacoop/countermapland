@@ -1,10 +1,14 @@
 import { writable, readable, derived } from 'svelte/store';
 import initialMarkers from '$lib/assets/markers.json';
+import counterMarkers from '$lib/assets/counterMarkers.json';
 import L from 'leaflet';
 import { MaptilerStyle } from '@maptiler/leaflet-maptilersdk';
 
+// Merge all markers
+const allMarkers = initialMarkers.concat(counterMarkers);
+
 // Writable stores to manage different element's visibility
-export const markersStore = writable(initialMarkers);
+export const markersStore = writable(allMarkers);
 export const filteredStore = writable([]);
 export const territoriesVisible = writable(false);
 
@@ -68,8 +72,24 @@ export const currentMapStyleId = derived(
 
 //// Function to get the current view from local storage
 function getCurrentViewFromStorage() {
+  // Attempt to retrieve and parse the stored view
   const storedView = localStorage.getItem('currentView');
-  return storedView ? JSON.parse(storedView) : null;
+  if (!storedView) return null;
+  
+  // Check if the stored view is in a latitude,longitude format
+  if (/^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(storedView)) {
+    // It's a lat,long string; split and convert to numbers
+    const [lat, lng] = storedView.split(',').map(Number);
+    return lat, lng;
+  } else {
+    // Attempt JSON parsing for other formats
+    try {
+      return JSON.parse(storedView);
+    } catch (e) {
+      console.error('Error parsing stored view:', e.message);
+      return null;
+    }
+  }
 }
 
 // Function to save the current view to local storage

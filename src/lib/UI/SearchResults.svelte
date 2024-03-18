@@ -37,13 +37,14 @@
     {results.length > 1 ? "places " : "place "}
     replied to your call...
   </p>
-  {#each results as { name, photos, municipality, id }, index (id + "-" + index)}
+  {#each results as { name, photos, municipality, id, challengesPower }, index (id + "-" + index)}
     <SearchItem
       {name}
       {photos}
       {municipality}
       {id}
       {baseUrl}
+      {challengesPower}
       on:closeAndShowDetails={(event) => handleDetails(event)}
     />
   {/each}

@@ -10,6 +10,7 @@
   } from "$lib/Map/utilities";
 
   import monumentSvg from "$lib/icons/monument.svg";
+  import countermonumentSvg from "$lib/icons/countermonument.svg";
   import closeImage from "$lib/icons/close.svg";
 
   import inscriptions from "$lib/assets/inscriptions.json";
@@ -27,11 +28,17 @@
 
   let territories = writable("");
   let selectedInscription = null;
+  let preparedPhotos = [];
   let closestAddress = "";
+  let svgToUse;
 
   $: {
     const inscriptionItem = inscriptions.find(item => item.id === $selectedMarkerId);
     selectedInscription = inscriptionItem ? inscriptionItem.inscription : null;
+  }
+
+  $: if ($selectedMarker) {
+      svgToUse = $selectedMarker.challengesPower ? countermonumentSvg : monumentSvg;
   }
 
   // Fetch territory information whenever the selected marker changes
@@ -90,10 +97,38 @@
     }
   }
 
-  $: hasPhotos =
-    $selectedMarker &&
-    $selectedMarker.photos &&
-    $selectedMarker.photos.length > 0;
+
+ $: {
+    if ($selectedMarker) {
+      let photos = [];
+
+      // Use the existing photos array if it exists
+      if ($selectedMarker.photos && $selectedMarker.photos.length) {
+        photos = [...$selectedMarker.photos];
+      }
+
+      // Check for photo_link and add it to the photos array
+      if ($selectedMarker.photo_link) {
+        photos.push({
+          url: $selectedMarker.photo_link,
+          alt: "Photo 1" // Provide a meaningful alt text or derive it as needed
+        });
+      }
+
+      // Check for photo_link_2 and add it to the photos array
+      if ($selectedMarker.photo_link_2) {
+        photos.push({
+          url: $selectedMarker.photo_link_2,
+          alt: "Photo 2" // Provide a meaningful alt text or derive it as needed
+        });
+      }
+
+      preparedPhotos = photos;
+    }
+  }
+
+  // Now, hasPhotos checks if preparedPhotos has items
+  $: hasPhotos = preparedPhotos.length > 0;
 </script>
 
 <div
@@ -106,8 +141,8 @@
 </button>
   {#if $selectedMarker}
     <div class="marker">
-      {#if $selectedMarker.photos && $selectedMarker.photos.length}
-        <ImageArray photos={$selectedMarker.photos} {baseUrl} />
+      {#if hasPhotos}
+        <ImageArray photos={preparedPhotos} baseUrl={$selectedMarker.challengesPower ? '' : baseUrl} />
       {/if}
       <div class="flex flex-col items-start mt-6">
         <div class="monument-id" class:mt-6={!hasPhotos}>
@@ -116,14 +151,16 @@
         <div class="flex flex-row items-baseline w-full justify-between">
           <h2>{$selectedMarker.name}</h2>
           <div class="image-container">
-            <img src={monumentSvg} alt="Monument Marker" />
+            <img src={svgToUse} alt="Monument Marker" />
           </div>
         </div>
 
         <!-- Flex container for municipality and territories -->
         <div class="flex flex-col items-start data-container">
           <h3>{$territories}</h3>
+          {#if $selectedMarker.municipality && $selectedMarker.municipality !== 'null' && $selectedMarker.municipality !== 'undefined'}
           <h4>{$selectedMarker.municipality}</h4>
+          {/if}
         </div>
       </div>
 
@@ -187,6 +224,76 @@
         </p>
         <p class='label'>
           {$selectedMarker.organization}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.use_type}
+      <div>
+        <p class='label-header'>
+          Use Type
+        </p>
+        <p class='label'>
+          {$selectedMarker.use_type}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.object_type}
+      <div>
+        <p class='label-header'>
+          Object Type
+        </p>
+        <p class='label'>
+          {$selectedMarker.object_type}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.year_dedicated}
+      <div>
+        <p class='label-header'>
+          Year Dedicated
+        </p>
+        <p class='label'>
+          {$selectedMarker.year_dedicated}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.year_removed}
+      <div>
+        <p class='label-header'>
+          Object Type
+        </p>
+        <p class='label'>
+          {$selectedMarker.year_removed}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.honorees_1}
+      <div>
+        <p class='label-header'>
+          Honorees 1
+        </p>
+        <p class='label'>
+          {$selectedMarker.honorees_1}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.honorees_2}
+      <div>
+        <p class='label-header'>
+          Honorees 2
+        </p>
+        <p class='label'>
+          {$selectedMarker.honorees_2}
+        </p>
+      </div>
+      {/if}
+      {#if $selectedMarker.data_link}
+      <div>
+        <p class='label-header'>
+          Data
+        </p>
+        <p class='label'>
+          <a href="{$selectedMarker.data_link}" target="_blank">Link</a>
         </p>
       </div>
       {/if}
