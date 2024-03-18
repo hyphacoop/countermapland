@@ -11,6 +11,9 @@
   let serverResponds = false;
   let errorMessage = "";
 
+  const staticmanURL = "https://countermap.onrender.com/";
+  const staticmanEndpoint = `${staticmanURL}v3/entry/github/hyphacoop/countermapland/staging/contactForm/`;
+
   // Function to handle form submission
   async function handleSubmit() {
     isSubmitting = true;
@@ -40,7 +43,6 @@
                 response.status,
                 response.statusText
             );
-            // Reset form or navigate to a success page
         } else {
             submitting = false;
             errorMessage = "Failed to submit form. Please try again later.";
