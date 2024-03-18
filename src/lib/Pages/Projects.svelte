@@ -146,7 +146,7 @@
 <p>
   “On a day that’s not a Monday, count the number of goji berries on the first
   bush you find. Purchase three meals that have that number from the menu at
-  Double Greeting Wonton House or TeePee Treats. Take your meals to Kinistinaw
+  Double Greeting Wonton House or TeePee Treats. Take your meals to Kinistinâw
   park and share your food with the first people you see. Ask them what
   histories they know of this neighborhood, and in turn offer them yours. Offer
   gratitude and share with them what the land is asking of you. Ask them what
