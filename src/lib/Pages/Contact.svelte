@@ -37,14 +37,14 @@
 
         if (response.ok) {
             success = true;
-            submitting = false;
+            isSubmitting = false;
             console.log(
                 "Form submitted successfully:",
                 response.status,
                 response.statusText
             );
         } else {
-            submitting = false;
+            isSubmitting = false;
             errorMessage = "Failed to submit form. Please try again later.";
             console.log(
                 "Error submitting form:",
@@ -54,7 +54,7 @@
         }
     } catch (error) {
         console.error("Error submitting form:", error);
-        submitting = false;
+        isSubmitting = false;
         errorMessage = "Error submitting form. Please check your internet connection and try again.";
     }
 
@@ -93,12 +93,6 @@
 
   onMount(() => {
     verifyServerResponds();
-    // Initialize form fields
-    subject = "";
-    message = "";
-    relatedTo = "";
-    preferredName = "";
-    email = "";
   });
 
   $: submitText = isSubmitting ? "Submitting" : "Submit";
