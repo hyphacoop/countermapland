@@ -72,9 +72,6 @@ export const currentMapStyleId = derived(
 
 //// Function to get the current view from local storage
 function getCurrentViewFromStorage() {
-  console.log('getCurrentViewFromStorage', localStorage.getItem('currentView'));
-  console.log('type of getCurrentViewFromStorage', typeof localStorage.getItem('currentView'));
-  
   // Attempt to retrieve and parse the stored view
   const storedView = localStorage.getItem('currentView');
   if (!storedView) return null;
@@ -115,7 +112,7 @@ export const initialViewStore = writable(initialView);
 const savedCurrentView = getCurrentViewFromStorage();
 
 // Initialize currentViewStore with either the saved current view or the initial view
-export const currentViewStore = writable(initialView);
+export const currentViewStore = writable(savedCurrentView || initialView);
 
 // Subscribe to changes in currentViewStore to save them for future sessions
 currentViewStore.subscribe((currentView) => {
