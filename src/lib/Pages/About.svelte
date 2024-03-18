@@ -22,7 +22,7 @@
         <li>
             Explore practices in critical cartography through collaborations, commissions, and capacity-building work; 
         </li>
-        <li>Support experimental cultural infrastructures that challenge oppression.
+        <li>Support experimental cultural infrastructures that fight oppression.
         </li>
     </ol>
 

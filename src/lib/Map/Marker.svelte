@@ -4,10 +4,13 @@
   import L from "leaflet";
 
   import monumentSvg from "$lib/icons/monument.svg";
+  import countermonumentSvg from "$lib/icons/countermonument.svg";
 
   export let width;
   export let height;
   export let latLng;
+
+  export let challengesPower = false;
 
   let marker;
   let mapInstance = getContext("map").getMap();
@@ -17,12 +20,13 @@
   });
 
   function createOrUpdateMarker(mode) {
+    const svgToUse = challengesPower ? countermonumentSvg : monumentSvg;
     let iconHtml = mode === "dark"
       ? `<div style="width: ${width}px; height: ${height}px; filter: invert(100%);">
-          <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+          <img src="${svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%;" />
         </div>`
       : `<div style="width: ${width}px; height: ${height}px;">
-          <img src="${monumentSvg}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+          <img src="${svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%;" />
         </div>`;
 
     let icon = L.divIcon({

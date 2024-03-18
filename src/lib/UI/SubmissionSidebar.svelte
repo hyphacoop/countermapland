@@ -65,7 +65,6 @@
   // Reactive statement to manage the half-sidebar class application based on screen width and $userLatLng
   $: halfSidebarApplied.set($isScreenWidthLessThan768 && $userLatLng);
 
-  $: console.log($halfSidebarApplied, 'is half sidebar applied');
   function resetForm() {
     formData.set({
       names: [{ id: "name1", value: "" }],
@@ -119,7 +118,6 @@
 
   // Function to upload the file as soon as it is received
   async function handleFileSelected(e) {
-    console.log('File selected:', e.dataTransfer ? e.dataTransfer.files : e.target.files)
     e.preventDefault();
     $formData.files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     if ($formData.files && $formData.files.length > 0) {
@@ -289,6 +287,7 @@ onDestroy(() => {
         >date</span
       >
     </p>
+    <p><a class="link" on:click={resetForm}>Add another submission</a></p>
     <p>Are you interested in volunteering to help review submissions?</p>
     <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
   {:else if $formData.errorMessage}
@@ -296,14 +295,17 @@ onDestroy(() => {
     <p class="success">Your submission was not properly received.</p>
     <p>Get in touch or <a class='link' on:click={resetForm}>try again.</p>
 
-    <p>Reach out <a class="link" on:click={goToContactForm}>here</a></p>
+    <button type="button" class="link" on:click={goToContactForm}>Reach out</button>
   {:else}
-    <h2>Add a monument*</h2>
+    <h2>Add to *countermap</h2>
 
     <p class="main-description">
       A monument can be an event, ecology, object, or site that is
       important to a community. It may have been erased, still exist, or be
       speculative.
+    </p>
+    <p class='main-description'>
+      We define “countermonument” as a submission that challenges dominant systems of power.
     </p>
     <p class="main-description">
       We review each submission before adding it to the map in order to ensure
@@ -314,42 +316,51 @@ onDestroy(() => {
       Please read our <a class='link' on:click={gotoComAgr}>Community Agreements</a> to learn more.
     </p>
 
-    <h3>Leave a marker</h3>
-    {#if $userLatLng}
-      <p>{$userLatLng}</p>
-      {#if $isScreenWidthLessThan768 && $halfSidebarApplied}
-        <p>Click 
-        <button class="underline" on:click={toggleHalfSidebar}>here</button>
-        to minimize the map to continue filling the form.
-      </p>
-      {/if}
-    {:else}
-      <p>
-
-        {#if $isScreenWidthLessThan768}
-        {#if !$halfSidebarApplied}
-          Click
+    <h3>1. Leave a marker</h3>
+    <div class='mb-11'>
+      {#if $userLatLng}
+        <p>{$userLatLng}</p>
+        {#if $isScreenWidthLessThan768 && $halfSidebarApplied}
+          <p>Click 
           <button class="underline" on:click={toggleHalfSidebar}>here</button>
-          to 
-
-          expand the map in order to mark the location of this place.
-          {:else}
-          Place a marker on the map
-          {/if}
-        {:else if objectView}
-          Click {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
-        {:else}
-          Click on the countermap to mark the location of this place.
+          to minimize the map to continue filling the form.
+        </p>
         {/if}
+      {:else}
+        <p>
 
-      </p>
-    {/if}
-    <h3>What do you call this place?</h3>
+          {#if $isScreenWidthLessThan768}
+          {#if !$halfSidebarApplied}
+            Click
+            <button class="underline" on:click={toggleHalfSidebar}>here</button>
+            to 
+
+            expand the map in order to mark the location of this place.
+            {:else}
+            <p>Place a marker on the map</p>
+            {/if}
+          {:else if objectView}
+            Click {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
+          {:else}
+            <p>Click on the countermap to mark the location of this place.</p>
+           
+           <!--
+            <p>If it has a street address, enter the address.</p>
+          
+            Insert search component here
+            -->
+          
+            {/if}
+
+        </p>
+      {/if}
+    </div>
+    <h3>2. What do you call this place?</h3>
     <p>
       This can be an “official” name, a name that you use, or something else.
     </p>
 
-    <div class="flex flex-col names items-start mb-4">
+    <div class="flex flex-col names items-start mb-11">
       {#each $formData.names as name, index (name.id)}
         <input
           type="text"
@@ -366,9 +377,9 @@ onDestroy(() => {
       {/if}
     </div>
 
-    <h3>Countermonument</h3>
-    <p>Does this place challenge dominant systems of power?</p>
-    <div class="flex flex-col yes-no mb-4">
+    
+    <h3>3. Does this place challenge dominant systems of power?</h3>
+    <div class="flex flex-col yes-no mb-11">
       <button on:click={() => isPower("yes")}>
         {#if $formData.powerDominanceAnswer === "yes"}
           <img src={countermonumentIcon} alt="Yes" class="icon" />
@@ -379,28 +390,30 @@ onDestroy(() => {
             class="icon"
           />
         {/if}
-        yes
+        yes (it's a countermonument)
       </button>
 
-      <button on:click={() => isPower("no")}>
+      <button on:click={() => isPower("no")} class='monumentIcon'>
         {#if $formData.powerDominanceAnswer === "no"}
           <img src={monumentIcon} alt="No" />
         {:else}
           <img src={monumentOutlineIcon} alt="No outline" />
         {/if}
-        no
+        no (it's a monument)
       </button>
     </div>
 
-    <h3>Please give us more information</h3>
-    <p class="mb-0">What is its significance?</p>
-    <p class="mb-0">Who does it belong to?</p>
-    <p class="mb-0">How do you encounter it?</p>
-    <p class="mb-0">What do you remember?</p>
-    <textarea class="mb-2" id="message" bind:value={$formData.description} required
-    ></textarea>
+    <h3>4. What do you know about this place?</h3>
+   <div class="mb-5">
+    <p class="m-0">What do you remember? <br>
+        Why is it significant? <br>
+        Who does it belong to? <br>
+        How do you encounter it? </p>
+      <textarea class="mb-2" id="message" bind:value={$formData.description} required
+      ></textarea>
+  </div>
 
-    <h3>Add some tags:</h3>
+    <p>Add some tags:</p>
     <div class="flex flex-row more-btns mb-4">
       {#each fields as info}
         <button
@@ -431,12 +444,17 @@ onDestroy(() => {
       {/each}
     </div>
 
-    <h3>How do you experience this place?</h3>
-    <p>Share an image that represents your experience with a place or write it below.
+    <h3>5. How do you experience this place?</h3>
+    <p>
+      Share an image that represents your experience with a place or write it below.
     </p>
-    <p>Optional: Click on the labels to create a prompt.</p>
 
-    <!-- Dynamic senses and media buttons -->
+    <!-- Dynamic senses and media buttons
+
+      Hidden to reduce submission form
+
+
+          <p>Optional: Click on the labels to create a prompt.</p>
     <div
       class="prompt flex flex-row flex-wrap justify-center items-center mb-4 rounded"
     >
@@ -461,7 +479,7 @@ onDestroy(() => {
           )}>{selectedMedia}</button
       >
     </div>
-
+  -->
     <p>Share a file (audio, video, image, text) that represents this place.</p>
 
     <!-- File input with drag and drop -->
@@ -474,7 +492,7 @@ onDestroy(() => {
     <p>Describe this image</p>
     <textarea class="mb-4" bind:value={$formData.altText}></textarea>
 
-    <h3>Email</h3>
+    <h3>6. Email</h3>
     <input class="mb-4" id="email" type="email" bind:value={$formData.email} required />
 
     <p class="my-4">
@@ -569,7 +587,7 @@ onDestroy(() => {
   h3 {
     color: #000;
     font-family: Itim;
-    font-size: 1.125rem;
+    font-size: 1.5rem; 
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -581,7 +599,7 @@ onDestroy(() => {
   }
   p,
   label, li {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
   p {
     color: #000;
@@ -628,6 +646,7 @@ onDestroy(() => {
   }
   .more-btns {
     display: flex;
+    font-size: 0.6875rem; 
     flex-wrap: wrap;
     gap: 0.625rem;
   }
@@ -651,6 +670,10 @@ onDestroy(() => {
   .yes-no button img {
     max-width: 22px;
   }
+  .yes-no .monumentIcon img {
+    max-width: 15px;
+    margin-left:3.5px;
+  }
 
   .add-another-name {
     color: #000;
@@ -669,6 +692,7 @@ onDestroy(() => {
   input {
     padding: 0.25rem;
     border-radius: 0.25rem;
+    border: 1px solid #000; 
   }
   .names input {
     margin-bottom: 0.5rem;
