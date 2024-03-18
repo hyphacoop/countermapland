@@ -65,7 +65,6 @@
   // Reactive statement to manage the half-sidebar class application based on screen width and $userLatLng
   $: halfSidebarApplied.set($isScreenWidthLessThan768 && $userLatLng);
 
-  $: console.log($halfSidebarApplied, 'is half sidebar applied');
   function resetForm() {
     formData.set({
       names: [{ id: "name1", value: "" }],
@@ -119,7 +118,6 @@
 
   // Function to upload the file as soon as it is received
   async function handleFileSelected(e) {
-    console.log('File selected:', e.dataTransfer ? e.dataTransfer.files : e.target.files)
     e.preventDefault();
     $formData.files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     if ($formData.files && $formData.files.length > 0) {
