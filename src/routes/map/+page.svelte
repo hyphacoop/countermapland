@@ -64,8 +64,6 @@
     currentSidebar.set('search');
   }
 
-  
-
   function showDetails(event, markerId) {
     console.log('showing details');
     if (event && typeof event.stopPropagation === 'function') {
@@ -129,9 +127,9 @@
 <div class="w-full h-screen"  on:click={handleDivClick}>
   <Search on:updateView={handleUpdateView} />
   <Leaflet view={$currentViewStore} zoom={zoomLevel}>
-    {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id }, index (latLng.join(",") + "-" + index)}
+    {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
       {#if visible}
-        <Marker {latLng} {width} {height}>
+        <Marker {latLng} {width} {height} {challengesPower}>
           <Popup let:popup>
             <PopupContent
               {width}
@@ -142,6 +140,7 @@
               {description}
               {photos}
               {baseUrl}
+              {challengesPower}
               on:closeAndShowDetails={({ detail }) => {
                 console.log(detail);
                 showDetails(detail.event, detail.id);
