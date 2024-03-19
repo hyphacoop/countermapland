@@ -281,7 +281,7 @@ onDestroy(() => {
     <p class="success">Your submission has been received.</p>
     <p>
       Our next review cycle starts on <span class="label ml-2 rounded"
-        >date</span
+        >June 19, 2024</span
       >
     </p>
     <p><a class="link" on:click={resetForm}>Add another submission</a></p>
