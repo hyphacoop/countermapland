@@ -3,7 +3,7 @@
 </h3>
 
 <p>
-    When you visit or view countermap.land, the website collects no personally identifiable information about you. The project uses GitHub to host and deliver content and services. GitHub has its own privacy policy.
+    When you visit or view countermap.land, the website collects no personally identifiable information about you. The project uses GitHub to host and deliver content and services. GitHub has its own <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement#our-use-of-cookies-and-tracking-technologies" target="_blank">privacy policy</a>.
 
 </p>
 
@@ -60,13 +60,13 @@
 </p>
 
 <p>
-    Countermap.land does pre-screen Content, and Countermap.land and its designee have the right (but not the obligation) in their sole discretion to refuse or remove any Content that is available via the Service.
+    Countermap.land does pre-screen Content, and countermap.land and its designee have the right (but not the obligation) in their sole discretion to refuse or remove any Content that is available via the Service.
 </p>
 
 <h3>
     Content Guidelines
 </h3>
-<p>While using Countermap.land, users must not submit content that is unlawful, harmful, threatening, abusive, defamatory, obscene, or otherwise objectionable. Additionally, users must respect intellectual property rights and avoid posting content that infringes on copyrights, trademarks, or other proprietary rights. Users are also asked to not post traditional or privileged Indigenous community knowledge to the site.
+<p>While using Countermap.land, users must not submit content that is unlawful, harmful, threatening, abusive, defamatory, obscene, or otherwise objectionable. Additionally, users must respect intellectual property rights and avoid posting content that infringes on copyrights, trademarks, or other proprietary rights. Users are also asked to not post traditional or privileged Indigenous community knowledge to the site out of respect for community permissions/ protocol. Countermap is actively working on digital and ethical frameworks that will accommodate Indigenous critical cartographies.
 </p>
 
 <h3>
@@ -74,7 +74,7 @@
 </h3>
 
 <p>
-    Users retain ownership of the content they submit to countermap.land. By posting content on the Service, users grant countermap.land a worldwide, non-exclusive, royalty-free license to use, reproduce, distribute, and display the content in connection with the operation of the Service.
+    Users retain ownership of the content they submit to countermap.land. By posting content on the Service, users grant countermap.land a worldwide, non-exclusive, royalty-free license to use, reproduce, distribute, and display the content in connection with the operation of the Service. countermap.land is not liable for any third-party content posted to the site.
 </p>
 
 <p>
