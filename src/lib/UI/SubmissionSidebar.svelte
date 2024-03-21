@@ -44,19 +44,19 @@
 
   // Reactive store to monitor screen width and toggle sidebar class
   let isScreenWidthLessThan768 = writable(false);
-  let halfSidebarApplied = writable(false);
+  let halfSidebarApplied = writable(true);
 
    // Function to check and update the screen width
    function updateScreenWidth() {
     isScreenWidthLessThan768.set(window.innerWidth < 768);
   }
 
-   // Function to toggle the .half-sidebar class
+/*    // Function to toggle the .half-sidebar class
    function toggleHalfSidebar() {
     if ($isScreenWidthLessThan768) {
       halfSidebarApplied.update(n => !n);
     }
-  }
+  } */
 
   const dispatch = createEventDispatcher();
 
@@ -317,25 +317,26 @@ onDestroy(() => {
     <div class='mb-11'>
       {#if $userLatLng}
         <p>{$userLatLng}</p>
-        {#if $isScreenWidthLessThan768 && $halfSidebarApplied}
+       <!--  {#if $isScreenWidthLessThan768 && $halfSidebarApplied}
           <p>Click 
           <button class="underline" on:click={toggleHalfSidebar}>here</button>
           to minimize the map to continue filling the form.
-        </p>
-        {/if}
+        </p> 
+        {/if}-->
       {:else}
         <p>
 
           {#if $isScreenWidthLessThan768}
-          {#if !$halfSidebarApplied}
+        <!--   {#if !$halfSidebarApplied}
             Click
             <button class="underline" on:click={toggleHalfSidebar}>here</button>
             to 
 
             expand the map in order to mark the location of this place.
             {:else}
+            {/if} -->
             <p>Place a marker on the map</p>
-            {/if}
+
           {:else if objectView}
             Click {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
           {:else}
@@ -752,8 +753,8 @@ li {
       width: 100%;
       padding: 0 0.88rem;
       padding-top: 2rem;
-      top: 25%;
-      height: 75%;
+      top: 50%;
+      height: 50%;
     }
   }
   .half-sidebar {
