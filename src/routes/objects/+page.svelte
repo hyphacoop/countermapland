@@ -19,7 +19,8 @@
 
   import menuIconPath from "$lib/icons/menu.svg";
   import filterIconPath from "$lib/icons/filter.svg";
-  
+
+  import { populatePhotos } from "$lib/Map/utilities";  
 
   let zoomLevel = writable(8);
   let mainElement;
@@ -199,6 +200,11 @@ const markerCol = index % itemsPerRow;
       console.log('closing sidebar');
       currentSidebar.set(null);
     }
+
+    $: populatedMarkers = $visibleRandomMarkers.map(marker => ({
+    ...marker,
+    photos: populatePhotos(marker)
+  }));
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -209,12 +215,12 @@ const markerCol = index % itemsPerRow;
   <Toolbar mapInstance={$mapInstanceStore} objectView={true} on:zoom={updateZoom} />
   <h1><a href="{base}/map">*countermap</a></h1>
   <div class="image-grid">
-    {#each $visibleRandomMarkers as marker, index}
+    {#each populatedMarkers as marker, index}
     {#if marker.photos && marker.photos.length > 0}
       <div class="image-container" key={index} style="top: {getTransformation(index, mainWidth).top}px; left: {getTransformation(index, mainWidth).left}px;">
         <img
           on:click|stopPropagation
-          src={`https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${marker.photos[0].url}`}
+          src={marker.challengesPower ? `${marker.photos[0].url}` : `https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/${marker.photos[0].url}`}
           alt={marker.photos[0].alt}
           on:click={() => handleImageClick(marker)}
           in:fade={{ duration: 300 }}
