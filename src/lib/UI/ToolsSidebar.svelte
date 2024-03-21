@@ -21,39 +21,42 @@
   let selectedName = writable("");
   let selectedMonument = writable('all');
 
-  // Reactive statement to handle filtering
-  $: {
-    if (
-      $selectedType ||
-      $selectedOrganization ||
-      $selectedMaintainer ||
-      $selectedName ||
-      $selectedMonument
-    ) {
-      // Perform filtering only if at least one selection is made
-      const filtered = $markersStore.filter(
-        marker => {
- // Determine the type of monument based on if it challengesPower
- const whatTypeOfMonument = marker.challengesPower ? 'countermonument' : 'monument';
+   // Function to reset all selections except the one specified by the caller
+   function resetFilters(except = "") {
+    if (except !== "type") selectedType.set("");
+    if (except !== "organization") selectedOrganization.set("");
+    if (except !== "maintainer") selectedMaintainer.set("");
+    if (except !== "name") selectedName.set("");
+    if (except !== "monument") selectedMonument.set('all');
+  }
 
-// Check if the current marker matches the selected criteria
-const matchesType = !$selectedType || marker.type === $selectedType;
-const matchesOrganization = !$selectedOrganization || marker.organization === $selectedOrganization;
-const matchesMaintainer = !$selectedMaintainer || marker.maintainer === $selectedMaintainer;
-const matchesName = !$selectedName || marker.name === $selectedName;
+  // Reactive statements for each selection
+  $: $selectedType && (resetFilters("type"), filterMarkers("type"));
+  $: $selectedOrganization && (resetFilters("organization"), filterMarkers("organization"));
+  $: $selectedMaintainer && (resetFilters("maintainer"), filterMarkers("maintainer"));
+  $: $selectedName && (resetFilters("name"), filterMarkers("name"));
+  $: $selectedMonument !== 'all' && (resetFilters("monument"), filterMarkers("monument"));
 
-// Handle the monument type selection; assuming $selectedMonument can be 'all', 'monument', or 'countermonument'
-let matchesMonumentType = true; // Default to true if 'all' or no selection
-if ($selectedMonument !== 'all') {
-  matchesMonumentType = (whatTypeOfMonument === $selectedMonument);
-}
-
-// Return true if all criteria match
-return matchesType && matchesOrganization && matchesMaintainer && matchesName && matchesMonumentType;
-        }
-      );
+  // Function to filter markers based on the current active selection
+  function filterMarkers(activeFilter) {
+    const filtered = $markersStore.filter(marker => {
+      switch (activeFilter) {
+        case "type":
+          return !$selectedType || marker.type === $selectedType;
+        case "organization":
+          return !$selectedOrganization || marker.organization === $selectedOrganization;
+        case "maintainer":
+          return !$selectedMaintainer || marker.maintainer === $selectedMaintainer;
+        case "name":
+          return !$selectedName || marker.name === $selectedName;
+        case "monument":
+          const whatTypeOfMonument = marker.challengesPower ? 'countermonument' : 'monument';
+          return (whatTypeOfMonument === $selectedMonument);
+        default:
+          return true; // No filter applied
+      }
+    });
       filteredStore.set(filtered);
-    } 
   }
   function closeSidebar() {
     currentSidebar.set(null);
