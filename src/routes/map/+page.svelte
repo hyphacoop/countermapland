@@ -165,7 +165,7 @@
   <img src={menuIconPath} alt="Open Menu Sidebar"/>
 </button>
 <button class='filter-button sdbbtn' on:click={showTools}>
-  <img src={filterIconPath} alt="Open Filter Sidebar"/>
+  <img src={filterIconPath} style='transform:rotate(90deg);' alt="Open Filter Sidebar"/>
 </button>
 
 {#if $selectedMarkerId !== null && $currentSidebar === 'sidebar'}
