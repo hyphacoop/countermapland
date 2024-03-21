@@ -107,20 +107,23 @@
         photos = [...$selectedMarker.photos];
       }
 
-      // Check for photo_link and add it to the photos array
+      // Start with 'photo_link' if it possibly does not follow the numeric suffix pattern
       if ($selectedMarker.photo_link) {
         photos.push({
           url: $selectedMarker.photo_link,
-          alt: "Photo 1" // Provide a meaningful alt text or derive it as needed
+          alt: "Photo" // Consider dynamically generating alt text if applicable
         });
       }
 
-      // Check for photo_link_2 and add it to the photos array
-      if ($selectedMarker.photo_link_2) {
-        photos.push({
-          url: $selectedMarker.photo_link_2,
-          alt: "Photo 2" // Provide a meaningful alt text or derive it as needed
-        });
+      // Now handle 'photo_link_1' to 'photo_link_3'
+      for (let i = 1; i <= 3; i++) {
+        let photoKey = `photo_link_${i}`;
+        if ($selectedMarker[photoKey]) {
+          photos.push({
+            url: $selectedMarker[photoKey],
+            alt: `Photo ${i+1}` // Adjusting index for human-readable sequence
+          });
+        }
       }
 
       preparedPhotos = photos;
@@ -260,7 +263,7 @@
       {#if $selectedMarker.year_removed}
       <div>
         <p class='label-header'>
-          Object Type
+          Year Removed
         </p>
         <p class='label'>
           {$selectedMarker.year_removed}

@@ -19,6 +19,8 @@
   import menuIconPath from "$lib/icons/menu.svg";
   import filterIconPath from "$lib/icons/filter.svg";
 
+  import { populatePhotos } from "$lib/Map/utilities";
+
   import {
     markersStore,
     filteredStore,
@@ -113,6 +115,11 @@
 
 
   $: console.log($currentSidebar);
+
+  $: populatedMarkers = $visibleMarkers.map(marker => ({
+    ...marker,
+    photos: populatePhotos(marker)
+  }));
 </script>
 {#if $isPopupOpen === false}
   <h1 
@@ -127,7 +134,7 @@
 <div class="w-full h-screen"  on:click={handleDivClick}>
   <Search on:updateView={handleUpdateView} />
   <Leaflet view={$currentViewStore} zoom={zoomLevel}>
-    {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
+    {#each populatedMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
       {#if visible}
         <Marker {latLng} {width} {height} {challengesPower}>
           <Popup let:popup>
@@ -158,7 +165,7 @@
   <img src={menuIconPath} alt="Open Menu Sidebar"/>
 </button>
 <button class='filter-button sdbbtn' on:click={showTools}>
-  <img src={filterIconPath} alt="Open Filter Sidebar"/>
+  <img src={filterIconPath} style='transform:rotate(90deg);' alt="Open Filter Sidebar"/>
 </button>
 
 {#if $selectedMarkerId !== null && $currentSidebar === 'sidebar'}

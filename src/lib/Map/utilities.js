@@ -117,3 +117,32 @@ export async function fetchClosestAddress(latitude, longitude) {
       return null;
     }
   }
+
+  export function populatePhotos(marker) {
+    // First, check if the photos array is already populated
+    if (marker.photos && marker.photos.length > 0) {
+      return marker.photos;
+    }
+    let photosArray = [];
+
+    // Check for 'photo_link' and add it to the photosArray if it exists
+    if (marker.photo_link) {
+      photosArray.push({
+        url: marker.photo_link,
+        alt: "Main Photo" // Adjust alt text as needed
+      });
+    }
+
+    // Now, proceed to check for 'photo_link_1' to 'photo_link_3'
+    for (let i = 1; i <= 3; i++) {
+      let photoKey = `photo_link_${i}`;
+      if (marker[photoKey]) {
+        photosArray.push({
+          url: marker[photoKey],
+          alt: `Photo ${i}` // Dynamically generate alt text
+        });
+      }
+    }
+
+    return photosArray;
+  }

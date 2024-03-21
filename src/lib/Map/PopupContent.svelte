@@ -16,6 +16,10 @@
     export let baseUrl;
     export let challengesPower;
 
+
+    let adjusted = challengesPower ? '' : baseUrl;
+
+
     const dispatch = createEventDispatcher();
 
     function handleLearnMoreClick(event) {
@@ -26,7 +30,7 @@
   </script>
   
   {#if photos && photos.length}
-    <ImageArray {photos} {baseUrl} />
+    <ImageArray {photos} baseUrl={adjusted} />
   {/if}
   <div class='flex flex-row items-center'>
     <div class='flex flex-col items-start'>
