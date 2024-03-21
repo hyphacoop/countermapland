@@ -260,7 +260,7 @@
       {#if $selectedMarker.year_removed}
       <div>
         <p class='label-header'>
-          Object Type
+          Year Removed
         </p>
         <p class='label'>
           {$selectedMarker.year_removed}
