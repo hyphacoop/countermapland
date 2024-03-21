@@ -19,6 +19,7 @@
   let selectedOrganization = writable("");
   let selectedMaintainer = writable("");
   let selectedName = writable("");
+  let selectedMonument = writable('all');
 
   // Reactive statement to handle filtering
   $: {
@@ -26,16 +27,30 @@
       $selectedType ||
       $selectedOrganization ||
       $selectedMaintainer ||
-      $selectedName
+      $selectedName ||
+      $selectedMonument
     ) {
       // Perform filtering only if at least one selection is made
       const filtered = $markersStore.filter(
-        (marker) =>
-          (!$selectedType || marker.type === $selectedType) &&
-          (!$selectedOrganization ||
-            marker.organization === $selectedOrganization) &&
-          (!$selectedMaintainer || marker.maintainer === $selectedMaintainer) &&
-          (!$selectedName || marker.name === $selectedName)
+        marker => {
+ // Determine the type of monument based on if it challengesPower
+ const whatTypeOfMonument = marker.challengesPower ? 'countermonument' : 'monument';
+
+// Check if the current marker matches the selected criteria
+const matchesType = !$selectedType || marker.type === $selectedType;
+const matchesOrganization = !$selectedOrganization || marker.organization === $selectedOrganization;
+const matchesMaintainer = !$selectedMaintainer || marker.maintainer === $selectedMaintainer;
+const matchesName = !$selectedName || marker.name === $selectedName;
+
+// Handle the monument type selection; assuming $selectedMonument can be 'all', 'monument', or 'countermonument'
+let matchesMonumentType = true; // Default to true if 'all' or no selection
+if ($selectedMonument !== 'all') {
+  matchesMonumentType = (whatTypeOfMonument === $selectedMonument);
+}
+
+// Return true if all criteria match
+return matchesType && matchesOrganization && matchesMaintainer && matchesName && matchesMonumentType;
+        }
       );
       filteredStore.set(filtered);
     } 
@@ -45,7 +60,6 @@
     filtersActive.set(false);
   }
 
-  $: console.log();
 </script>
 
 <div
@@ -64,13 +78,14 @@
     </div>
     <div class="category">
       <h3>Type</h3>
-      <span class="label active"> monument </span>
-      <span class="label"> countermonument </span>
+      <button class="label" class:active={$selectedMonument === 'monument'} on:click={() => $selectedMonument = 'monument'}>monument</button>
+      <button class="label" class:active={$selectedMonument === 'countermonument'} on:click={() => $selectedMonument = 'countermonument'}>countermonument</button>
+      <button class="label" class:active={$selectedMonument === 'all'} on:click={() => $selectedMonument = 'all'}>all</button>
     </div>
     <div class="category">
       <h3>Source</h3>
-      <span class="label active"> Canadian military memorials </span>
-      <span class="label"> community </span>
+      <button class="label" class:active={$selectedMonument === 'monument'} on:click={() => $selectedMonument = 'monument'}> Canadian military memorials </button>
+      <button class="label"  class:active={$selectedMonument === 'countermonument'} on:click={() => $selectedMonument = 'countermonument'}> community </button>
     </div>
     <div class="data-group">
       <div class="category">
