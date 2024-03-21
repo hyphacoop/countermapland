@@ -73,7 +73,7 @@
     selectedMarkerId.set(markerId);
   }
   function handleDivClick(event) {
-    if ($currentSidebar !== 'search' && $currentSidebar !== 'submissions') {
+    if ($currentSidebar !== 'search' && $currentSidebar !== 'submissions' && $currentSidebar !== 'tools') {
       if (!event.target.closest('.sdbbtn') && !event.target.closest('.sidebar')) {
           setCurrentSidebar(null);
           selectedMarkerId.set(null);

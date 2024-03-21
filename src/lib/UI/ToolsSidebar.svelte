@@ -19,33 +19,50 @@
   let selectedOrganization = writable("");
   let selectedMaintainer = writable("");
   let selectedName = writable("");
+  let selectedMonument = writable('all');
 
-  // Reactive statement to handle filtering
-  $: {
-    if (
-      $selectedType ||
-      $selectedOrganization ||
-      $selectedMaintainer ||
-      $selectedName
-    ) {
-      // Perform filtering only if at least one selection is made
-      const filtered = $markersStore.filter(
-        (marker) =>
-          (!$selectedType || marker.type === $selectedType) &&
-          (!$selectedOrganization ||
-            marker.organization === $selectedOrganization) &&
-          (!$selectedMaintainer || marker.maintainer === $selectedMaintainer) &&
-          (!$selectedName || marker.name === $selectedName)
-      );
+   // Function to reset all selections except the one specified by the caller
+   function resetFilters(except = "") {
+    if (except !== "type") selectedType.set("");
+    if (except !== "organization") selectedOrganization.set("");
+    if (except !== "maintainer") selectedMaintainer.set("");
+    if (except !== "name") selectedName.set("");
+    if (except !== "monument") selectedMonument.set('all');
+  }
+
+  // Reactive statements for each selection
+  $: $selectedType && (resetFilters("type"), filterMarkers("type"));
+  $: $selectedOrganization && (resetFilters("organization"), filterMarkers("organization"));
+  $: $selectedMaintainer && (resetFilters("maintainer"), filterMarkers("maintainer"));
+  $: $selectedName && (resetFilters("name"), filterMarkers("name"));
+  $: $selectedMonument !== 'all' && (resetFilters("monument"), filterMarkers("monument"));
+
+  // Function to filter markers based on the current active selection
+  function filterMarkers(activeFilter) {
+    const filtered = $markersStore.filter(marker => {
+      switch (activeFilter) {
+        case "type":
+          return !$selectedType || marker.type === $selectedType;
+        case "organization":
+          return !$selectedOrganization || marker.organization === $selectedOrganization;
+        case "maintainer":
+          return !$selectedMaintainer || marker.maintainer === $selectedMaintainer;
+        case "name":
+          return !$selectedName || marker.name === $selectedName;
+        case "monument":
+          const whatTypeOfMonument = marker.challengesPower ? 'countermonument' : 'monument';
+          return (whatTypeOfMonument === $selectedMonument);
+        default:
+          return true; // No filter applied
+      }
+    });
       filteredStore.set(filtered);
-    } 
   }
   function closeSidebar() {
     currentSidebar.set(null);
     filtersActive.set(false);
   }
 
-  $: console.log();
 </script>
 
 <div
@@ -64,13 +81,14 @@
     </div>
     <div class="category">
       <h3>Type</h3>
-      <span class="label active"> monument </span>
-      <span class="label"> countermonument </span>
+      <button class="label" class:active={$selectedMonument === 'monument'} on:click={() => $selectedMonument = 'monument'}>monument</button>
+      <button class="label" class:active={$selectedMonument === 'countermonument'} on:click={() => $selectedMonument = 'countermonument'}>countermonument</button>
+      <button class="label" class:active={$selectedMonument === 'all'} on:click={() => $selectedMonument = 'all'}>all</button>
     </div>
     <div class="category">
       <h3>Source</h3>
-      <span class="label active"> Canadian military memorials </span>
-      <span class="label"> community </span>
+      <button class="label" class:active={$selectedMonument === 'monument'} on:click={() => $selectedMonument = 'monument'}> Canadian military memorials </button>
+      <button class="label"  class:active={$selectedMonument === 'countermonument'} on:click={() => $selectedMonument = 'countermonument'}> community </button>
     </div>
     <div class="data-group">
       <div class="category">
