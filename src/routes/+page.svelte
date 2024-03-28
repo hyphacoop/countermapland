@@ -5,10 +5,10 @@
   import IconMosaic from "$lib/UI/IconMosaic.svelte";
   import Logo from "$lib/UI/Logo.svelte";
 
-  import Satellite from "$lib/icons/peephole/satellite-view.webp";
-  import Object from "$lib/icons/peephole/object-view.webp";
+  import Satellite from "$lib/icons/land.svg";
+  import Object from "$lib/icons/objects.svg";
 
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
 
   // Function to hide overflow to the body
   function addBodyClass(className) {
@@ -39,7 +39,7 @@
     <ul>
       <li>
         <a href="{base}/map">
-          <img src={Satellite} alt="Satellite View" />
+          <img src={Satellite} alt="Satellite View" class='setborder'/>
         </a>
       </li>
       <li>
@@ -63,11 +63,12 @@
   }
   ul {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     align-items: center;
     justify-content: center;
     list-style-type: none;
     padding: 0;
+    margin-top: 2rem;
     z-index: 9999;
   }
   li {
