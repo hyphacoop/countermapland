@@ -1,5 +1,5 @@
 <script>
-  import { derived } from "svelte/store";
+  import { derived, writable } from "svelte/store";
   import L from "leaflet";
 
   import { fade } from "svelte/transition";
@@ -28,7 +28,6 @@
     filteredStore,
     currentViewStore,
     mapBoundsStore,
-    darkMode,
     selectedMarkerId,
     currentSidebar,
     isPopupOpen,
@@ -42,14 +41,20 @@
   let zoomLevel = 10;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
+  let populatedMarkers = writable([]);
 
  // visibleMarkers to consider both map bounds and filtering
  const visibleMarkers = derived(
   [markersStore, mapBoundsStore, currentSidebar, filteredStore],
   ([$markersStore, $mapBoundsStore, $currentSidebar, $filteredStore]) => {
     if ($currentSidebar === 'tools' && $filteredStore.length > 0) {
-      // When filtering is active, use filteredStore directly
+      console.log("Current Sidebar:", $currentSidebar);
+      console.log("Markers Store:", $markersStore);
+      console.log("Map Bounds Store:", $mapBoundsStore);
+      console.log("Filtered Store:", $filteredStore);
       return $filteredStore;
+    } else if ($currentSidebar === 'submissions') {
+      return [];
     } else {
       // When not filtering, apply bounds to determine visibility
       return $markersStore.filter(marker => {
@@ -118,10 +123,13 @@
 
   $: console.log($currentSidebar);
 
-  $: populatedMarkers = $visibleMarkers.map(marker => ({
+  $: $populatedMarkers = $visibleMarkers.map(marker => ({
     ...marker,
     photos: populatePhotos(marker)
   }));
+
+  $: console.log('populatedMarkers', $populatedMarkers);
+
 </script>
 {#if $isPopupOpen === false}
   <div 
@@ -135,7 +143,7 @@
 <div class="w-full h-screen"  on:click={handleDivClick}>
   <Search on:updateView={handleUpdateView} />
   <Leaflet view={$currentViewStore} zoom={zoomLevel}>
-    {#each populatedMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
+    {#each $populatedMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
       {#if visible}
         <Marker {latLng} {width} {height} {challengesPower}>
           <Popup let:popup>
