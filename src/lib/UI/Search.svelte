@@ -14,7 +14,7 @@
 
   onMount(() => {
     const updatePlaceholder = () => {
-      placeholderText = window.innerWidth < 768 ? "Search *countermap" : "";
+      placeholderText = window.innerWidth < 768 ? "Search *countermap" : "Search here";
     };
 
     // Call once on mount
@@ -67,7 +67,6 @@ function updateMap(latitude, longitude) {
 </script>
 <div class="search-container sdbbtn">
   <div class="input-wrapper">
-    <img src={pinImg} alt="Pin" class="pin-icon"/>
     <input
       type="text"
       bind:value={city}
@@ -98,7 +97,7 @@ function updateMap(latitude, longitude) {
 <style>
   .search-container {
     position: fixed;
-    top: 4.9%;
+    top: 5%;
     left: 3.75rem;
     z-index: 9999;
   }
@@ -109,7 +108,7 @@ function updateMap(latitude, longitude) {
     border-radius: 0.25rem;
     border: 0px solid #000;
     background: #fff;
-    padding-left: 0.5rem;
+    padding-left: 0.75rem;
     box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.10); 
     border: 0.25px solid #D9D9D9; 
   }
@@ -156,21 +155,12 @@ function updateMap(latitude, longitude) {
   }
   @media (max-width: 768px) {
     .search-container {
+      top: 2.5%;
       left: 1.88rem;
-    }
-    input {
-      padding-left: 2rem;
     }
     input::placeholder {
       font-size: 0.75rem;
     }
-    .pin-icon {
-      display: block;
-      position: absolute;
-      left: 0.5rem;
-      height: 20px; 
-      z-index: 10;
-    } 
     .results-list {
       width: 115%;
     }

@@ -57,4 +57,11 @@
         font-size: 0.6875rem; 
         width: max-content;
     }
+    .result-container {
+        border: 1px solid transparent; 
+    }
+    .result-container:hover {
+        border-radius: 0.25rem;
+        border: 1px solid #000; 
+    }
 </style>

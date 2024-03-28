@@ -4,7 +4,7 @@
   import L from "leaflet";
 
   import monumentSvg from "$lib/icons/monument.svg";
-  import countermonumentSvg from "$lib/icons/countermonument.svg";
+  import countermonumentSvg from "$lib/icons/commissions.svg";
 
   export let width;
   export let height;
@@ -14,6 +14,7 @@
 
   let marker;
   let mapInstance = getContext("map").getMap();
+  let iconHtml;
 
   setContext("layer", {
     getLayer: () => marker
@@ -21,14 +22,19 @@
 
   function createOrUpdateMarker(mode) {
     const svgToUse = challengesPower ? countermonumentSvg : monumentSvg;
-    let iconHtml = mode === "dark"
-      ? `<div style="width: ${width}px; height: ${height}px; filter: invert(100%);">
-          <img src="${svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%;" />
-        </div>`
-      : `<div style="width: ${width}px; height: ${height}px;">
+    if (challengesPower) {
+      iconHtml = `<div style="width: ${width}px; height: ${height}px;">
           <img src="${svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%;" />
         </div>`;
-
+    } else {
+      iconHtml = mode === "dark"
+        ? `<div style="width: ${width}px; height: ${height}px; filter: invert(100%);">
+            <img src="${svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+          </div>`
+        : `<div style="width: ${width}px; height: ${height}px;">
+            <img src="${svgToUse}" alt="Monument Marker" style="width: 100%; height: 100%;" />
+          </div>`;
+        }
     let icon = L.divIcon({
       html: iconHtml,
       className: "map-marker",

@@ -4,22 +4,19 @@
 
   import {
     setMapStyleIndex,
-    currentMapStyleIndex,
     currentSidebar,
   } from "$lib/stores";
 
   import Peephole from "$lib/UI/Peephole.svelte";
 
-  // Import the images for each map style
-  import territoriesImage from "$lib/icons/peephole/map-territories.webp";
-  import streetsImage from "$lib/icons/peephole/map-streets.webp";
-  import satelliteImage from "$lib/icons/peephole/map-satellite.webp";
-  import objectImage from "$lib/icons/peephole/object-view.webp";
+  import objectImage from "$lib/icons/objects.svg";
+  import landImage from "$lib/icons/land.svg";
 
   // SVG Icons
   import plusIconPath from "$lib/icons/plus.svg";
   import minusIconPath from "$lib/icons/minus.svg";
-  import counterMonumentIconPath from "$lib/icons/countermonument.svg";
+  import pinImg from '$lib/icons/pin.svg';
+
 
   export let mapInstance;
   export let objectView = false;
@@ -69,29 +66,14 @@
     currentSidebar.set("submissions");
   }
 
-  let currentImage = satelliteImage; // Default image, change as needed
-  $: {
-    switch ($currentMapStyleIndex) {
-      case 0:
-        currentImage = satelliteImage;
-        break;
-      case 1:
-        currentImage = streetsImage;
-        break;
-      case 2:
-        currentImage = territoriesImage;
-        break;
-      // Add more cases as needed for additional styles
-      default:
-        currentImage = satelliteImage; // Default case, can adjust as needed
-    }
-  }
+  let currentImage = landImage; // Default image, change as needed
+  
 </script>
 
 <div class="flex flex-col toolbar-container" on:click|stopPropagation>
-  <div class='mr-5'>
-    <button class="rounded sdbbtn" on:click|stopPropagation={openSubmissions}>
-      <img src={counterMonumentIconPath} alt="Submit" />
+  <div>
+    <button class="rounded sdbbtn mb-8" on:click|stopPropagation={openSubmissions}>
+      <img class='pinImg' src={pinImg} alt="Submit" />
     </button>
     <div class="zoom-container">
       <button on:click={zoomIn}>
@@ -106,15 +88,15 @@
   <div class="peephole-container flex flex-row-reverse items-center">
     <button
       id="peephole"
-      class="mb-2"
+      class="white-bg rounded"
       on:click={() => (showPeephole = !showPeephole)}
       title="Select Map Style"
     >
       <img src={!objectView ? currentImage : objectImage} alt="Select Map Style" />
     </button>
     {#if showPeephole}
-      <a href={`${base}/${objectView ? 'map' : 'objects'}`} class="link-button" title="Object View">
-        <img src={!objectView ? objectImage : currentImage} alt="Object View" />
+      <a href={`${base}/${objectView ? 'map' : 'objects'}`} class="link-button rounded white-bg" title="Object View">
+        <img class="img-size" src={!objectView ? objectImage : currentImage} alt="Object View"  />
       </a>
     {/if}
   </div>
@@ -124,10 +106,13 @@
 </div>
 
 <style>
+  .white-bg {
+    background-color:#fff;
+    padding: 1rem;
+  }
   .rounded {
     border-radius: 50%;
     padding: 0.5rem;
-    margin-bottom: 2rem;
   }
   div.toolbar-container {
     position: fixed;
@@ -153,26 +138,25 @@
   }
   #peephole,
   .link-button {
-    width: 5rem;
-    height: 5rem;
+    width: 3.75rem;
+    height: 3.75rem;
     border-radius: 50%;
     padding: 0.25rem;
     transition: all 0.3s ease;
   }
   #peephole:hover,
   .link-button:hover {
-    transform: scale(1.1);
+    transform: scale(1.25);
   }
   .link-button {
   position: relative;
   overflow: hidden; 
   margin-right: 1.5rem;
 }
-  #peephole img {
-    width: 100%;
-    height: 100%;
+  #peephole img, .img-size {
+    width: 70%;
+    height: 70%;
     object-fit: cover;
-    border-radius: 50%;
   }
 
   .link-button img {
@@ -180,14 +164,12 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
   button {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3.75rem;
+    height: 3.75rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -198,6 +180,14 @@
     margin-right: 5px;
     box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.10); 
     border: 0.25px solid #D9D9D9; 
+  }
+  button img {
+    width: 50%;
+    height: 50%;
+  }
+  button img.pinImg {
+    width: 75%;
+    height: 75%;
   }
 
   button:hover:not(#peephole) {
@@ -210,33 +200,36 @@
   }
 
   @media (max-width: 768px) {
+    div.toolbar-container {
+      top: 2.5%;
+    }
+    button {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
     #peephole,
     .link-button {
-      width: 4rem;
-      height: 4rem;
-    }
-    #peephole {
-      margin-right: 0.8rem;
+      width: 2.75rem;
+      height: 2.75rem;
     }
     .link-button {
       margin-right: 1rem;
-      margin-bottom: 0.5rem;
     }
     .zoom-container {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    .zoom-container, .rounded {
+    .zoom-container {
       margin-bottom: 1rem;
     }
     .zoom-container button {
-      width: 2rem;
-      height: 2rem;
+      width: 2.75rem;
+      height: 2.75rem;
     }
     .zoom-container button img {
-      width:50%;
-      height: 50%;
+      width:40%;
+      height: 40%;
     }
   }
 </style>
