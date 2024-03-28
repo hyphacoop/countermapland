@@ -60,7 +60,6 @@
       <h2>Projects</h2>
       <Projects />
     {:else if $currentMenuSection === "Contact"}
-      <h2>Contact</h2>
       <Contact />
     {:else if $currentMenuSection === "Community Agreements"}
       <h2>Community Agreements</h2>

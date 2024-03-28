@@ -98,7 +98,7 @@ function updateMap(latitude, longitude) {
   .search-container {
     position: fixed;
     top: 5%;
-    left: 3.75rem;
+    left: 3.5%;
     z-index: 9999;
   }
 

@@ -56,6 +56,7 @@
           return true; // No filter applied
       }
     });
+      console.log('tools sidebar', filtered)
       filteredStore.set(filtered);
   }
   function closeSidebar() {
