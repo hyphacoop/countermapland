@@ -290,6 +290,16 @@
         </p>
       </div>
       {/if}
+      {#if $selectedMarker.source}
+      <div>
+        <p class='label-header'>
+          Source
+        </p>
+        <p class='label'>
+          {$selectedMarker.source}
+        </p>
+      </div>
+      {/if}
       {#if $selectedMarker.data_link}
       <div>
         <p class='label-header'>
