@@ -243,7 +243,7 @@ img.photos  {
 .menu-button {
   position: fixed;
   bottom: 1.31rem;
-  left: 3.75rem;
+  left: 3.5%;
   z-index: 9999;
   border-radius: 0.25rem;
   background: #FFF;
@@ -254,7 +254,7 @@ img.photos  {
 .filter-button {
   position: fixed;
   bottom: 1.31rem;
-  right: 3.75rem;
+  right: 3.5%;
   z-index: 9997;
   border-radius: 0.25rem;
   background: #FFF;
