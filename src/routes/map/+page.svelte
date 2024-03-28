@@ -5,6 +5,8 @@
   import { fade } from "svelte/transition";
 
   import "../../app.css";
+
+  import Logo from "$lib/UI/Logo.svelte";
   import Leaflet from "$lib/Map/Leaflet.svelte";
   import Marker from "$lib/Map/Marker.svelte";
   import Popup from "$lib/Map/Popup.svelte";
@@ -122,12 +124,11 @@
   }));
 </script>
 {#if $isPopupOpen === false}
-  <h1 
+  <div 
     in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}
-    class={$darkMode === "dark" ? "darkmode" : ""}
   >
-    *countermap
-  </h1>
+    <Logo />
+  </div>
 {/if}
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -199,10 +200,6 @@
 
 
 <style>
-  .darkmode {
-    color: white;
-    text-shadow: 1px 1px 1px rgb(0, 0, 0);
-  }
   .banner-container {
     position: absolute;
     bottom: 0;
@@ -210,10 +207,5 @@
     z-index: 9999;
     width: 100vw;
     height: 10%;
-  }
-  @media (max-width: 768px) {
-    h1 {
-      display: none;
-    }
   }
 </style>
