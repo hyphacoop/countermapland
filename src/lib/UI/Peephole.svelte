@@ -5,7 +5,7 @@
 
   import territoriesImage from "$lib/icons/peephole/map-territories.webp";
   import streetsImage from "$lib/icons/peephole/map-streets.webp";
-  import satelitteImage from "$lib/icons/peephole/map-satellite.webp";
+  import satelliteImage from "$lib/icons/peephole/map-satellite.webp";
 
   let mapStyleId;
   currentMapStyleIndex.subscribe((value) => {
@@ -15,7 +15,7 @@
   let mapStyles = [
     {
       id: 0,
-      src: satelitteImage,
+      src: satelliteImage,
       alt: "Map Style: Satellite",
     },
     {
@@ -29,49 +29,49 @@
       alt: "Map Style: Territories",
     },
   ];
-
-  // Filter out the current map style
-  $: visibleMapStyles = mapStyles.filter((style) => style.id !== mapStyleId);
-
-  $: console.log('currentMapStyleId', mapStyleId);
 </script>
 
 <div class="peephole-container">
-  {#each visibleMapStyles as { id, src, alt }}
-    <button on:click={() => onMapStyleSelect(id)}>
-      <img {src} {alt} />
+  {#each mapStyles as { id, src, alt }}
+    <button class:active={id === mapStyleId} on:click={() => onMapStyleSelect(id)}>
+      <img {src} {alt} style="height:100%;width:100%;"/>
     </button>
   {/each}
 </div>
 
 <style>
   .peephole-container {
+    margin-top: 0.5rem;
     display: flex;
     flex-direction: column;
-    padding: 0.25rem;
+    width: 3.75rem;
+    margin-right: 5px;
   }
   .peephole-container button {
-    width: 5rem;
-    height: 5rem;
-    margin-bottom: 0.15rem;
-    padding: 0.25rem;
+    width: 3.75rem;
+    height: 3.75rem;
+    margin-bottom: 0.5rem;
     border-radius: 50%;
     transition: transform 0.3s ease;
+    border: 0.31rem solid #fff; /* Ensure consistent sizing */
+  }
+  .peephole-container button.active {
+    border-color: black; /* Highlight active button */
   }
   .peephole-container button:hover {
-    transform: scale(1.1);
+    transform: scale(1.25);
   }
-  .peephole-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .peephole-container button img {
     border-radius: 50%;
   }
   @media (max-width: 768px) {
+    .peephole-container {
+      flex-wrap: wrap;
+      align-content: flex-end;
+    }
     .peephole-container button {
-      width: 4rem;
-      height: 4rem;
-      margin-right: 0.5rem;
+      width: 2.75rem;
+      height: 2.75rem;
     }
   }
 </style>
