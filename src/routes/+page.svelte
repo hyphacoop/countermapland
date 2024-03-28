@@ -3,6 +3,7 @@
   import { base } from "$app/paths";
 
   import IconMosaic from "$lib/UI/IconMosaic.svelte";
+  import Logo from "$lib/UI/Logo.svelte";
 
   import Satellite from "$lib/icons/peephole/satellite-view.webp";
   import Object from "$lib/icons/peephole/object-view.webp";
@@ -32,7 +33,7 @@
 
 <main class="welcome">
   <IconMosaic />
-  <h1>*countermap</h1>
+  <Logo />
   <div class="flex flex-col justify-center align-center">
     <p class='text-center'>Learn and tell the stories of this place.</p>
     <ul>

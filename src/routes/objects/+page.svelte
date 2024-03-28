@@ -7,6 +7,8 @@
   import "../../app.css";
   import { derived } from "svelte/store";
   import { markersStore, mapBoundsStore, selectedMarkerId, currentViewStore, mapInstanceStore, initialViewStore, currentSidebar, bannerClosed } from "$lib/stores";
+  
+  import Logo from "$lib/UI/Logo.svelte";
   import Sidebar from "$lib/UI/Sidebar.svelte";
   import SubmissionSidebar from "$lib/UI/SubmissionSidebar.svelte";
   import Search from "$lib/UI/Search.svelte";
@@ -14,6 +16,7 @@
   import MenuSidebar from "$lib/UI/MenuSidebar.svelte";
   import ToolsSidebar from "$lib/UI/ToolsSidebar.svelte";
   import Banner from "$lib/UI/Banner.svelte";
+
   
   import L, { latLngBounds } from "leaflet";
 
@@ -213,7 +216,11 @@ const markerCol = index % itemsPerRow;
   <div class="content-container">
   <Search on:updateView={handleUpdateView} />
   <Toolbar mapInstance={$mapInstanceStore} objectView={true} on:zoom={updateZoom} />
-  <h1><a href="{base}/map">*countermap</a></h1>
+  <div>
+    <a href="{base}/map">
+      <Logo />
+    </a>
+  </div>
   <div class="image-grid">
     {#each populatedMarkers as marker, index}
     {#if marker.photos && marker.photos.length > 0}
@@ -284,10 +291,6 @@ const markerCol = index % itemsPerRow;
     overflow: hidden;
     position: relative;
   }
-  h1 {
-    text-shadow: 1px 1px 1px rgb(0, 0, 0);
-  }
-  h1,
   a {
     color: white;
     z-index: 9999;
@@ -334,9 +337,4 @@ const markerCol = index % itemsPerRow;
   width: 100vw;
   height: 10%;
 }
-@media (max-width: 768px) {
-    h1 {
-      display: none;
-    }
-  }
 </style>
