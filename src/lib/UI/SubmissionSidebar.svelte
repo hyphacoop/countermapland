@@ -340,7 +340,7 @@ onDestroy(() => {
           {:else if objectView}
             Click {@html `<a href="${base}/map" class='underline'>here</a>`} to mark the location of this place.
           {:else}
-            <p>Click on the countermap to mark the location of this place.</p>
+            <p>Click on the map to drop a pin.</p>
            
            <!--
             <p>If it has a street address, enter the address.</p>
@@ -491,6 +491,7 @@ onDestroy(() => {
     <textarea class="mb-4" bind:value={$formData.altText}></textarea>
 
     <h3>6. Email</h3>
+    <p>We may need to reach out to you while reviewing your submission, or to let you know when it is published!</p>
     <input class="mb-4" id="email" type="email" bind:value={$formData.email} required />
 
     <p class="my-4">
@@ -515,7 +516,9 @@ onDestroy(() => {
             fill={$formData.consentGiven ? "black" : "none"}
           />
         </svg>
-        Let *countermap record and reuse the information you shared. 
+        <p style='margin-bottom:0;'>
+        Let *countermap record and reuse the information you shared. Read our <a class='link' on:click={gotoComAgr}>Community Agreements</a> here. 
+      </p>
       </label>
     </p>
 
@@ -641,6 +644,7 @@ onDestroy(() => {
     border: 2px dashed #000;
     margin-top: 20px;
     cursor: pointer;
+    border-radius: 0.25rem; 
   }
   .more-btns {
     display: flex;
