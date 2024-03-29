@@ -41,7 +41,6 @@
   let zoomLevel = 10;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
-  let populatedMarkers = writable([]);
 
  // visibleMarkers to consider both map bounds and filtering
  const visibleMarkers = derived(
@@ -120,16 +119,7 @@
   }
 
 
-
-  $: console.log($currentSidebar);
-
-  $: $populatedMarkers = $visibleMarkers.map(marker => ({
-    ...marker,
-    photos: populatePhotos(marker)
-  }));
-
-  $: console.log('populatedMarkers', $populatedMarkers);
-
+  $: console.log('visibleMarkers', $visibleMarkers);
 </script>
 {#if $isPopupOpen === false}
   <div 
@@ -143,7 +133,7 @@
 <div class="w-full h-screen"  on:click={handleDivClick}>
   <Search on:updateView={handleUpdateView} />
   <Leaflet view={$currentViewStore} zoom={zoomLevel}>
-    {#each $populatedMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
+    {#each $visibleMarkers as { latLng, visible, name, description, photos, municipality, id, challengesPower }, index (latLng.join(",") + "-" + index)}
       {#if visible}
         <Marker {latLng} {width} {height} {challengesPower}>
           <Popup let:popup>
