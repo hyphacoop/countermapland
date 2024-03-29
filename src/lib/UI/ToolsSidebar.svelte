@@ -15,6 +15,9 @@
 
   import CustomSelect from "$lib/UI/CustomSelect.svelte";
 
+  const allKeys = Object.keys($markersStore[0]);
+  $: console.log('All keys:', allKeys);
+
   let selectedType = writable("");
   let selectedOrganization = writable("");
   let selectedMaintainer = writable("");
@@ -36,28 +39,34 @@
   $: $selectedMaintainer && (resetFilters("maintainer"), filterMarkers("maintainer"));
   $: $selectedName && (resetFilters("name"), filterMarkers("name"));
   $: $selectedMonument !== 'all' && (resetFilters("monument"), filterMarkers("monument"));
+  $: if ($selectedMonument !== undefined) filterMarkers("monument");
 
   // Function to filter markers based on the current active selection
   function filterMarkers(activeFilter) {
-    const filtered = $markersStore.filter(marker => {
-      switch (activeFilter) {
-        case "type":
-          return !$selectedType || marker.type === $selectedType;
-        case "organization":
-          return !$selectedOrganization || marker.organization === $selectedOrganization;
-        case "maintainer":
-          return !$selectedMaintainer || marker.maintainer === $selectedMaintainer;
-        case "name":
-          return !$selectedName || marker.name === $selectedName;
-        case "monument":
-          const whatTypeOfMonument = marker.challengesPower ? 'countermonument' : 'monument';
-          return (whatTypeOfMonument === $selectedMonument);
-        default:
-          return true; // No filter applied
-      }
-    });
-      console.log('tools sidebar', filtered)
+    if (activeFilter === "monument" && $selectedMonument === 'all') {
+      // If 'all' is selected for monuments, clear the filteredStore
+      console.log('Clearing filtered store..................')
+      filteredStore.set([]);
+    } else {
+      const filtered = $markersStore.filter(marker => {
+        switch (activeFilter) {
+          case "type":
+            return !$selectedType || marker.type === $selectedType;
+          case "organization":
+            return !$selectedOrganization || marker.organization === $selectedOrganization;
+          case "maintainer":
+            return !$selectedMaintainer || marker.maintainer === $selectedMaintainer;
+          case "name":
+            return !$selectedName || marker.name === $selectedName;
+          case "monument":
+            const whatTypeOfMonument = marker.challengesPower ? 'countermonument' : 'monument';
+            return (whatTypeOfMonument === $selectedMonument);
+          default:
+            return true; // No filter applied
+        }
+      });
       filteredStore.set(filtered);
+    }
   }
   function closeSidebar() {
     currentSidebar.set(null);
