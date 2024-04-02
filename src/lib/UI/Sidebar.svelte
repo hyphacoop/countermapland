@@ -25,6 +25,22 @@
     ([$selectedMarkerId, $markersStore]) =>
       $markersStore.find((marker) => marker.id === $selectedMarkerId)
   );
+  
+  // This derived store will automatically update whenever selectedMarker changes
+  const formattedDescription = derived(selectedMarker, $selectedMarker => {
+    if (!$selectedMarker?.description) return '';
+
+    const description = $selectedMarker.description;
+    // Check if the description contains HTML tags
+    if (/<\/?[a-z][\s\S]*>/i.test(description)) {
+      // The description is already in HTML format
+      return description;
+    } else {
+      // Convert double newlines to paragraph tags
+      // This is a simple conversion and might need to be adjusted based on your exact needs
+      return description.split('\n').map(paragraph => `<p>${paragraph}</p>`).join('');
+    }
+  });
 
   let territories = writable("");
   let selectedInscription = null;
@@ -177,7 +193,7 @@
       </div>
       {#if $selectedMarker.description}
         <div class="description-container">
-          {@html $selectedMarker.description}
+          {@html $formattedDescription}
         </div>
       {/if}
 
