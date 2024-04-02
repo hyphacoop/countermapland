@@ -575,7 +575,7 @@ onDestroy(() => {
     background: #40b37c;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     overflow-y: auto;
-    z-index: 9999;
+    z-index: 12000;
     padding: 0 1.88rem;
     padding-top: 2.69rem;
   }
