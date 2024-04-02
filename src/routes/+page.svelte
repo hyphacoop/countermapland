@@ -10,6 +10,10 @@
 
   import { onMount } from "svelte";
 
+  let isMobile
+  
+  $: isMobile = window.innerWidth < 768;
+
   // Function to hide overflow to the body
   function addBodyClass(className) {
     document.body.classList.add(className);
@@ -33,7 +37,7 @@
 
 <main class="welcome">
   <IconMosaic />
-  <Logo />
+  <Logo showOnMobile={isMobile} />
   <div class="flex flex-col justify-center align-center">
     <p class='text-center'>Learn and tell the stories of this place.</p>
     <ul>
@@ -60,6 +64,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  p {
+    font-family: 'Itim';
   }
   ul {
     display: flex;
