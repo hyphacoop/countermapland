@@ -23,8 +23,6 @@
   import menuIconPath from "$lib/icons/menu.svg";
   import filterIconPath from "$lib/icons/filter.svg";
 
-  import { populatePhotos } from "$lib/Map/utilities";  
-
   let zoomLevel = writable(8);
   let mainElement;
   let mainWidth;
@@ -204,10 +202,6 @@ const markerCol = index % itemsPerRow;
       currentSidebar.set(null);
     }
 
-    $: populatedMarkers = $visibleRandomMarkers.map(marker => ({
-    ...marker,
-    photos: populatePhotos(marker)
-  }));
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -222,7 +216,7 @@ const markerCol = index % itemsPerRow;
     </a>
   </div>
   <div class="image-grid">
-    {#each populatedMarkers as marker, index}
+    {#each $visibleRandomMarkers as marker, index}
     {#if marker.photos && marker.photos.length > 0}
       <div class="image-container" key={index} style="top: {getTransformation(index, mainWidth).top}px; left: {getTransformation(index, mainWidth).left}px;">
         <img
