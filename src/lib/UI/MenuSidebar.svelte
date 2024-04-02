@@ -55,7 +55,10 @@
   <div>
     {#if $currentMenuSection === "About"}
       <h2>About</h2>
-      <About />
+      <About on:contact={(event) => {
+        event.stopPropagation();
+        setcurrentMenuSection("Contact")
+      }}/>
     {:else if $currentMenuSection === "Projects"}
       <h2>Projects</h2>
       <Projects />
