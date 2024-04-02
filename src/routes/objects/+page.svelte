@@ -218,7 +218,7 @@ const markerCol = index % itemsPerRow;
   <Toolbar mapInstance={$mapInstanceStore} objectView={true} on:zoom={updateZoom} />
   <div>
     <a href="{base}/map">
-      <Logo />
+      <Logo showOnMobile={false} />
     </a>
   </div>
   <div class="image-grid">

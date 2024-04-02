@@ -34,6 +34,29 @@ export let objectTypes = [
 
 export let materialTypes = ["Bronze", "Glass", "Wood", "Stone", "Granite"];
 
+export let useTypes = [
+  "Religious/ Spiritual",
+  "Burial site",
+  "Ceremonial",
+  "Commemorative",
+  "Military",
+  "Geological",
+  "Multiple/ other",
+  "Archaeological",
+  "Other (describe below)",
+];
+
+export let communitiesImpacted = [
+  "Indigenous",
+  "Black",
+  "Person of Colour",
+  "Racialized minority",
+  "Immigrant",
+  "Person with Disabilities",
+  "2SLGBTQ+",
+  "Other (describe below)",
+]
+
 export let stagingTactics = [
   "On a plinth",
   "On a pedestal",
@@ -85,10 +108,10 @@ export let fields = [
   "Year dedicated",
   "Year removed",
   "Year moved",
-  "Area",
-  "Width",
-  "Height",
-  "Depth",
+  "Area (m²)",
+  "Width (m)",
+  "Height (m)",
+  "Depth (m)",
   "Material",
   "Gesture",
   "Staging tactics",
@@ -113,14 +136,14 @@ export const fieldMapping = {
   "Year dedicated": "dedicated",
   "Year removed": "removed",
   "Year moved": "moved",
-  "Area": "area",
-  "Width": "width",
-  "Height": "height",
-  "Depth": "depth",
+  "Area (m²)": "area",
+  "Width (m)": "width",
+  "Height (m)": "height",
+  "Depth (m)": "depth",
   "Material": "material",
   "Gesture": "gestures",
   "Staging tactics": "tactics",
-  "Use": "use",
+  "Use": "useType",
   "Language": "language",
   "Inscription": "inscription",
   "Source": "source",
