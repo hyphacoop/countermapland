@@ -132,11 +132,14 @@
 
 <style>
     h3{
-        margin-top: 1rem;
+        font-family: Itim;
+        margin-top: 1.5rem;
         margin-bottom: 0.5rem;
-        font-weight: 600;
+        font-weight: 400;
+        font-size: 1.5rem; 
     }
     p {
+        font-size: 0.875rem;
         margin-bottom: 1rem;
     }
     a {
