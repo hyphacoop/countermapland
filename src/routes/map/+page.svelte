@@ -21,8 +21,6 @@
   import menuIconPath from "$lib/icons/menu.svg";
   import filterIconPath from "$lib/icons/filter.svg";
 
-  import { populatePhotos } from "$lib/Map/utilities";
-
   import {
     markersStore,
     filteredStore,

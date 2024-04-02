@@ -1,7 +1,17 @@
-<p>
-    
-    This project was initiated on territory occupied by many nations including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples for thousands of years. Today T’karonto is home to many diverse Indigenous people from across Turtle Island. We recognize that although this land is covered by Treaty 13, colonialism is an ongoing process. *countermap is committed to working with Indigenous communities to expose, impair, and end settler colonialism.
+<script>
+   import { createEventDispatcher } from "svelte";
+   
+   const dispatch = createEventDispatcher();
 
+   function goToContactForm(event) {
+    event.stopPropagation();
+         dispatch("contact");
+  }
+</script>
+
+
+<p> 
+    This project was initiated on territory occupied by many nations including the Mississaugas of the Credit, the Anishnabeg, the Chippewa, the Haudenosaunee and the Wendat peoples for thousands of years. Today T’karonto is home to many diverse Indigenous people from across Turtle Island. We recognize that although this land is covered by Treaty 13, colonialism is an ongoing process. *countermap is committed to working with Indigenous communities to expose, impair, and end settler colonialism.
 </p>
 
 <p>
@@ -28,12 +38,20 @@
 
 
 <p>
-    *countermap is in progress. The map currently contains limited data and functionality. Although our project is currently limited to Canada’s settler colonial borders, we are building capacity to expand the project. Interested in collaborating? Discussing? Sharing? Contact us. 
+    *countermap is in progress. The map currently contains limited data and functionality. Although our project is currently limited to Canada’s settler colonial borders, we are building capacity to expand the project. Interested in collaborating? Discussing? Sharing? 
+    <button on:click={goToContactForm}>
+        Contact us
+    </button>
+    . 
 
 </p>
 
 <p>
-    <span  class='underline'>Current team</span>
+    <span>
+        <strong>
+            Current team
+        </strong>
+    </span>
     <br>
     Dana Salama 
     <br>
@@ -45,7 +63,11 @@
 
 <p>This website was built by Hypha Worker Co-operative and designed by Sarah Ingle. </p>
 <ul>
-    <li class='underline'>Previous collaborators</li>
+    <li>
+        <strong>
+        Previous collaborators
+        </strong>
+    </li>
     <li>Evelyn Hoffman </li>
     <li>   Heather Breeze </li>
     <li>   Jamie Lipson </li>
@@ -76,5 +98,8 @@
     }
     ul {
         margin-bottom: 1.5rem;
+    }
+    button {
+        text-decoration: underline;
     }
 </style>
