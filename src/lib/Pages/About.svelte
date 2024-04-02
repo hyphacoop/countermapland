@@ -63,6 +63,9 @@
 </ul>
 
 <style>
+    * {
+        font-size: 0.875rem;
+    }
     p {
         margin-bottom: 1.5rem;
     }
