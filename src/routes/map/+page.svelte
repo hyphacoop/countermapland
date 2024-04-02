@@ -38,7 +38,7 @@
 
   let width = 25;
   let height = 25;
-  let zoomLevel = 10;
+  let zoomLevel = 12;
   let baseUrl =
     "https://www.veterans.gc.ca/images/remembrance/memorials/national-inventory-canadian-memorials/mem/";
 
