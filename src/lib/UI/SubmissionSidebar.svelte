@@ -16,7 +16,7 @@
   import monumentIcon from "$lib/icons/monument.svg";
   import closeImage from "$lib/icons/close.svg";
 
-  import { gestureTypes, stagingTactics, materialTypes, objectTypes, fields, senses, media, fieldMapping } from "$lib/data/types";
+  import { gestureTypes, stagingTactics, materialTypes, objectTypes, useTypes, communitiesImpacted, fields, senses, media, fieldMapping } from "$lib/data/types";
 
   export let objectView = false;
 
@@ -34,6 +34,10 @@
         return stagingTactics;
       case "gestures":
         return gestureTypes;
+      case "useType":
+        return useTypes;
+      case "communitiesImpacted":
+        return communitiesImpacted;
       default:
         return []; // No options for fields that do not match
     }
@@ -425,7 +429,7 @@ onDestroy(() => {
     </div>
     <div class="flex flex-col more-info mb-4">
       {#each Object.keys($formData.activeInfoButtons).filter(info => $formData.activeInfoButtons[info]) as activeInfo}
-        {#if ['objectType', 'material', 'tactics', 'gestures'].includes(fieldMapping[activeInfo])}
+        {#if ['objectType', 'material', 'tactics', 'gestures', 'communitiesImpacted', 'useType'].includes(fieldMapping[activeInfo])}
           <h4>{activeInfo}</h4>
           <CustomSelect
             options={getOptionsForFieldByFriendlyName(activeInfo)}
