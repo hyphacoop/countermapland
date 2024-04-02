@@ -125,7 +125,7 @@
   <div 
     in:fade={{ duration: 300 }} out:fade={{ duration: 300 }}
   >
-    <Logo />
+    <Logo showOnMobile={false} />
   </div>
 {/if}
 <!-- svelte-ignore a11y-no-static-element-interactions -->
