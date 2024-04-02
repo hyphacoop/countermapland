@@ -78,7 +78,7 @@ $: if ($currentSidebar !== "submissions" && marker) {
         );
         territoriesData = await response.json();
 
-        // Assuming addTerritoriesLayer and addTerritoriesLabels are now properly returning the layers
+        // addTerritoriesLayer and addTerritoriesLabels return the layers
         territoriesLayer = await addTerritoriesLayer(map, territoriesData);
         labelsLayer = await addTerritoriesLabels(map, territoriesData);
       } catch (error) {
