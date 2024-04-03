@@ -28,7 +28,7 @@
 
 <div class="result-container flex flex-row justify-between items-stretch p-3 lg:p-4 border border-black bg-white m-2 rounded-sm">
     {#if photos && photos.length}
-        <ImagePreview {photos} {baseUrl} />
+        <ImagePreview {photos} baseUrl={challengesPower ? '' : baseUrl} />
     {/if}
 
     <div class='flex flex-col items-start ml-7 space-y-2'>
