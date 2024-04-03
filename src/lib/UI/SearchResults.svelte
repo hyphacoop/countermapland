@@ -13,7 +13,7 @@
   export let results = {};
   export let baseUrl = "";
 
-  $: console.log("results", results);
+  $: reversedResults = results.reverse();
 
   function handleDetails(event) {
     dispatch("closeAndShowDetails", { id: event.detail.id, event: event });
@@ -37,7 +37,7 @@
     {results.length > 1 ? "places " : "place "}
     replied to your call...
   </p>
-  {#each results as { name, photos, municipality, id, challengesPower }, index (id + "-" + index)}
+  {#each reversedResults as { name, photos, municipality, id, challengesPower }, index (id + "-" + index)}
     <SearchItem
       {name}
       {photos}
