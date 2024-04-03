@@ -402,7 +402,7 @@
   .inscription-container {
     margin: 1rem 0rem;
     color: #000;
-    font-family: "BC Sans";
+    font-family: "BCSans";
     font-size: 0.6875rem;
     font-style: normal;
     font-weight: 400;
