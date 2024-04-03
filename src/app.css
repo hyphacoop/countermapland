@@ -96,8 +96,6 @@ h1 {
     left: 50%; 
     transform: translateX(-50%);
     text-align: center;
-    z-index: 9998;
-    pointer-events: none; 
 }
 
 h2 {
