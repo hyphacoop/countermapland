@@ -176,5 +176,5 @@ function createPersistedStore(key, startValue) {
   return store;
 }
 
-// Use this function to create your persistable stores
-export const bannerClosed = createPersistedStore('bannerClosed', false);
+// Use this function to keep track of banner visibility
+export const bannerClosed = writable(false);
