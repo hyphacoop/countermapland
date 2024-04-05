@@ -192,7 +192,7 @@ intention of making Tsuut’ina ways of being porously present in Treaty 7 areas
 </p>
 
 <p>
-  <i>
+
   “Frustrated by the absence of applied radical approaches to spatial practices
   in the city of Tkaronto and beyond, this group formed to imagine and actualize
   the potentialities of a liberated city. Our mission is to transcend the
@@ -202,7 +202,7 @@ intention of making Tsuut’ina ways of being porously present in Treaty 7 areas
   community partnerships. We envision a future where the city becomes a site of
   fulfillment by providing equitably for the needs and desires of its
   inhabitants.“
-</i>
+
 </p>
 
 <p>
@@ -222,7 +222,9 @@ intention of making Tsuut’ina ways of being porously present in Treaty 7 areas
   </strong>
 </p>
 
+<p>Workshop excerpt:</p>
 <p>
+  <i>
   “The National Centre for Truth and Reconciliation (NTRC) is located currently
   in a very colonial building at the University of Manitoba. There was
   conversation of if the location and style of this building creates barriers
@@ -230,6 +232,7 @@ intention of making Tsuut’ina ways of being porously present in Treaty 7 areas
   how the University functions and is laid out in order to find the building.
   There are no bus stops in front of the building so people would have to drive
   or walk a are distance.”
+</i>
 </p>
 
 <p>Storefront Manitoba is dedicated to advancing the awareness and appreciation of architecture, design, and urbanism. 
@@ -245,6 +248,7 @@ intention of making Tsuut’ina ways of being porously present in Treaty 7 areas
   <strong> Aiya哎呀 collective </strong>
 </p>
 <p>
+  <i>
   “On a day that’s not a Monday, count the number of goji berries on the first
   bush you find. Purchase three meals that have that number from the menu at
   Double Greeting Wonton House or TeePee Treats. Take your meals to Kinistinâw
@@ -252,6 +256,7 @@ intention of making Tsuut’ina ways of being porously present in Treaty 7 areas
   histories they know of this neighborhood, and in turn offer them yours. Offer
   gratitude and share with them what the land is asking of you. Ask them what
   the land asks of them.”
+</i>
 </p>
 
 <p>aiya哎呀 is an intergenerational group of artists, chinatown community members, and friends who are addressing the ongoing displacement and cultural erasure in Edmonton’s chinatown. aiya哎呀’s work remembers and marks chinatown’s geographic and emotional losses caused by development priorities. Within these losses, aiya哎呀 creates spaces of remembering, and forms openings to a chinatown they want to see today. Guided by the frameworks of active listening and accompliceship, aiya哎呀 works towards creating alternative futures that embody the liberated world we want to see. 
