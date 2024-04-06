@@ -377,6 +377,10 @@
     max-height: 100%;
   }
 
+  :global(.description-container p:not(:first-child)) {
+    margin-top: 0.25rem;
+  }
+
   .label {
     width: fit-content;
     border-radius: 0.25rem;
