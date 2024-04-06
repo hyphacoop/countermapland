@@ -1028,12 +1028,7 @@
         ],
         "visible": true,
         "challengesPower": true,
-        "photos": [
-            {
-                "url": "http://www.armstrongspoint.ca/images/gate.jpg",
-                "alt": "Photo 1"
-            }
-        ],
+        "photos": [],
         "name": "Armstrong's Point",
         "email": "executivedirector@storefrontmb.ca",
         "object_type": "Site",

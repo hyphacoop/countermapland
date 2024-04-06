@@ -32,7 +32,7 @@
   {#if photos && photos.length}
     <ImageArray {photos} baseUrl={adjusted} />
   {/if}
-  <div class='flex flex-row items-center'>
+  <div class='flex flex-row flex-wrap items-center'>
     <div class='flex flex-col items-start'>
       <h2>{name}</h2>
       {#if municipality && municipality !== 'null' && municipality !== 'undefined'}
