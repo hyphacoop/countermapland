@@ -46,7 +46,7 @@
   let marker;
   let icon;
   let territoriesData = null;
-
+  let isMobile = window.innerWidth < 768;
   
   $: {
   let iconHtml = $darkMode === "dark"
@@ -255,8 +255,20 @@ $: if ($currentSidebar !== "submissions" && marker) {
       $filteredStore.map((marker) => L.latLng(marker.latLng))
     );
 
+    // Prepare options for fitBounds
+    let fitBoundsOptions = { padding: [50, 50] }; // Common options
+
+    if (isMobile) {
+      // Extend the bounds slightly southward on mobile devices
+      const southWest = bounds.getSouthWest();
+      const newSouthWest = L.latLng(southWest.lat - 0.005, southWest.lng);
+      bounds.extend(newSouthWest);
+      // add MaxZoom
+      fitBoundsOptions.maxZoom = 16;
+  }
+
     // Adjust the map to these bounds
-    map.fitBounds(bounds, { padding: [50, 50] }); // Add some padding for a better view
+    map.fitBounds(bounds, fitBoundsOptions); // Add some padding for a better view
   }
 
 

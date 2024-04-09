@@ -234,8 +234,8 @@
       width: 100%;
       padding: 0 0.88rem;
       padding-top: 2rem;
-      top: 50%;
-      height: 50%;
+      top: 55%;
+      height: 45%;
     }
   }
 </style>
